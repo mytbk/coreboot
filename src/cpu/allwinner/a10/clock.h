@@ -35,6 +35,10 @@
 
 /* AHB_CLK_GATE values */
 #define AHB_GATE_DMA                    (1 << 6)
+#define AHB_GATE_SDRAM                  (1 << 14)
+/* AHB_GATE_DLL undocumented in A20 */
+#define AHB_GATE_DLL                    (1 << 15)
+#define AHB_GATE_ACE                    (1 << 16)
 #define AHB_GATE_SATA                   (1 << 25)
 
 /* APB1_CLK_DIV values */
@@ -72,6 +76,20 @@
 
 /* DRAM_CLK values*/
 #define DRAM_CTRL_DCLK_OUT		(1 << 15)
+
+/* MBUS control */
+#define CCM_MBUS_CTRL_M(n) (((n) & 0xf) << 0)
+#define CCM_MBUS_CTRL_M_MASK CCM_MBUS_CTRL_M(0xf)
+#define CCM_MBUS_CTRL_M_X(n) ((n) - 1)
+#define CCM_MBUS_CTRL_N(n) (((n) & 0xf) << 16)
+#define CCM_MBUS_CTRL_N_MASK CCM_MBUS_CTRL_N(0xf)
+#define CCM_MBUS_CTRL_N_X(n) ((n) - 1)
+#define CCM_MBUS_CTRL_CLK_SRC(n) (((n) & 0x3) << 24)
+#define CCM_MBUS_CTRL_CLK_SRC_MASK CCM_MBUS_CTRL_CLK_SRC(0x3)
+#define CCM_MBUS_CTRL_CLK_SRC_HOSC 0x0
+#define CCM_MBUS_CTRL_CLK_SRC_PLL6 0x1
+#define CCM_MBUS_CTRL_CLK_SRC_PLL5 0x2
+#define CCM_MBUS_CTRL_GATE (0x1 << 31)
 
 /* SDx_CLK values */
 #define SDx_CLK_GATE			(1 << 31)

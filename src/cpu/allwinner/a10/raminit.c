@@ -22,6 +22,7 @@
 #include <console/console.h>
 #include <delay.h>
 
+static struct a10_ccm *const ccm = (void *)A1X_CCM_BASE;
 static struct a1x_dramc *const dram = (void *)A1X_DRAMC_BASE;
 
 static void mctl_ddr3_reset(void)
@@ -162,7 +163,7 @@ static void mctl_configure_hostport(void)
 
 static void mctl_setup_dram_clock(u32 clk)
 {
-	/* setup DRAM PLL */
+    	/* setup DRAM PLL */
 	a1x_pll5_configure(clk / 24, 2, 2, 1);
 
 	/* FIXME: This bit is not documented for A10, and altering it doesn't
@@ -216,12 +217,35 @@ static void mctl_setup_dram_clock(u32 clk)
 	 * open DRAMC AHB & DLL register clock
 	 * close it first
 	 */
-	a1x_periph_clock_disable(A1X_CLKEN_SDRAM);
+        u32 reg32;
+        reg32 = CCM_MBUS_CTRL_GATE |
+#if CONFIG_MACH_SUN7I==1
+		  CCM_MBUS_CTRL_CLK_SRC(CCM_MBUS_CTRL_CLK_SRC_PLL6) |
+		  CCM_MBUS_CTRL_N(CCM_MBUS_CTRL_N_X(2)) |
+#else
+		  CCM_MBUS_CTRL_CLK_SRC(CCM_MBUS_CTRL_CLK_SRC_PLL5) |
+#endif
+		  CCM_MBUS_CTRL_M(CCM_MBUS_CTRL_M_X(2));
+	write32(reg32, &ccm->mbus_clk_cfg);
+
+	/*
+	 * open DRAMC AHB & DLL register clock
+	 * close it first
+	 */
+#if CONFIG_MACH_SUN5I==1 || CONFIG_MACH_SUN7I==1
+	clrbits_le32(&ccm->ahb_gate0, AHB_GATE_SDRAM | AHB_GATE_DLL);
+#else
+	clrbits_le32(&ccm->ahb_gate0, AHB_GATE_SDRAM);
+#endif
 
 	udelay(22);
 
 	/* then open it */
-	a1x_periph_clock_enable(A1X_CLKEN_SDRAM);
+#if CONFIG_MACH_SUN5I==1 || CONFIG_MACH_SUN7I==1
+	setbits_le32(&ccm->ahb_gate0, AHB_GATE_SDRAM | AHB_GATE_DLL);
+#else
+	setbits_le32(&ccm->ahb_gate0, AHB_GATE_SDRAM);
+#endif
 	udelay(22);
 }
 
@@ -230,6 +254,9 @@ static int dramc_scan_readpipe(void)
 	u32 reg32;
 
 	/* data training trigger */
+#if CONFIG_MACH_SUN7I==1
+	clrbits_le32(&dram->csr, DRAM_CSR_FAILED);
+#endif
 	setbits_le32(&dram->ccr, DRAM_CCR_DATA_TRAINING);
 
 	/* check whether data training process has completed */
@@ -354,6 +381,7 @@ static int dramc_scan_dll_para(void)
 	return dramc_scan_readpipe();
 }
 
+#if CONFIG_MACH_SUN4I==1
 static void dramc_set_autorefresh_cycle(u32 clk)
 {
 	u32 reg32;
@@ -377,6 +405,22 @@ static void dramc_set_autorefresh_cycle(u32 clk)
 		write32(0x0, &dram->drr);
 	}
 }
+#endif /* SUN4I */
+
+#if CONFIG_MACH_SUN5I==1 || CONFIG_MACH_SUN7I==1
+static void dramc_set_autorefresh_cycle(u32 clk)
+{
+	u32 reg32;
+	u32 tmp_val;
+	reg32 = 0x83;
+
+	tmp_val = (7987 * clk) >> 10;
+	tmp_val = tmp_val * 9 - 200;
+	reg32 |= tmp_val << 8;
+	reg32 |= 0x8 << 24;
+	write32(reg32, &dram->drr);
+}
+#endif /* SUN5I or SUN7I */
 
 unsigned long dramc_init(struct dram_para *para)
 {
