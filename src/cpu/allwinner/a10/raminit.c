@@ -391,17 +391,21 @@ unsigned long dramc_init(struct dram_para *para)
 	mctl_setup_dram_clock(para->clock);
 
 	/* reset external DRAM */
+#if CONFIG_MACH_SUN7I==0
 	mctl_ddr3_reset();
-
+#endif
+        
 	mctl_set_drive();
 
 	/* dram clock off */
 	a1x_gate_dram_clock_output();
 
+#if CONFIG_MACH_SUN4I==1
 	/* select dram controller 1 */
 	write32(DRAM_CSEL_MAGIC, &dram->csel);
+#endif
 
-	mctl_itm_disable();
+        mctl_itm_disable();
 	mctl_enable_dll0(para->tpr3);
 
 	/* configure external DRAM */
@@ -431,8 +435,35 @@ unsigned long dramc_init(struct dram_para *para)
 	reg32 |= DRAM_DCR_MODE(DRAM_DCR_MODE_INTERLEAVE);
 	write32(reg32, &dram->dcr);
 
+#if CONFIG_MACH_SUN7I==1
+	setbits_le32(&dram->zqcr1, (0x1 << 24) | (0x1 << 1));
+	if (para->tpr4 & 0x2)
+		clrsetbits_le32(&dram->zqcr1, (0x1 << 24), (0x1 << 1));
+	a1x_ungate_dram_clock_output();
+#endif
+
+#if (CONFIG_MACH_SUN5I==1 || CONFIG_MACH_SUN7I==1)
+	/* set odt impendance divide ratio */
+	reg32 = ((para->zq) >> 8) & 0xfffff;
+	reg32 |= ((para->zq) & 0xff) << 20;
+	reg32 |= (para->zq) & 0xf0000000;
+	write32(reg32, &dram->zqcr0);
+#endif
+
+#if CONFIG_MACH_SUN7I==1
+	/* Set CKE Delay to about 1ms */
+	setbits_le32(&dram->idcr, 0x1ffff);
+#endif
+
+#if CONFIG_MACH_SUN7I==1
+	if ((readl(&dram->ppwrsctl) & 0x1) != 0x1)
+		mctl_ddr3_reset();
+	else
+		setbits_le32(&dram->mcr, DRAM_MCR_RESET);
+#else
 	/* dram clock on */
 	a1x_ungate_dram_clock_output();
+#endif
 
 	udelay(1);
 
@@ -440,18 +471,22 @@ unsigned long dramc_init(struct dram_para *para)
 
 	mctl_enable_dllx(para->tpr3);
 
+#if CONFIG_MACH_SUN4I==1
 	/* set odt impendance divide ratio */
 	reg32 = ((para->zq) >> 8) & 0xfffff;
 	reg32 |= ((para->zq) & 0xff) << 20;
 	reg32 |= (para->zq) & 0xf0000000;
 	write32(reg32, &dram->zqcr0);
+#endif
 
+#if CONFIG_MACH_SUN4I==1
 	/* set I/O configure register */
 	reg32 = 0x00cc0000;
 	reg32 |= (para->odt_en) & 0x3;
 	reg32 |= ((para->odt_en) & 0x3) << 30;
 	write32(reg32, &dram->iocr);
-
+#endif
+        
 	/* set refresh period */
 	dramc_set_autorefresh_cycle(para->clock);
 
@@ -462,6 +497,9 @@ unsigned long dramc_init(struct dram_para *para)
 
 	if (para->type == DRAM_MEMORY_TYPE_DDR3) {
 		reg32 = DRAM_MR_BURST_LENGTH(0x0);
+#if (CONFIG_MACH_SUN5I==1 || CONFIG_MACH_SUN7I==1)
+		reg32 |= DRAM_MR_POWER_DOWN;
+#endif
 		reg32 |= DRAM_MR_CAS_LAT(para->cas - 4);
 		reg32 |= DRAM_MR_WRITE_RECOVERY(0x5);
 	} else if (para->type == DRAM_MEMORY_TYPE_DDR2) {
@@ -478,9 +516,52 @@ unsigned long dramc_init(struct dram_para *para)
 	/* set DQS window mode */
 	clrsetbits_le32(&dram->ccr, DRAM_CCR_DQS_DRIFT_COMP, DRAM_CCR_DQS_GATE);
 
+#if CONFIG_MACH_SUN7I==1
+	/* Command rate timing mode 2T & 1T */
+	if (para->tpr4 & 0x1)
+		setbits_le32(&dram->ccr, DRAM_CCR_COMMAND_RATE_1T);
+#endif
 	/* reset external DRAM */
 	setbits_le32(&dram->ccr, DRAM_CCR_INIT);
 	while (read32(&dram->ccr) & DRAM_CCR_INIT) ;
+
+#if CONFIG_MACH_SUN7I==1
+	/* setup zq calibration manual */
+	reg32 = read32(&dram->ppwrsctl);
+	if ((reg32 & 0x1) == 1) {
+		/* super_standby_flag = 1 */
+
+		reg32 = read32((void*)0x01c20c00 + 0x120); /* rtc */
+		reg32 &= 0x000fffff;
+		reg32 |= 0x17b00000;
+		write32(reg32, &dram->zqcr0);
+
+		/* exit self-refresh state */
+		clrsetbits_le32(&dram->dcr, 0x1f << 27, 0x12 << 27);
+		/* check whether command has been executed */
+		while (read32(&dram->dcr) & (0x1 << 31));
+
+		udelay(2);
+
+		/* dram pad hold off */
+		setbits_le32(&dram->ppwrsctl, 0x16510000);
+
+		while (read32(&dram->ppwrsctl) & 0x1);
+
+		/* exit self-refresh state */
+		clrsetbits_le32(&dram->dcr, 0x1f << 27, 0x12 << 27);
+
+		/* check whether command has been executed */
+		while (read32(&dram->dcr) & (0x1 << 31));
+		udelay(2);;
+
+		/* issue a refresh command */
+		clrsetbits_le32(&dram->dcr, 0x1f << 27, 0x13 << 27);
+		while (read32(&dram->dcr) & (0x1 << 31));
+
+		udelay(2);
+	}
+#endif
 
 	/* scan read pipe value */
 	mctl_itm_enable();

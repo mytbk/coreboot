@@ -6,6 +6,7 @@
  */
 
 #include "clock.h"
+#include "dramc.h"
 
 #include <arch/io.h>
 #include <console/console.h>
@@ -14,6 +15,7 @@
 #include <stdlib.h>
 
 static struct a10_ccm *const ccm = (void *)A1X_CCM_BASE;
+static struct a1x_dramc *const dram = (void*)A1X_DRAMC_BASE;
 
 /**
  * \brief Enable the clock source for the peripheral
@@ -112,7 +114,12 @@ void a1x_pll5_enable_dram_clock_output(void)
  */
 void a1x_ungate_dram_clock_output(void)
 {
+#if CONFIG_MACH_SUN4I==1
 	setbits_le32(&ccm->dram_clk_cfg, DRAM_CTRL_DCLK_OUT);
+#endif
+#if (CONFIG_MACH_SUN5I==1 || CONFIG_MACH_SUN7I==1)
+        setbits_le32(&dram->mcr, DRAM_MCR_DCLK_OUT);
+#endif 
 }
 
 /**
@@ -123,7 +130,12 @@ void a1x_ungate_dram_clock_output(void)
  */
 void a1x_gate_dram_clock_output(void)
 {
+#if CONFIG_MACH_SUN4I==1
 	clrbits_le32(&ccm->dram_clk_cfg, DRAM_CTRL_DCLK_OUT);
+#endif
+#if (CONFIG_MACH_SUN5I==1 || CONFIG_MACH_SUN7I==1)
+        clrbits_le32(&dram->mcr, DRAM_MCR_DCLK_OUT);
+#endif
 }
 
 /*
