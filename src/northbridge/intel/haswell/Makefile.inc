@@ -30,11 +30,9 @@ romstage-y += ../../../arch/x86/walkcbfs.S
 
 smm-$(CONFIG_HAVE_SMI_HANDLER) += finalize.c
 
-# We don't ship that, but booting without it is bound to fail
-cbfs-files-$(CONFIG_HAVE_MRC) += mrc.bin
-mrc.bin-file := $(call strip_quotes,$(CONFIG_MRC_FILE))
-mrc.bin-position := 0xfffa0000
-mrc.bin-type := mrc
+romstage-libs += $(obj)/mrc.o
+$(obj)/mrc.o: $(src)/northbridge/intel/haswell/mrc.asm
+	nasm -f elf32 -o $@ $<
 
 postcar-y += ram_calc.c
 

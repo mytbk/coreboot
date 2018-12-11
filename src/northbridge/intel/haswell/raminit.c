@@ -112,6 +112,7 @@ static void report_memory_config(void)
 	}
 }
 
+int __attribute((regparm(1))) mrc_entry(struct pei_data *pei_data);
 /**
  * Find PEI executable in coreboot filesystem and execute it.
  *
@@ -119,10 +120,6 @@ static void report_memory_config(void)
  */
 void sdram_initialize(struct pei_data *pei_data)
 {
-	unsigned long entry;
-	uint32_t type = CBFS_TYPE_MRC;
-	struct cbfsf f;
-
 	printk(BIOS_DEBUG, "Starting UEFI PEI System Agent\n");
 
 	/*
@@ -149,15 +146,10 @@ void sdram_initialize(struct pei_data *pei_data)
 	 * a fixed offset in the flash and can therefore only reside in the
 	 * COREBOOT fmap region
 	 */
-	if (cbfs_locate_file_in_region(&f, "COREBOOT", "mrc.bin", &type) < 0)
-		die("mrc.bin not found!");
 	/* We don't care about leaking the mapping */
-	entry = (unsigned long)rdev_mmap_full(&f.data);
-	if (entry) {
-		int rv;
-		asm volatile (
-			      "call *%%ecx\n\t"
-			      :"=a" (rv) : "c" (entry), "a" (pei_data));
+	if (1) {
+		printk(BIOS_DEBUG, "calling mrc_entry.\n");
+		int rv = mrc_entry(pei_data);
 		if (rv) {
 			switch (rv) {
 			case -1:
