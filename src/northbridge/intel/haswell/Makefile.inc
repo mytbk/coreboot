@@ -35,6 +35,8 @@ romstage-libs += $(obj)/mrc.o
 $(obj)/mrc.o: $(src)/northbridge/intel/haswell/mrc.asm
 	nasm -f elf32 -o $@ $<
 
+romstage-y += mrc_utils.c
+
 postcar-y += ram_calc.c
 
 endif
