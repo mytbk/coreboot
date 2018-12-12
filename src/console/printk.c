@@ -78,7 +78,6 @@ int do_printk(int msg_level, const char *fmt, ...)
 	return i;
 }
 
-int mrc_printk(const char *fmt, ...);
 int mrc_printk(const char *fmt, ...)
 {
 	int i;
