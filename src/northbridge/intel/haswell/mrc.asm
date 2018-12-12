@@ -549,9 +549,9 @@ push ebx
 lea esp, [esp - 0x1c]
 mov dword [ebp - 0x20], edx
 mov word [ebp - 0x1a], cx
-call fcn_fffc908a  ; call 0xfffc908a
+call haswell_family_model
 mov ebx, eax
-call fcn_fffc9077  ; call 0xfffc9077
+call haswell_stepping
 dec eax
 sete dl
 cmp ebx, 0x306c0
@@ -674,7 +674,7 @@ mov eax, dword [0xf0000060]
 and eax, 0xfc000000
 mov eax, dword [eax + 0x48]
 mov dword [ebp - 0x6c], eax
-call fcn_fffc908a  ; call 0xfffc908a
+call haswell_family_model
 mov dword [ebp - 0x70], eax
 mov eax, dword [0xf0000060]
 mov edx, dword [0xf0000060]
@@ -1698,8 +1698,8 @@ fcn_fffa1227:  ; not directly referenced
 push ebp
 mov ebp, esp
 lea esp, [esp - 8]
-call fcn_fffc9077  ; call 0xfffc9077
-call fcn_fffc908a  ; call 0xfffc908a
+call haswell_stepping
+call haswell_family_model
 mov edx, 4
 mov eax, ref_fffcd4a4  ; mov eax, 0xfffcd4a4
 call fcn_fffa11b3  ; call 0xfffa11b3
@@ -3932,7 +3932,7 @@ mov dword [esp], ref_fffcc635  ; mov dword [esp], 0xfffcc635
 call mrc_printk  ; call 0xfffa1253
 mov edx, dword [0xff7d7538]
 mov dword [ebp - 0x640], edx
-call fcn_fffc908a  ; call 0xfffc908a
+call haswell_family_model
 mov ecx, dword [ebp - 0x640]
 lea edx, [ebp - 0x628]
 mov dword [ebp - 0x648], eax
@@ -3945,7 +3945,7 @@ push ecx
 call dword [eax + 0x20]  ; ucall
 mov ebx, dword [ebp - 0x628]
 add esp, 0x20
-call fcn_fffc908a  ; call 0xfffc908a
+call haswell_family_model
 mov ecx, eax
 mov esi, dword [0xf0000060]
 and esi, 0xfc000000
@@ -4057,9 +4057,9 @@ mov byte [eax + 0x21], dl
 
 loc_fffa3fd4:
 mov ebx, dword [ebp - 0x628]
-call fcn_fffc908a  ; call 0xfffc908a
+call haswell_family_model
 mov esi, eax
-call fcn_fffc9077  ; call 0xfffc9077
+call haswell_stepping
 dec eax
 sete dl
 cmp esi, 0x306c0
@@ -4088,7 +4088,7 @@ or dl, al
 je loc_fffa4d64  ; je 0xfffa4d64
 mov eax, dword [ebp - 0x628]
 mov dword [ebp - 0x660], eax
-call fcn_fffc9077  ; call 0xfffc9077
+call haswell_stepping
 mov eax, dword [0xf0000060]
 sub esp, 0xc
 and eax, 0xfc000000
@@ -4117,9 +4117,9 @@ mov ebx, esi
 and eax, 0xfffffffe
 and ebx, 0xfffffffe
 mov dword [ebp - 0x648], eax
-call fcn_fffc908a  ; call 0xfffc908a
+call haswell_family_model
 mov edi, eax
-call fcn_fffc9077  ; call 0xfffc9077
+call haswell_stepping
 mov edx, 0xa00
 
 loc_fffa40d3:
@@ -4896,7 +4896,7 @@ and eax, 0xfc000000
 mov edx, dword [eax + 0x6c]
 mov eax, dword [eax + 0x68]
 mov edi, eax
-call fcn_fffc908a  ; call 0xfffc908a
+call haswell_family_model
 mov edx, dword [ebp - 0x640]
 sub esp, 0xc
 mov ebx, eax
@@ -42664,9 +42664,9 @@ cmp byte [ebp - 0x50aa], 1
 cmove ebx, eax
 
 loc_fffc1e18:
-call fcn_fffc908a  ; call 0xfffc908a
+call haswell_family_model
 mov esi, eax
-call fcn_fffc9077  ; call 0xfffc9077
+call haswell_stepping
 cmp esi, 0x40650
 jne short loc_fffc1e38  ; jne 0xfffc1e38
 mov dword [ebp - 0x4035], 0x40650
@@ -52260,7 +52260,7 @@ pop edi
 pop ebp
 ret
 
-fcn_fffc9077:
+haswell_stepping:
 push ebp
 xor ecx, ecx
 mov eax, 1
@@ -52272,7 +52272,7 @@ pop ebx
 pop ebp
 ret
 
-fcn_fffc908a:
+haswell_family_model:
 push ebp
 xor ecx, ecx
 mov eax, 1
