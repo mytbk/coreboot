@@ -98,6 +98,7 @@ static inline void console_time_report(void) {}
 
 int do_printk(int msg_level, const char *fmt, ...)
 	__attribute__((format(printf, 2, 3)));
+int mrc_printk(const char *fmt, ...);
 
 int do_vprintk(int msg_level, const char *fmt, va_list args);
 

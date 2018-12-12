@@ -126,6 +126,19 @@ int do_vprintk(int msg_level, const char *fmt, va_list args)
 	return i;
 }
 
+int mrc_printk(const char *fmt, ...)
+{
+	int i;
+	va_list args;
+
+	va_start(args, fmt);
+	i = vtxprintf(wrap_putchar, fmt, args, NULL);
+	va_end(args);
+	console_tx_flush();
+
+	return i;
+}
+
 int do_printk(int msg_level, const char *fmt, ...)
 {
 	va_list args;
