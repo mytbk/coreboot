@@ -4,7 +4,6 @@ bits 32
 
 global mrc_entry
 global do_raminit
-global heap_check
 
 extern mrc_printk
 extern mrc_setmem
@@ -14,6 +13,7 @@ extern mrc_fillword
 extern mrc_zeromem
 extern mrc_highest_bit
 extern mrc_main
+extern mrc_alloc
 
 mrc_entry:
 mov ecx, esp
@@ -2485,57 +2485,6 @@ pop edi
 pop ebp
 ret
 
-heap_check:
-push ebp
-lea edx, [eax + 3]
-and edx, 0xfffffffc
-mov ebp, esp
-lea esp, [esp - 8]
-mov eax, dword [0xff7d0000]
-test eax, eax
-jne short loc_fffa2959  ; jne 0xfffa2959
-mov dword [0xff7d0004], 0xff7d0008
-jmp short loc_fffa297f  ; jmp 0xfffa297f
-
-loc_fffa2959:
-mov ecx, dword [0xff7d0004]
-cmp dword [ecx + eax], 0x900ddea1
-je short loc_fffa297f  ; je 0xfffa297f
-push edx
-push 0x35
-push ref_fffc9e88  ; push 0xfffc9e88
-push ref_fffcc48b  ; push 0xfffcc48b
-call mrc_printk  ; call 0xfffa1253
-add esp, 0x10
-
-loc_fffa297d:
-jmp short loc_fffa297d  ; jmp 0xfffa297d
-
-loc_fffa297f:
-lea ecx, [edx + eax]
-cmp ecx, 0x752c
-ja short loc_fffa29a1  ; ja 0xfffa29a1
-mov edx, dword [0xff7d0004]
-mov dword [0xff7d0000], ecx
-add eax, edx
-mov dword [edx + ecx], 0x900ddea1
-jmp short loc_fffa29b8  ; jmp 0xfffa29b8
-
-loc_fffa29a1:
-push edx
-push 0x43
-push ref_fffc9e88  ; push 0xfffc9e88
-push ref_fffcc4ab  ; push 0xfffcc4ab
-call mrc_printk  ; call 0xfffa1253
-add esp, 0x10
-
-loc_fffa29b6:
-jmp short loc_fffa29b6  ; jmp 0xfffa29b6
-
-loc_fffa29b8:
-leave
-ret
-
 fcn_fffa29ba:  ; not directly referenced
 push ebp
 mov ebp, esp
@@ -2553,7 +2502,7 @@ cmp dword [ebx - 4], 0xfeadb00b
 jne short loc_fffa29f2  ; jne 0xfffa29f2
 add eax, 4
 mov dword [ebp - 0x1c], edx
-call heap_check  ; call 0xfffa2937
+call mrc_alloc
 test eax, eax
 mov edx, dword [ebp - 0x1c]
 jne short loc_fffa29f4  ; jne 0xfffa29f4
@@ -3761,14 +3710,14 @@ mov dword [edx + 0x3310], 0x10
 mov eax, ebx
 call fcn_fffc7c9d  ; call 0xfffc7c9d
 mov eax, 0xc
-call heap_check  ; call 0xfffa2937
+call mrc_alloc
 test eax, eax
 mov esi, eax
 je short loc_fffa3d32  ; je 0xfffa3d32
 mov edx, 0xc
 call mrc_zeromem
 mov eax, 0x28
-call heap_check  ; call 0xfffa2937
+call mrc_alloc
 test eax, eax
 mov edi, eax
 je short loc_fffa3d32  ; je 0xfffa3d32
@@ -3817,7 +3766,7 @@ mov dword [esp], ref_fffcc5e7  ; mov dword [esp], 0xfffcc5e7
 call mrc_printk  ; call 0xfffa1253
 mov eax, 0x10f
 mov esi, dword [0xff7d7538]
-call heap_check  ; call 0xfffa2937
+call mrc_alloc
 add esp, 0x10
 test eax, eax
 mov ebx, eax
@@ -53484,9 +53433,6 @@ dd fcn_fffc5b3c
 dd fcn_fffc5b27
 dd fcn_fffc5b14
 
-ref_fffc9e88:
-db 'GlueAllocatePool',0x00,0x00,0x00,0x00
-
 ref_fffc9eec:
 db 'install_ppi',0x00
 
@@ -56082,12 +56028,6 @@ dd loc_fffc85f0
 
 ref_fffcc46a:
 db 'Copy SPD for Channel %d Dimm %d',0x0a,0x00
-
-ref_fffcc48b:
-db '%s:%d pool cookie corrupted...',0x0a,0x00
-
-ref_fffcc4ab:
-db '%s:%d failed to allocate %d bytes...',0x0a,0x00
 
 ref_fffcc4d1:
 db '{%08x-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x}',0x0a,0x00
