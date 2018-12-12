@@ -5,6 +5,12 @@ bits 32
 global mrc_entry
 
 extern mrc_printk
+extern mrc_setmem
+extern mrc_memcpy
+extern memcpy ; pass parameters by stack
+extern mrc_fillword
+extern mrc_zeromem
+extern mrc_highest_bit
 
 mrc_entry:
 mov ecx, esp
@@ -1558,75 +1564,6 @@ pop esi
 pop ebp
 ret
 
-fcn_fffa115e:
-push ebp
-mov ebp, esp
-push esi
-mov esi, ecx
-push ebx
-xor ebx, ebx
-jmp short loc_fffa1170  ; jmp 0xfffa1170
-
-loc_fffa1169:
-mov cl, byte [edx + ebx]
-mov byte [eax + ebx], cl
-inc ebx
-
-loc_fffa1170:
-cmp ebx, esi
-jne short loc_fffa1169  ; jne 0xfffa1169
-pop ebx
-pop esi
-pop ebp
-ret
-
-fcn_fffa1178:  ; not directly referenced
-push ebp
-mov ebp, esp
-mov ecx, dword [ebp + 0x10]
-mov edx, dword [ebp + 0xc]
-mov eax, dword [ebp + 8]
-pop ebp
-jmp near fcn_fffa115e  ; jmp 0xfffa115e
-
-fcn_fffa118a:
-push ebp
-test edx, edx
-mov ebp, esp
-jne short loc_fffa1197  ; jne 0xfffa1197
-jmp short loc_fffa119d  ; jmp 0xfffa119d
-
-loc_fffa1193:
-mov byte [eax + edx], 0
-
-loc_fffa1197:
-dec edx
-cmp edx, 0xffffffffffffffff
-jne short loc_fffa1193  ; jne 0xfffa1193
-
-loc_fffa119d:
-pop ebp
-ret
-
-fcn_fffa119f:  ; not directly referenced
-push ebp
-test edx, edx
-mov ebp, esp
-jne short loc_fffa11ab  ; jne 0xfffa11ab
-jmp short loc_fffa11b1  ; jmp 0xfffa11b1
-
-loc_fffa11a8:  ; not directly referenced
-mov byte [eax + edx], cl
-
-loc_fffa11ab:  ; not directly referenced
-dec edx
-cmp edx, 0xffffffffffffffff
-jne short loc_fffa11a8  ; jne 0xfffa11a8
-
-loc_fffa11b1:  ; not directly referenced
-pop ebp
-ret
-
 fcn_fffa11b3:
 push ebp
 mov ebp, esp
@@ -2477,7 +2414,7 @@ mov edx, dword [ebp - 0x30]
 mov ecx, 0x100
 lea eax, [edx + 0x40]
 mov edx, dword [ebp - 0x2c]
-call fcn_fffa115e  ; call 0xfffa115e
+call mrc_memcpy
 mov edx, dword [ebp - 0x20]
 add esp, 0x10
 mov byte [edx + 0x14e], 0
@@ -3450,7 +3387,7 @@ mov dword [ebp - 0x240], fcn_fffa29ba  ; mov dword [ebp - 0x240], 0xfffa29ba
 mov dword [ebp - 0x1dc], eax
 mov dword [ebp - 0x230], fcn_fffa04e7  ; mov dword [ebp - 0x230], 0xfffa04e7
 lea eax, [ebp - 0x565]
-mov dword [ebp - 0x224], fcn_fffa1178  ; mov dword [ebp - 0x224], 0xfffa1178
+mov dword [ebp - 0x224], memcpy  ; mov dword [ebp - 0x224], 0xfffa1178
 mov dword [ebp - 0x1d0], eax
 mov dword [ebp - 0x21c], fcn_fffa04ee  ; mov dword [ebp - 0x21c], 0xfffa04ee
 lea eax, [ebp - 0x585]
@@ -3826,18 +3763,18 @@ test eax, eax
 mov esi, eax
 je short loc_fffa3d32  ; je 0xfffa3d32
 mov edx, 0xc
-call fcn_fffa118a  ; call 0xfffa118a
+call mrc_zeromem
 mov eax, 0x28
 call fcn_fffa2937  ; call 0xfffa2937
 test eax, eax
 mov edi, eax
 je short loc_fffa3d32  ; je 0xfffa3d32
 mov edx, 0x28
-call fcn_fffa118a  ; call 0xfffa118a
+call mrc_zeromem
 mov ecx, 0x28
 mov edx, ref_fffcc8dc  ; mov edx, 0xfffcc8dc
 mov eax, edi
-call fcn_fffa115e  ; call 0xfffa115e
+call mrc_memcpy
 mov dword [esi + 8], edi
 mov dword [esi], 0x80000010
 mov dword [esi + 4], ref_fffcd534  ; mov dword [esi + 4], 0xfffcd534
@@ -4005,15 +3942,15 @@ mov edx, 8
 lea edi, [eax + 8]
 add eax, 0x18
 rep movsd  ; rep movsd dword es:[edi], dword ptr [esi]
-call fcn_fffa118a  ; call 0xfffa118a
+call mrc_zeromem
 mov eax, dword [ebp - 0x620]
 mov edx, 8
 add eax, 0x20
-call fcn_fffa118a  ; call 0xfffa118a
+call mrc_zeromem
 mov eax, dword [ebp - 0x620]
 mov edx, 0x1e
 add eax, 0x29
-call fcn_fffa118a  ; call 0xfffa118a
+call mrc_zeromem
 mov eax, dword [ebp - 0x620]
 add esp, 0x10
 mov byte [eax + 0x28], 0
@@ -4927,10 +4864,10 @@ jmp near loc_fffa533a  ; jmp 0xfffa533a
 loc_fffa4e1b:
 mov edx, 7
 lea eax, [ebp - 0x5f6]
-call fcn_fffa118a  ; call 0xfffa118a
+call mrc_zeromem
 mov edx, 7
 lea eax, [ebp - 0x5ef]
-call fcn_fffa118a  ; call 0xfffa118a
+call mrc_zeromem
 mov eax, dword [0xff7d7538]
 sub esp, 0xc
 lea ecx, [ebp - 0x620]
@@ -4960,14 +4897,14 @@ ja loc_fffa532b  ; ja 0xfffa532b
 loc_fffa4e85:
 mov edx, 5
 lea eax, [ebp - 0x5fb]
-call fcn_fffa118a  ; call 0xfffa118a
+call mrc_zeromem
 mov edx, 8
 lea eax, [ebp - 0x5b4]
 mov byte [ebp - 0x5f7], bl
-call fcn_fffa118a  ; call 0xfffa118a
+call mrc_zeromem
 mov edx, 8
 lea eax, [ebp - 0x5b4]
-call fcn_fffa118a  ; call 0xfffa118a
+call mrc_zeromem
 mov al, byte [ebp - 0x5f7]
 sub esp, 0xc
 mov byte [ebp - 0x5af], al
@@ -5011,14 +4948,14 @@ je loc_fffa532b  ; je 0xfffa532b
 loc_fffa4f70:
 mov edx, 7
 lea eax, [ebp - 0x5f6]
-call fcn_fffa118a  ; call 0xfffa118a
+call mrc_zeromem
 mov edx, 8
 lea eax, [ebp - 0x5b4]
 mov byte [ebp - 0x5f0], bl
-call fcn_fffa118a  ; call 0xfffa118a
+call mrc_zeromem
 mov edx, 8
 lea eax, [ebp - 0x5b4]
-call fcn_fffa118a  ; call 0xfffa118a
+call mrc_zeromem
 mov al, byte [ebp - 0x5f0]
 sub esp, 0xc
 mov byte [ebp - 0x5af], al
@@ -5056,7 +4993,7 @@ cmp dword [ebp - 0x624], 0
 jne loc_fffa532b  ; jne 0xfffa532b
 mov edx, 7
 lea eax, [ebp - 0x5ef]
-call fcn_fffa118a  ; call 0xfffa118a
+call mrc_zeromem
 cmp bl, 1
 mov byte [ebp - 0x5e9], bl
 jne loc_fffa520e  ; jne 0xfffa520e
@@ -5100,7 +5037,7 @@ mov edx, 8
 lea eax, [ebp - 0x5c4]
 mov byte [ebp - 0x668], cl
 movzx esi, word [ebp - 0x5ed]
-call fcn_fffa118a  ; call 0xfffa118a
+call mrc_zeromem
 mov cl, byte [ebp - 0x668]
 mov eax, esi
 mov byte [ebp - 0x5b4], cl
@@ -5136,7 +5073,7 @@ mov ecx, 4
 mov word [ebp - 0x5b2], ax
 lea edx, [ebp - 0x5b4]
 lea eax, [ebp - 0x5c4]
-call fcn_fffa115e  ; call 0xfffa115e
+call mrc_memcpy
 mov dl, byte [ebp - 0x65a]
 mov eax, 2
 mov byte [ebp - 0x5bf], dl
@@ -5190,7 +5127,7 @@ lea edx, [ebp - 0x5bc]
 lea eax, [ebp - 0x5e8]
 mov dword [ebp - 0x5b8], esi
 or byte [ebp - 0x5b5], 0x80
-call fcn_fffa115e  ; call 0xfffa115e
+call mrc_memcpy
 mov eax, dword [ebp - 0x5e8]
 mov edx, dword [ebp - 0x5e4]
 mov ecx, 0x150
@@ -5204,7 +5141,7 @@ mov dword [ebp - 0x5e8], eax
 mov dword [ebp - 0x5e4], edx
 lea eax, [ebp - 0x5bc]
 lea edx, [ebp - 0x5e8]
-call fcn_fffa115e  ; call 0xfffa115e
+call mrc_memcpy
 mov eax, 0xa
 call fcn_fffc5e98  ; call 0xfffc5e98
 mov edx, dword [ebp - 0x648]
@@ -5214,7 +5151,7 @@ mov dword [ebp - 0x5e4], ecx
 lea edx, [ebp - 0x5e8]
 mov ecx, 8
 lea eax, [ebp - 0x5b4]
-call fcn_fffa115e  ; call 0xfffa115e
+call mrc_memcpy
 mov ecx, dword [ebp - 0x5b0]
 cmp dword [ebp - 0x5b8], ecx
 je short loc_fffa531e  ; je 0xfffa531e
@@ -5576,16 +5513,16 @@ xor ecx, ecx
 mov edx, 2
 lea eax, [ebp - 0x5e]
 mov dword [ebp - 0xd4], esi
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 lea edx, [ebp - 0x3b]
 mov ecx, 5
 lea eax, [ebp - 0x36]
 mov esi, 0xcf8
-call fcn_fffa115e  ; call 0xfffa115e
+call mrc_memcpy
 lea edx, [ebp - 0x4d]
 mov ecx, 4
 lea eax, [ebp - 0x49]
-call fcn_fffa115e  ; call 0xfffa115e
+call mrc_memcpy
 lea edx, [ebx + 0x2974]
 mov eax, 0x80000000
 mov dword [ebp - 0xa4], edx
@@ -7811,7 +7748,7 @@ je short loc_fffa7622  ; je 0xfffa7622
 mov edi, dword [ebp - 0x24]
 cmp dword [ebp - 0x28], edi
 jne short loc_fffa761b  ; jne 0xfffa761b
-call fcn_fffb21bf  ; call 0xfffb21bf
+call mrc_highest_bit
 mov edi, dword [ebp - 0x70]
 sub eax, 9
 or edi, 0x40
@@ -9358,31 +9295,31 @@ mov dword [ebp - 0x4c], ref_fffcb73c  ; mov dword [ebp - 0x4c], 0xfffcb73c
 mov dword [ebp - 0x48], ref_fffcb78c  ; mov dword [ebp - 0x48], 0xfffcb78c
 mov dword [ebp - 0x44], ref_fffcb7ec  ; mov dword [ebp - 0x44], 0xfffcb7ec
 mov dword [ebp - 0xc4], 0
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 xor ecx, ecx
 mov edx, 8
 lea eax, [ebp - 0x38]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 xor ecx, ecx
 mov edx, 8
 lea eax, [ebp - 0x30]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 xor ecx, ecx
 mov edx, 8
 lea eax, [ebp - 0x28]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 xor ecx, ecx
 mov edx, 8
 lea eax, [ebp - 0x20]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 mov ecx, 0xff
 mov edx, 4
 lea eax, [ebp - 0x58]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 xor ecx, ecx
 mov edx, 4
 lea eax, [ebp - 0x54]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 cmp dword [edi + 0x1749], 2
 jne short loc_fffa8917  ; jne 0xfffa8917
 mov word [ebp - 0x5c], 8
@@ -10018,7 +9955,7 @@ je short loc_fffa91ad  ; je 0xfffa91ad
 pop ebp
 mov ecx, 4
 mov edx, ref_fffcb7f8  ; mov edx, 0xfffcb7f8
-jmp near fcn_fffa115e  ; jmp 0xfffa115e
+jmp mrc_memcpy
 
 loc_fffa91ad:
 pop ebp
@@ -10340,7 +10277,7 @@ mov dword [ebp - 0x1f9], 9
 mov byte [ebp - 0x1f5], 0
 mov dword [ebp - 0x248], ebx
 movzx edi, byte [esi + 0x176b]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 mov eax, dword [esi + 0x1005]
 cmp eax, 0x40650
 je short loc_fffa95ba  ; je 0xfffa95ba
@@ -11238,7 +11175,7 @@ mov word [ebp - 0x208], 0x1000
 mov word [ebp - 0x206], 0x1000
 mov word [ebp - 0x204], 0x1000
 mov word [ebp - 0x202], 0x1000
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 mov edi, dword [ebp - 0x250]
 mov eax, 2
 cmp dword [edi + 0x297c], 2
@@ -11551,7 +11488,7 @@ inc edi
 lea edx, [esi + eax + 0xa]
 lea eax, [ecx + eax + 8]
 mov ecx, 0x2a
-call fcn_fffa115e  ; call 0xfffa115e
+call mrc_memcpy
 cmp edi, 4
 jne short loc_fffaa747  ; jne 0xfffaa747
 xor di, di
@@ -11574,13 +11511,13 @@ mov edx, dword [ebp - 0x20]
 mov ecx, 0xfb
 lea eax, [edx + eax + 0x1151]
 mov edx, dword [ebp - 0x3c]
-call fcn_fffa115e  ; call 0xfffa115e
+call mrc_memcpy
 imul eax, edi, 0x1f
 mov ecx, 0x1f
 lea edx, [esi + eax + 0x2a8]
 mov eax, dword [ebp - 0x34]
 add eax, 0x81
-call fcn_fffa115e  ; call 0xfffa115e
+call mrc_memcpy
 
 loc_fffaa7ca:  ; not directly referenced
 inc edi
@@ -11771,7 +11708,7 @@ mov byte [ebp - 0x49], 0
 mov dword [ebp - 0x48], 0
 mov byte [ebp - 0x56], 0
 mov byte [ebp - 0x55], 0
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 cmp byte [ebx + 0x1740], 1
 je short loc_fffaaa2c  ; je 0xfffaaa2c
 cmp byte [ebx + 0x16b8], 1
@@ -12109,7 +12046,7 @@ loc_fffaae30:  ; not directly referenced
 xor ecx, ecx
 mov edx, 0x2c
 lea eax, [ebp - 0x44]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 cmp byte [ebx + 0x1740], 1
 jne short loc_fffaae92  ; jne 0xfffaae92
 cmp dword [ebx + 0x297c], 2
@@ -12311,7 +12248,7 @@ add edx, 0x4808
 imul eax, dword [ebp - 0x74]
 mov dword [ebp - 0x90], edx
 dec eax
-call fcn_fffb21bf  ; call 0xfffb21bf
+call mrc_highest_bit
 mov edx, dword [ebp - 0x90]
 mov ecx, dword [ebx + 0x103f]
 add ecx, edx
@@ -12517,28 +12454,28 @@ imul eax, dword [ebp - 0x20], 0x2a
 mov ecx, 0x2a
 lea edx, [esi + eax + 8]
 lea eax, [edi + eax + 0xa]
-call fcn_fffa115e  ; call 0xfffa115e
+call mrc_memcpy
 inc dword [ebp - 0x20]
 cmp dword [ebp - 0x20], 4
 jne short loc_fffab320  ; jne 0xfffab320
 lea edx, [esi + 0x1151]
 mov ecx, 0xfb
 lea eax, [edi + 0xb2]
-call fcn_fffa115e  ; call 0xfffa115e
+call mrc_memcpy
 mov edx, dword [ebp - 0x24]
 mov ecx, 0x1f
 add edx, 0xa1
 lea eax, [edi + 0x2a8]
-call fcn_fffa115e  ; call 0xfffa115e
+call mrc_memcpy
 lea edx, [esi + 0x124c]
 mov ecx, 0xfb
 lea eax, [edi + 0x1ad]
-call fcn_fffa115e  ; call 0xfffa115e
+call mrc_memcpy
 mov edx, dword [ebp - 0x24]
 lea eax, [edi + 0x2c7]
 add edx, 0x1f0
 mov ecx, 0x1f
-call fcn_fffa115e  ; call 0xfffa115e
+call mrc_memcpy
 inc dword [ebp - 0x1c]
 cmp dword [ebp - 0x1c], 2
 jne loc_fffab2cd  ; jne 0xfffab2cd
@@ -12625,7 +12562,7 @@ push esi
 lea eax, [ebp - 0x218]
 push ebx
 lea esp, [esp - 0x39c]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 mov ebx, dword [ebp + 8]
 add ebx, 0x16be
 mov dword [ebp - 0x380], ebx
@@ -12648,14 +12585,14 @@ mov edx, 0x10
 rep movsd  ; rep movsd dword es:[edi], dword ptr [esi]
 lea eax, [ebp - 0x2a8]
 lea ebx, [ebp - 0x2a8]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 xor ecx, ecx
 mov edx, 0xc
 lea eax, [ebp - 0x2c8]
 mov byte [ebp - 0x2a7], 1
 lea esi, [ebp - 0x298]
 mov edi, 1
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 jmp short loc_fffab5b9  ; jmp 0xfffab5b9
 
 loc_fffab57e:  ; not directly referenced
@@ -12736,7 +12673,7 @@ mov dword [ebp - 0x358], eax
 imul eax, edi, 0x2fa
 mov esi, dword [ebp - 0x344]
 lea eax, [esi + eax + 0x2b3]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 lea eax, [ebx - 0x3010]
 mov dword [ebp - 0x33c], eax
 xor eax, eax
@@ -12975,11 +12912,11 @@ mov edx, 0x48
 lea eax, [ebp - 0x2a8]
 mov bl, byte [ebx + 0x176a]
 mov byte [ebp - 0x37c], bl
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 xor ecx, ecx
 mov edx, 0x48
 lea eax, [ebp - 0x260]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 mov ebx, dword [ebp + 8]
 mov eax, 0x3074
 add ebx, 0x2974
@@ -13188,17 +13125,17 @@ mov ecx, 0x7f
 mov edx, 0x10
 lea ebx, [ebp - 0x2e8]
 mov eax, ebx
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 xor ecx, ecx
 mov edx, 0x10
 lea eax, [ebp - 0x308]
 lea esi, [ebp - 0x330]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 xor ecx, ecx
 mov edx, 0x10
 lea eax, [ebp - 0x2c8]
 lea edi, [ebp - 0x338]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 mov eax, dword [ebp + 8]
 mov dword [ebp - 0x368], esi
 mov dword [ebp - 0x344], edi
@@ -13532,11 +13469,11 @@ mov edx, 0x48
 lea eax, [ebp - 0x2a8]
 mov bl, byte [ebx + 0x176a]
 mov byte [ebp - 0x348], bl
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 xor ecx, ecx
 mov edx, 0x48
 lea eax, [ebp - 0x260]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 mov ebx, dword [ebp + 8]
 mov eax, 0x3074
 add ebx, 0x2974
@@ -13762,12 +13699,12 @@ mov ecx, 0x7f
 mov edx, 4
 lea eax, [ebp - 0x2c8]
 lea ebx, [ebp - 0x308]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 xor ecx, ecx
 mov edx, 4
 lea eax, [ebp - 0x2e8]
 lea esi, [ebp - 0x2a8]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 mov eax, dword [ebp + 8]
 mov dword [ebp - 0x340], ebx
 add eax, 0x10b7
@@ -14270,7 +14207,7 @@ jb short loc_fffaca86  ; jb 0xfffaca86
 mov eax, dword [ebp - 0x340]
 xor edx, edx
 add eax, 0xf9
-call fcn_fffc83ab  ; call 0xfffc83ab
+call mrc_fillword
 
 loc_fffacafd:  ; not directly referenced
 inc edi
@@ -14820,7 +14757,7 @@ mov eax, dword [ebp - 0x36c]
 movzx ecx, byte [ebx + 0x1755]
 add eax, 0xf9
 xor edx, edx
-call fcn_fffc83ab  ; call 0xfffc83ab
+call mrc_fillword
 
 loc_fffad2d3:  ; not directly referenced
 inc esi
@@ -14889,11 +14826,11 @@ mov edx, 2
 xor ecx, ecx
 lea eax, [ebp - 0x21]
 mov edi, dword [ebp + 0x10]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 mov ecx, 1
 mov edx, 7
 lea eax, [ebp - 0x1f]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 movzx eax, byte [ebp - 0x2a]
 mov dl, byte [ebp - 0x48]
 shr edx, 1
@@ -15100,19 +15037,19 @@ lea eax, [ebp - 0x24]
 mov ebx, dword [ebp + 0xc]
 mov byte [ebp - 0x1a], 0xf8
 mov byte [ebp - 0x19], 8
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 xor ecx, ecx
 mov edx, 2
 lea eax, [ebp - 0x22]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 xor ecx, ecx
 mov edx, 2
 lea eax, [ebp - 0x1e]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 mov ecx, 0x7f
 mov edx, 2
 lea eax, [ebp - 0x1c]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 movzx esi, byte [ebp - 0x35]
 xor edx, edx
 mov ecx, esi
@@ -15864,7 +15801,7 @@ lea esp, [esp - 0x2c]
 mov esi, dword [ebp + 8]
 mov bl, byte [esi + 0x176a]
 mov byte [ebp - 0x31], bl
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 cmp dword [esi + 0x1749], 2
 mov eax, esi
 movzx edx, byte [esi + 0x176b]
@@ -15898,7 +15835,7 @@ mov eax, dword [ebp - 0x30]
 xor edx, edx
 movzx ecx, byte [esi + 0x1755]
 add eax, 0x107
-call fcn_fffc83ab  ; call 0xfffc83ab
+call mrc_fillword
 
 loc_fffade76:  ; not directly referenced
 inc edi
@@ -16173,7 +16110,7 @@ jb short loc_fffae0f6  ; jb 0xfffae0f6
 mov eax, dword [ebp - 0x160]
 xor edx, edx
 add eax, 0xf9
-call fcn_fffc83ab  ; call 0xfffc83ab
+call mrc_fillword
 
 loc_fffae176:  ; not directly referenced
 inc edi
@@ -16540,7 +16477,7 @@ loc_fffae6e7:  ; not directly referenced
 lea eax, [ebx + 0xf9]
 xor edx, edx
 movzx ecx, byte [esi + 0x1755]
-call fcn_fffc83ab  ; call 0xfffc83ab
+call mrc_fillword
 add ebx, dword [ebp - 0x148]
 xor eax, eax
 mov dword [ebp - 0x144], ebx
@@ -19215,7 +19152,7 @@ mov edx, 7
 mov ecx, 1
 mov bl, byte [ebp + 8]
 mov edi, dword [ebp + 0xc]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 cmp byte [ebp - 0x155], 0xb
 mov al, byte [ebp - 0x155]
 setne byte [ebp - 0x156]
@@ -19355,7 +19292,7 @@ jb short loc_fffb05f6  ; jb 0xfffb05f6
 loc_fffb05cf:  ; not directly referenced
 lea eax, [ebx + 0xf9]
 xor edx, edx
-call fcn_fffc83ab  ; call 0xfffc83ab
+call mrc_fillword
 mov edx, edi
 mov eax, dword [esi + 0x103f]
 shl edx, 0xa
@@ -20023,7 +19960,7 @@ rep movsd  ; rep movsd dword es:[edi], dword ptr [esi]
 ja loc_fffb1cc4  ; ja 0xfffb1cc4
 mov edx, 0x10
 lea eax, [ebp - 0xc68]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 xor eax, eax
 
 loc_fffb0e06:  ; not directly referenced
@@ -20057,14 +19994,14 @@ jne short loc_fffb0e90  ; jne 0xfffb0e90
 xor ecx, ecx
 mov edx, 0x1c
 lea eax, [ebp - 0xc04]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 jmp short loc_fffb0ea6  ; jmp 0xfffb0ea6
 
 loc_fffb0e90:  ; not directly referenced
 mov ecx, 0x1c
 lea edx, [ebp - 0xc20]
 lea eax, [ebp - 0xc04]
-call fcn_fffa115e  ; call 0xfffa115e
+call mrc_memcpy
 
 loc_fffb0ea6:  ; not directly referenced
 mov dword [ebp - 0xcd0], 0
@@ -20117,7 +20054,7 @@ xor edx, edx
 movzx ecx, byte [eax + 0x1755]
 imul eax, ebx, 0x1347
 lea eax, [esi + eax + 0x101]
-call fcn_fffc83ab  ; call 0xfffc83ab
+call mrc_fillword
 
 loc_fffb0fa2:  ; not directly referenced
 inc ebx
@@ -20165,7 +20102,7 @@ mov eax, dword [ebp - 0xc7c]
 mov edx, 0x18
 movzx ecx, byte [eax + 0x1755]
 mov eax, ebx
-call fcn_fffc83ab  ; call 0xfffc83ab
+call mrc_fillword
 mov eax, dword [ebp - 0xc7c]
 mov edx, 0x18
 movzx ecx, byte [eax + 0x1755]
@@ -20176,24 +20113,24 @@ mov eax, dword [ebp - 0xc7c]
 mov edx, 1
 movzx ecx, byte [eax + 0x1755]
 lea eax, [ebp - 0xba0]
-call fcn_fffc83ab  ; call 0xfffc83ab
+call mrc_fillword
 mov eax, dword [ebp - 0xc7c]
 mov edx, 1
 movzx ecx, byte [eax + 0x1755]
 lea eax, [ebp - 0xbe8]
-call fcn_fffc83ab  ; call 0xfffc83ab
+call mrc_fillword
 mov eax, dword [ebp - 0xc7c]
 mov edx, 1
 movzx ecx, byte [eax + 0x1755]
 lea eax, [ebp - 0xb7c]
-call fcn_fffc83ab  ; call 0xfffc83ab
+call mrc_fillword
 mov eax, dword [ebp - 0xc7c]
 mov edx, 1
 movzx ecx, byte [eax + 0x1755]
 
 loc_fffb10d3:  ; not directly referenced
 lea eax, [ebp - 0xbc4]
-call fcn_fffc83ab  ; call 0xfffc83ab
+call mrc_fillword
 
 loc_fffb10de:  ; not directly referenced
 push eax
@@ -20556,7 +20493,7 @@ jb loc_fffb14c0  ; jb 0xfffb14c0
 mov eax, dword [ebp - 0xc84]
 xor edx, edx
 add eax, 0xf9
-call fcn_fffc83ab  ; call 0xfffc83ab
+call mrc_fillword
 
 loc_fffb1640:  ; not directly referenced
 inc esi
@@ -20595,12 +20532,12 @@ mov eax, dword [ebp - 0xc7c]
 mov edx, 0x18
 movzx ecx, byte [eax + 0x1755]
 mov eax, ebx
-call fcn_fffc83ab  ; call 0xfffc83ab
+call mrc_fillword
 mov eax, dword [ebp - 0xc7c]
 mov edx, 0x18
 movzx ecx, byte [eax + 0x1755]
 lea eax, [ebp - 0xbc4]
-call fcn_fffc83ab  ; call 0xfffc83ab
+call mrc_fillword
 
 loc_fffb16f9:  ; not directly referenced
 mov bl, byte [ebp - 0xca8]
@@ -20638,7 +20575,7 @@ mov ecx, 0x90
 add eax, esi
 mov edx, 8
 inc ebx
-call fcn_fffc83ab  ; call 0xfffc83ab
+call mrc_fillword
 add dword [ebp - 0xc90], 0x24
 cmp ebx, 2
 jne short loc_fffb175b  ; jne 0xfffb175b
@@ -20936,7 +20873,7 @@ jb loc_fffb1a7d  ; jb 0xfffb1a7d
 mov eax, dword [ebp - 0xc94]
 xor edx, edx
 add eax, 0xf9
-call fcn_fffc83ab  ; call 0xfffc83ab
+call mrc_fillword
 
 loc_fffb1bd2:  ; not directly referenced
 inc edi
@@ -21465,42 +21402,6 @@ pop edi
 pop ebp
 ret
 
-fcn_fffb21bf:  ; not directly referenced
-cmp eax, 0xffffffffffffffff
-je short loc_fffb21e7  ; je 0xfffb21e7
-push ebp
-xor ecx, ecx
-xor edx, edx
-mov ebp, esp
-push edi
-push esi
-push ebx
-mov ebx, 1
-
-loc_fffb21d3:  ; not directly referenced
-mov edi, ebx
-lea esi, [ecx + 1]
-shl edi, cl
-test edi, eax
-cmovne edx, esi
-inc ecx
-cmp ecx, 0x20
-jne short loc_fffb21d3  ; jne 0xfffb21d3
-jmp short loc_fffb21ec  ; jmp 0xfffb21ec
-
-loc_fffb21e7:  ; not directly referenced
-xor edx, edx
-mov al, dl
-ret
-
-loc_fffb21ec:  ; not directly referenced
-pop ebx
-mov al, dl
-pop esi
-pop edi
-pop ebp
-ret
-
 fcn_fffb21f3:  ; not directly referenced
 push ebp
 mov ebp, esp
@@ -21516,19 +21417,19 @@ mov byte [ebp - 0x5c], al
 mov ecx, 1
 mov edx, 8
 lea eax, [ebp - 0x38]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 xor ecx, ecx
 mov edx, 8
 lea eax, [ebp - 0x30]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 mov ecx, 9
 mov edx, 8
 lea eax, [ebp - 0x28]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 xor edx, edx
 mov ecx, 2
 lea eax, [ebp - 0x20]
-call fcn_fffc83ab  ; call 0xfffc83ab
+call mrc_fillword
 cmp byte [ebp - 0x49], 1
 jne short loc_fffb2278  ; jne 0xfffb2278
 mov byte [ebp - 0x35], 0xa
@@ -21615,7 +21516,7 @@ mov byte [ebp - 0x50], al
 mov byte [ebp - 0x70], dl
 movzx eax, dl
 dec eax
-call fcn_fffb21bf  ; call 0xfffb21bf
+call mrc_highest_bit
 mov dl, byte [ebp - 0x70]
 cmp dl, 0x1f
 jbe short loc_fffb2368  ; jbe 0xfffb2368
@@ -21924,7 +21825,7 @@ mov dword [ebp - 0x45], 0
 mov dword [ebp - 0x41], 0
 mov dword [ebp - 0x3d], 0
 mov ebx, dword [ebp + 0x24]
-call fcn_fffb21bf  ; call 0xfffb21bf
+call mrc_highest_bit
 mov cl, byte [ebp - 0x49]
 mov byte [ebp - 0x5d], al
 inc ecx
@@ -21963,7 +21864,7 @@ mov byte [ebp - 0x98], cl
 jbe short loc_fffb271d  ; jbe 0xfffb271d
 movzx edx, dx
 lea eax, [edx - 1]
-call fcn_fffb21bf  ; call 0xfffb21bf
+call mrc_highest_bit
 mov byte [ebp - 0x98], al
 
 loc_fffb271d:  ; not directly referenced
@@ -21971,7 +21872,7 @@ mov eax, dword [ebp + 0x18]
 mov si, word [eax]
 movzx eax, si
 dec eax
-call fcn_fffb21bf  ; call 0xfffb21bf
+call mrc_highest_bit
 cmp si, 0x1f
 jbe short loc_fffb273d  ; jbe 0xfffb273d
 mov edx, dword [ebp + 0x18]
@@ -22662,7 +22563,7 @@ mov edi, dword [ebp + 8]
 add edi, 0x1774
 mov dword [ebp - 0x40], edi
 xor edi, edi
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 sub esp, 0xc
 mov eax, dword [ebp + 8]
 push 0
@@ -22700,7 +22601,7 @@ movzx ecx, byte [edx + 0x1755]
 mov edx, dword [ebp - 0x3c]
 lea eax, [edx + eax + 0x101]
 xor edx, edx
-call fcn_fffc83ab  ; call 0xfffc83ab
+call mrc_fillword
 
 loc_fffb2f0f:  ; not directly referenced
 cmp byte [ebp - 0x29], 0
@@ -24237,19 +24138,19 @@ sete bl
 xor ecx, ecx
 mov dword [ebp - 0x1f8], ebx
 lea esi, [edi + 0x2974]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 mov ecx, 0xf8
 mov edx, 0x12
 lea eax, [ebp - 0x1a4]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 mov ecx, 0xff
 mov edx, 0x12
 lea eax, [ebp - 0x16e]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 xor ecx, ecx
 mov edx, 0x12
 lea eax, [ebp - 0x180]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 mov dword [ebp - 0x1c4], 0x64
 xor eax, eax
 mov dword [ebp - 0x1c0], esi
@@ -24578,11 +24479,11 @@ xor ecx, ecx
 mov edx, 0xa2
 lea eax, [ebp - 0x15c]
 lea esi, [edi + 0x2974]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 xor ecx, ecx
 mov edx, 0xa2
 lea eax, [ebp - 0xba]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 cmp dword [ebp - 0x1f8], 1
 mov dword [ebp - 0x1c0], 1
 sbb ebx, ebx
@@ -24949,11 +24850,11 @@ mov byte [ebp - 0x43], 0
 mov byte [ebp - 0x42], 2
 mov byte [ebp - 0x41], 3
 mov dword [ebp - 0x54], esi
-call fcn_fffa115e  ; call 0xfffa115e
+call mrc_memcpy
 mov ecx, 6
 lea edx, [ebp - 0x3c]
 lea eax, [ebp - 0x36]
-call fcn_fffa115e  ; call 0xfffa115e
+call mrc_memcpy
 mov eax, dword [ebp - 0x4c]
 xor edx, edx
 cmp dword [eax + 0x1749], 2
@@ -26710,23 +26611,23 @@ mov dword [ebp - 0xbdd8], esi
 mov byte [ebp - 0xbd65], 0
 mov byte [ebp - 0xbd7f], 6
 mov byte [ebp - 0xbd7e], 5
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 xor ecx, ecx
 mov edx, 0xb77a
 lea eax, [ebp - 0xb792]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 xor ecx, ecx
 mov edx, 0x15e
 lea eax, [ebp - 0xbd52]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 xor ecx, ecx
 mov edx, 2
 lea eax, [ebp - 0xbd85]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 xor ecx, ecx
 mov edx, 8
 lea eax, [ebp - 0xbd64]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 mov edi, dword [ebp + 8]
 mov dl, bl
 xor edx, 1
@@ -29647,16 +29548,16 @@ lea eax, [ebp - 0x158]
 push ebx
 lea esp, [esp - 0x19c]
 mov ebx, dword [ebp + 8]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 xor ecx, ecx
 mov edx, 2
 lea eax, [ebp - 0x15e]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 xor ecx, ecx
 mov edx, 0x130
 lea eax, [ebp - 0x148]
 lea esi, [ebx + 0x16be]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 xor eax, eax
 cmp dword [ebx + 0x1749], 2
 sete al
@@ -29694,7 +29595,7 @@ mov edx, dword [ebp - 0x180]
 movzx ecx, byte [ebx + 0x1755]
 lea eax, [edx + eax + 0x13b7]
 xor edx, edx
-call fcn_fffc83ab  ; call 0xfffc83ab
+call mrc_fillword
 
 loc_fffb8136:  ; not directly referenced
 inc esi
@@ -29764,11 +29665,11 @@ xor ecx, ecx
 mov edx, 2
 lea eax, [ebp - 0x15c]
 lea esi, [ebp - 0x15a]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 xor ecx, ecx
 mov edx, 2
 mov eax, esi
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 lea ecx, [ebp - 0x15c]
 xor edx, edx
 push ecx
@@ -30808,7 +30709,7 @@ xor ecx, ecx
 mov dword [ebp - 0x34], eax
 mov edx, 4
 mov eax, dword [ebp + 0xc]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 mov eax, dword [ebp - 0x2c]
 shl eax, 0xa
 mov ebx, eax
@@ -31876,7 +31777,7 @@ mov ecx, dword [ebp - 0x3c]
 mov edx, ebx
 mov byte [eax + 0x1c], 1
 add eax, 0x1d
-call fcn_fffa115e  ; call 0xfffa115e
+call mrc_memcpy
 jmp near loc_fffb9cc6  ; jmp 0xfffb9cc6
 
 loc_fffb9a24:
@@ -33405,11 +33306,11 @@ mov word [ebp - 0x22b], 1
 mov dword [ebp - 0x229], 0
 mov dword [ebp - 0x225], 3
 mov byte [ebp - 0x221], 0
-call fcn_fffa115e  ; call 0xfffa115e
+call mrc_memcpy
 xor ecx, ecx
 mov edx, 8
 lea eax, [ebp - 0x24c]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 xor edx, edx
 cmp dword [ebx + 0x1749], 2
 sete dl
@@ -34015,11 +33916,11 @@ mov esi, dword [ebp + 8]
 lea eax, [esi + 0x16be]
 mov dword [ebp - 0x54], eax
 lea eax, [ebp - 0x28]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 mov ecx, 1
 mov edx, 3
 lea eax, [ebp - 0x3b]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 sub esp, 0xc
 mov ecx, 0x11
 movzx edx, byte [esi + 0x176b]
@@ -34056,7 +33957,7 @@ mov eax, dword [ebp - 0x50]
 movzx ecx, byte [esi + 0x1755]
 add eax, 0x107
 xor edx, edx
-call fcn_fffc83ab  ; call 0xfffc83ab
+call mrc_fillword
 
 loc_fffbb8d9:  ; not directly referenced
 inc ebx
@@ -34252,7 +34153,7 @@ add dword [edx + 4], edi
 add eax, 0x107
 xor edx, edx
 movzx ecx, byte [esi + 0x1755]
-call fcn_fffc83ab  ; call 0xfffc83ab
+call mrc_fillword
 
 loc_fffbbad1:  ; not directly referenced
 inc ebx
@@ -37937,27 +37838,27 @@ and byte [ebp - 0x6b48], dl
 mov edx, 0x4ee4
 mov byte [ebp - 0x6b58], bl
 mov bl, byte [ebp + 0x2c]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 mov ecx, 0xff
 mov edx, 0x3e
 mov eax, dword [ebp - 0x6b98]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 xor ecx, ecx
 mov edx, 0xf0
 lea eax, [ebp - 0x6aec]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 xor ecx, ecx
 mov edx, 0x30
 lea eax, [ebp - 0x6b1c]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 xor ecx, ecx
 mov edx, 2
 lea eax, [ebp - 0x6b37]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 xor ecx, ecx
 mov edx, 0x10
 lea eax, [ebp - 0x6b2c]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 xor eax, eax
 
 loc_fffbe31a:  ; not directly referenced
@@ -38016,7 +37917,7 @@ mov eax, dword [ebp - 0x6b4c]
 xor ecx, ecx
 movzx edx, byte [eax + 0x1755]
 lea eax, [edi + 0x101]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 
 loc_fffbe3e4:  ; not directly referenced
 inc ebx
@@ -38920,11 +38821,11 @@ mov byte [ebp - 0x4fd], 0
 mov byte [ebp - 0x4fc], 0
 mov byte [ebp - 0x4fb], 0
 mov dword [ebp - 0x503], 0
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 mov ecx, 0xff
 mov edx, 0x53e
 mov eax, dword [ebp - 0x524]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 mov eax, dword [ebp - 0x52c]
 mov dl, byte [ebp - 0x520]
 mov byte [ebp - 0x50d], 0
@@ -39697,27 +39598,27 @@ mov ecx, 5
 mov edx, 1
 lea eax, [ebp - 0x34c]
 movzx ebx, byte [ebp + 8]
-call fcn_fffc83ab  ; call 0xfffc83ab
+call mrc_fillword
 mov ecx, 5
 mov edx, 1
 lea eax, [ebp - 0x338]
-call fcn_fffc83ab  ; call 0xfffc83ab
+call mrc_fillword
 mov ecx, 5
 or edx, 0xffffffff
 lea eax, [ebp - 0x324]
-call fcn_fffc83ab  ; call 0xfffc83ab
+call mrc_fillword
 mov ecx, 5
 xor edx, edx
 lea eax, [ebp - 0x310]
-call fcn_fffc83ab  ; call 0xfffc83ab
+call mrc_fillword
 mov ecx, 5
 xor edx, edx
 lea eax, [ebp - 0x2fc]
-call fcn_fffc83ab  ; call 0xfffc83ab
+call mrc_fillword
 mov ecx, 5
 xor edx, edx
 lea eax, [ebp - 0x2e8]
-call fcn_fffc83ab  ; call 0xfffc83ab
+call mrc_fillword
 xor ecx, ecx
 mov edx, 0x2bc
 lea eax, [ebp - 0x2d4]
@@ -39726,11 +39627,11 @@ mov word [ebp - 0x354], 0
 mov word [ebp - 0x352], 0
 mov word [ebp - 0x350], 0
 mov word [ebp - 0x34e], 0
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 xor ecx, ecx
 mov edx, 0x462
 mov eax, dword [ebp - 0x370]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 movsx ecx, byte [ebp - 0x371]
 mov dword [ebp - 0x398], ebx
 mov ebx, dword [ebp - 0x378]
@@ -40041,7 +39942,7 @@ loc_fffbffac:  ; not directly referenced
 mov eax, esi
 
 loc_fffbffae:  ; not directly referenced
-call fcn_fffb21bf  ; call 0xfffb21bf
+call mrc_highest_bit
 inc edi
 add ebx, eax
 cmp edi, 5
@@ -40358,7 +40259,7 @@ xor ecx, ecx
 mov byte [ebp - 0x2a], dl
 lea eax, [ebp - 0x1d]
 mov edx, 5
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 cmp dword [ebp + 0xc], 0
 mov al, 0
 mov cl, byte [ebp - 0x2a]
@@ -40601,7 +40502,7 @@ mov eax, dword [edx + eax + 0x2a71]
 mov edx, 0x26
 mov dword [ebp - 0x88], eax
 lea eax, [ebp - 0x3e]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 movzx ecx, byte [ebp - 0x77]
 mov edx, esi
 movzx eax, dl
@@ -41033,11 +40934,11 @@ loc_fffc0b5a:  ; not directly referenced
 xor ecx, ecx
 mov edx, 4
 lea eax, [ebp - 0x28]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 mov edx, 2
 xor ecx, ecx
 lea eax, [ebp - 0x40]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 imul eax, dword [ebp - 0x64], 0x24
 mov edx, dword [ebp - 0x50]
 add edx, eax
@@ -41813,7 +41714,7 @@ mov byte [ebp - 0x64], al
 mov ecx, 1
 mov edx, 7
 lea eax, [ebp - 0x4f]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 movsx si, byte [ebp - 0x6c]
 cmp dword [edi + 0x1749], 2
 mov word [ebp - 0x78], si
@@ -42169,7 +42070,7 @@ mov edx, 7
 lea eax, [ebp - 0x27]
 mov dword [ebp - 0x1c], 0
 mov dword [ebp - 0x20], 0
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 mov ecx, esi
 mov eax, esi
 and ecx, 1
@@ -42449,12 +42350,12 @@ push ebx
 lea esp, [esp - 0x50bc]
 mov dword [ebp - 0x50bc], eax
 lea eax, [ebp - 0x503a]
-call fcn_fffa118a  ; call 0xfffa118a
+call mrc_zeromem
 lea eax, [ebp - 0x5079]
 mov ecx, 0x3f
 mov edx, ref_fffcbee8  ; mov edx, 0xfffcbee8
 mov dword [ebp - 0x38ce], eax
-call fcn_fffa115e  ; call 0xfffa115e
+call mrc_memcpy
 mov edx, dword [ebp - 0x50bc]
 push edi
 push edi
@@ -42484,7 +42385,7 @@ mov edx, 0x5022
 lea edi, [eax + 8]
 add eax, 0x18
 rep movsd  ; rep movsd dword es:[edi], dword ptr [esi]
-call fcn_fffa118a  ; call 0xfffa118a
+call mrc_zeromem
 jmp short loc_fffc1c07  ; jmp 0xfffc1c07
 
 loc_fffc1bfd:
@@ -42929,7 +42830,7 @@ cmp ebx, 0x1b
 jne loc_fffc2251  ; jne 0xfffc2251
 lea eax, [ebp - 0x397c]
 mov edx, 0x395c
-call fcn_fffa118a  ; call 0xfffa118a
+call mrc_zeromem
 lea eax, [ebp - 0x5079]
 inc byte [ebp - 0x4022]
 mov dword [ebp - 0x38ce], eax
@@ -43092,7 +42993,7 @@ call dword [eax + 0x50]  ; ucall
 mov eax, dword [ebp - 0x50a0]
 mov edx, 1
 add eax, 0x503a
-call fcn_fffa118a  ; call 0xfffa118a
+call mrc_zeromem
 add esp, 0x10
 
 loc_fffc2355:
@@ -43110,7 +43011,7 @@ jmp near loc_fffc1d20  ; jmp 0xfffc1d20
 loc_fffc2376:
 mov edx, 0xfd4
 lea eax, [ebp - 0x5036]
-call fcn_fffa118a  ; call 0xfffa118a
+call mrc_zeromem
 xor edi, edi
 jmp near loc_fffc1f53  ; jmp 0xfffc1f53
 
@@ -44274,7 +44175,7 @@ jne short loc_fffc32a3  ; jne 0xfffc32a3
 movzx ecx, byte [ebx + 0x1755]
 mov edx, dword [ebp - 0x34]
 mov eax, esi
-call fcn_fffc83ab  ; call 0xfffc83ab
+call mrc_fillword
 
 loc_fffc32a3:  ; not directly referenced
 inc byte [ebp - 0x2d]
@@ -44331,7 +44232,7 @@ mov byte [ebp - 0x934], 1
 mov byte [ebp - 0x933], 1
 mov byte [ebp - 0x932], 1
 mov dword [ebp - 0x944], ebx
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 xor eax, eax
 
 loc_fffc3355:  ; not directly referenced
@@ -44404,7 +44305,7 @@ mov eax, dword [ebp - 0x93c]
 xor edx, edx
 movzx ecx, byte [esi + 0x1755]
 add eax, 0x107
-call fcn_fffc83ab  ; call 0xfffc83ab
+call mrc_fillword
 
 loc_fffc3457:  ; not directly referenced
 inc ebx
@@ -44743,7 +44644,7 @@ jb loc_fffc37c7  ; jb 0xfffc37c7
 mov eax, dword [ebp - 0x950]
 xor edx, edx
 add eax, 0xf9
-call fcn_fffc83ab  ; call 0xfffc83ab
+call mrc_fillword
 sub esp, 0xc
 mov ecx, 1
 push 0
@@ -45042,7 +44943,7 @@ loc_fffc3cf3:  ; not directly referenced
 mov eax, dword [ebp - 0x950]
 xor edx, edx
 add eax, 0xf9
-call fcn_fffc83ab  ; call 0xfffc83ab
+call mrc_fillword
 
 loc_fffc3d05:  ; not directly referenced
 inc edi
@@ -45358,7 +45259,7 @@ jmp short loc_fffc4040  ; jmp 0xfffc4040
 
 loc_fffc406a:  ; not directly referenced
 dec eax
-call fcn_fffb21bf  ; call 0xfffb21bf
+call mrc_highest_bit
 movzx eax, al
 jmp short loc_fffc4078  ; jmp 0xfffc4078
 
@@ -45383,7 +45284,7 @@ cmp edx, 0x1f
 lea eax, [edx + 0x80]
 jbe short loc_fffc40b6  ; jbe 0xfffc40b6
 lea eax, [edx - 1]
-call fcn_fffb21bf  ; call 0xfffb21bf
+call mrc_highest_bit
 movzx eax, al
 
 loc_fffc40b6:  ; not directly referenced
@@ -45404,7 +45305,7 @@ cmp edx, 0xf
 lea eax, [edx + 0x20]
 jbe short loc_fffc40f3  ; jbe 0xfffc40f3
 lea eax, [edx - 1]
-call fcn_fffb21bf  ; call 0xfffb21bf
+call mrc_highest_bit
 movzx eax, al
 
 loc_fffc40f3:  ; not directly referenced
@@ -45423,7 +45324,7 @@ cmp edx, 0x1f
 lea eax, [edx + 0x80]
 jbe short loc_fffc4125  ; jbe 0xfffc4125
 lea eax, [edx - 1]
-call fcn_fffb21bf  ; call 0xfffb21bf
+call mrc_highest_bit
 movzx eax, al
 
 loc_fffc4125:  ; not directly referenced
@@ -46153,19 +46054,19 @@ mov word [ebp - 0x32c], 0
 mov dword [ebp - 0x32a], 0
 mov dword [ebp - 0x326], 7
 mov byte [ebp - 0x322], 0
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 xor ecx, ecx
 mov edx, 2
 lea eax, [ebp - 0x337]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 xor ecx, ecx
 mov edx, 0x10
 lea eax, [ebp - 0x314]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 mov ecx, 0x2c
 lea edx, [ebp - 0x2e0]
 lea eax, [ebp - 0x2b4]
-call fcn_fffa115e  ; call 0xfffa115e
+call mrc_memcpy
 xor eax, eax
 
 loc_fffc49a5:  ; not directly referenced
@@ -46348,7 +46249,7 @@ push esi
 call fcn_fffb2650  ; call 0xfffb2650
 add esp, 0x20
 lea eax, [esi - 1]
-call fcn_fffb21bf  ; call 0xfffb21bf
+call mrc_highest_bit
 movzx eax, al
 mov ecx, ebx
 sub ecx, eax
@@ -48817,10 +48718,10 @@ ret
 
 fcn_fffc6986:
 mov ecx, 0xce
-rdmsr
+rdmsr ; rdmsr(MSR_PLATFORM_INFO)
 movzx ecx, ah
 xor edx, edx
-imul ecx, ecx, 0x186a0
+imul ecx, ecx, 0x186a0 ; 100000
 xor eax, eax
 test ecx, ecx
 je short loc_fffc69ba  ; je 0xfffc69ba
@@ -48928,11 +48829,11 @@ xor ecx, ecx
 mov edx, 4
 lea eax, [ebp - 0xa2]
 lea esi, [ebp - 0x72]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 xor ecx, ecx
 mov edx, 4
 lea eax, [ebp - 0x9e]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 mov dword [ebp - 0xbc], esi
 xor esi, esi
 
@@ -50948,24 +50849,6 @@ pop edi
 pop ebp
 ret
 
-fcn_fffc83ab:  ; not directly referenced
-push ebp
-mov ebp, esp
-push ebx
-xor ebx, ebx
-jmp short loc_fffc83b7  ; jmp 0xfffc83b7
-
-loc_fffc83b3:  ; not directly referenced
-mov dword [eax + ebx*4], edx
-inc ebx
-
-loc_fffc83b7:  ; not directly referenced
-cmp ebx, ecx
-jne short loc_fffc83b3  ; jne 0xfffc83b3
-pop ebx
-pop ebp
-ret
-
 fcn_fffc83be:
 push ebp
 mov ecx, edx
@@ -52109,7 +51992,7 @@ mov dword [ebp - 0x24], edx
 mov ecx, 8
 lea edx, [ebp - 0x28]
 lea eax, [ebp - 0x20]
-call fcn_fffa115e  ; call 0xfffa115e
+call mrc_memcpy
 mov bl, byte [ebp - 0x19]
 shr bl, 7
 jmp short loc_fffc8ed7  ; jmp 0xfffc8ed7
@@ -52201,7 +52084,7 @@ lea edx, [ebp - 0x28]
 mov ecx, 8
 lea eax, [ebp - 0x30]
 or byte [ebp - 0x21], 0x80
-call fcn_fffa115e  ; call 0xfffa115e
+call mrc_memcpy
 mov eax, dword [ebp - 0x30]
 mov edx, dword [ebp - 0x2c]
 mov ecx, 0x150
@@ -52218,7 +52101,7 @@ mov dword [ebp - 0x30], eax
 mov dword [ebp - 0x2c], edx
 lea eax, [ebp - 0x28]
 lea edx, [ebp - 0x30]
-call fcn_fffa115e  ; call 0xfffa115e
+call mrc_memcpy
 mov eax, 0xa
 call fcn_fffc5e98  ; call 0xfffc5e98
 mov eax, dword [ebp - 0x40]
@@ -52228,7 +52111,7 @@ mov dword [ebp - 0x2c], edx
 mov ecx, 8
 lea edx, [ebp - 0x30]
 lea eax, [ebp - 0x20]
-call fcn_fffa115e  ; call 0xfffa115e
+call mrc_memcpy
 mov edx, dword [ebp - 0x1c]
 cmp dword [ebp - 0x24], edx
 je short loc_fffc904d  ; je 0xfffc904d
@@ -52245,7 +52128,7 @@ lea edx, [ebp - 0x28]
 
 loc_fffc905e:
 mov eax, esi
-call fcn_fffa115e  ; call 0xfffa115e
+call mrc_memcpy
 jmp short loc_fffc906c  ; jmp 0xfffc906c
 
 loc_fffc9067:
@@ -53068,7 +52951,7 @@ mov byte [ebp - 0x44], cl
 mov byte [ebp - 0x5d], al
 xor ecx, ecx
 lea eax, [ebp - 0x2c]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 mov ecx, edi
 mov eax, 1
 movzx edx, cl
@@ -53460,7 +53343,7 @@ mov byte [ebp - 0x43], cl
 mov byte [ebp - 0x3b], al
 xor ecx, ecx
 lea eax, [ebp - 0x1a]
-call fcn_fffa119f  ; call 0xfffa119f
+call mrc_setmem
 mov cl, bl
 mov dword [ebp - 0x40], 1
 movzx edx, bl
