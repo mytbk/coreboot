@@ -17,8 +17,18 @@
 static int *STACK_TOP = (int *)0xff800000;
 static int *STACK_BTM = (int *)0xff7d7544;
 
+struct mrc_heap {
+	size_t sz;
+	void *start;
+	int data[0];
+};
+
+static struct mrc_heap *HEAP = (struct mrc_heap *)0xff7d0000;
+#define MAX_HEAP_SIZE ((void *)STACK_BTM - (void *)HEAP->data - 16)
+#define POOL_COOKIE 0x900ddea1
+
 int __attribute((regparm(1))) do_raminit(struct pei_data *pd);
-int __attribute((regparm(1))) heap_check(int n);
+void *__attribute((regparm(1))) mrc_alloc(int n);
 int mrc_main(struct pei_data *pd);
 
 int mrc_main(struct pei_data *pd)
@@ -51,6 +61,34 @@ int mrc_main(struct pei_data *pd)
 	}
 
 	mrc_printk("Sanity checking heap.\n");
-	heap_check(8);
+	mrc_alloc(8);
 	return rv;
+}
+
+void *__attribute((regparm(1))) mrc_alloc(int n)
+{
+	size_t alloc = (n + 3) & (-4);
+	size_t sz = HEAP->sz;
+
+	if (sz == 0) {
+		HEAP->start = HEAP->data;
+	} else {
+		if (*((uint32_t *)(HEAP->start + sz)) != POOL_COOKIE) {
+			mrc_printk("%s:%d pool cookie corrupted...\n",
+					"GlueAllocatePool", 0x35);
+			while (1)
+				;
+		}
+	}
+
+	size_t newsz = alloc + sz;
+	if (newsz <= MAX_HEAP_SIZE) {
+		HEAP->sz = newsz;
+		*((uint32_t *)(HEAP->start + newsz)) = POOL_COOKIE;
+		return HEAP->start + sz;
+	}
+	mrc_printk("%s:%d failed to allocate %d bytes...\n",
+			"GlueAllocatePool", 0x43);
+	while (1)
+		;
 }
