@@ -3,6 +3,8 @@
 bits 32
 
 global mrc_entry
+global do_raminit
+global heap_check
 
 extern mrc_printk
 extern mrc_setmem
@@ -11,6 +13,7 @@ extern memcpy ; pass parameters by stack
 extern mrc_fillword
 extern mrc_zeromem
 extern mrc_highest_bit
+extern mrc_main
 
 mrc_entry:
 mov ecx, esp
@@ -20,7 +23,7 @@ push eax
 mov al, 1
 out 0x80, al
 cld
-call fcn_fffc18c8  ; call 0xfffc18c8
+call mrc_main
 pop ecx
 pop ecx
 mov esp, ecx
@@ -2482,7 +2485,7 @@ pop edi
 pop ebp
 ret
 
-fcn_fffa2937:
+heap_check:
 push ebp
 lea edx, [eax + 3]
 and edx, 0xfffffffc
@@ -2550,7 +2553,7 @@ cmp dword [ebx - 4], 0xfeadb00b
 jne short loc_fffa29f2  ; jne 0xfffa29f2
 add eax, 4
 mov dword [ebp - 0x1c], edx
-call fcn_fffa2937  ; call 0xfffa2937
+call heap_check  ; call 0xfffa2937
 test eax, eax
 mov edx, dword [ebp - 0x1c]
 jne short loc_fffa29f4  ; jne 0xfffa29f4
@@ -2840,7 +2843,7 @@ pop edi
 pop ebp
 ret
 
-fcn_fffa2c51:
+do_raminit:
 push ebp
 xor edx, edx
 mov ebp, esp
@@ -3758,14 +3761,14 @@ mov dword [edx + 0x3310], 0x10
 mov eax, ebx
 call fcn_fffc7c9d  ; call 0xfffc7c9d
 mov eax, 0xc
-call fcn_fffa2937  ; call 0xfffa2937
+call heap_check  ; call 0xfffa2937
 test eax, eax
 mov esi, eax
 je short loc_fffa3d32  ; je 0xfffa3d32
 mov edx, 0xc
 call mrc_zeromem
 mov eax, 0x28
-call fcn_fffa2937  ; call 0xfffa2937
+call heap_check  ; call 0xfffa2937
 test eax, eax
 mov edi, eax
 je short loc_fffa3d32  ; je 0xfffa3d32
@@ -3814,7 +3817,7 @@ mov dword [esp], ref_fffcc5e7  ; mov dword [esp], 0xfffcc5e7
 call mrc_printk  ; call 0xfffa1253
 mov eax, 0x10f
 mov esi, dword [0xff7d7538]
-call fcn_fffa2937  ; call 0xfffa2937
+call heap_check  ; call 0xfffa2937
 add esp, 0x10
 test eax, eax
 mov ebx, eax
@@ -42190,101 +42193,6 @@ db 0x00
 db 0x00
 db 0x00
 
-fcn_fffc18c8:
-push ebp
-mov ecx, 8
-mov ebp, esp
-push edi
-push esi
-push ebx
-mov ebx, 0xff800000
-sub ebx, 0xff7d7544
-lea esp, [esp - 0x1c]
-sar ebx, 2
-mov eax, ebx
-cdq
-idiv ecx
-mov dword [ebp - 0x1c], eax
-xor eax, eax
-jmp short loc_fffc190c  ; jmp 0xfffc190c
-
-loc_fffc18f1:
-xor edx, edx
-
-loc_fffc18f3:
-lea ecx, [edx + eax]
-inc edx
-cmp edx, 4
-mov dword [ecx*4 - 0x828abc], 0xdeedbeef
-jne short loc_fffc18f3  ; jne 0xfffc18f3
-add eax, 0x100
-
-loc_fffc190c:
-cmp eax, dword [ebp - 0x1c]
-jl short loc_fffc18f1  ; jl 0xfffc18f1
-mov eax, dword [ebp + 8]
-xor esi, esi
-call fcn_fffa2c51  ; call 0xfffa2c51
-mov edi, eax
-jmp short loc_fffc1939  ; jmp 0xfffc1939
-
-loc_fffc191f:
-xor eax, eax
-
-loc_fffc1921:
-lea ecx, [eax + esi]
-cmp dword [ecx*4 - 0x828abc], 0xdeedbeef
-jne short loc_fffc195a  ; jne 0xfffc195a
-inc eax
-cmp eax, 4
-jne short loc_fffc1921  ; jne 0xfffc1921
-jmp short loc_fffc1952  ; jmp 0xfffc1952
-
-loc_fffc1939:
-cmp esi, dword [ebp - 0x1c]
-jl short loc_fffc191f  ; jl 0xfffc191f
-jmp short loc_fffc197a  ; jmp 0xfffc197a
-
-loc_fffc1940:
-sub esp, 0xc
-push ref_fffcc6f2  ; push 0xfffcc6f2
-call mrc_printk  ; call 0xfffa1253
-add esp, 0x10
-
-loc_fffc1950:
-jmp short loc_fffc1950  ; jmp 0xfffc1950
-
-loc_fffc1952:
-add esi, 0x100
-jmp short loc_fffc1939  ; jmp 0xfffc1939
-
-loc_fffc195a:
-push eax
-lea eax, [ebx*4]
-sub ebx, esi
-push eax
-shl ebx, 2
-push ebx
-push ref_fffcc725  ; push 0xfffcc725
-call mrc_printk  ; call 0xfffa1253
-add esp, 0x10
-test esi, esi
-je short loc_fffc1940  ; je 0xfffc1940
-
-loc_fffc197a:
-sub esp, 0xc
-push ref_fffcc70e  ; push 0xfffcc70e
-call mrc_printk  ; call 0xfffa1253
-mov eax, 8
-call fcn_fffa2937  ; call 0xfffa2937
-lea esp, [ebp - 0xc]
-mov eax, edi
-pop ebx
-pop esi
-pop edi
-pop ebp
-ret
-
 fcn_fffc1ae2:
 push ebp
 mov ebp, esp
@@ -56222,15 +56130,6 @@ db 'System Agent: failed to locate restore data hob!',0x0a,0x00
 
 ref_fffcc6dd:
 db 'System Agent: Done.',0x0a,0x00
-
-ref_fffcc6f2:
-db 'Stack completely exhaused!',0x0a,0x00
-
-ref_fffcc70e:
-db 'Sanity checking heap.',0x0a,0x00
-
-ref_fffcc725:
-db 'Reference code used approx 0x%x/0x%x of stack.',0x0a,0x00,0x00
 
 ref_fffcc756:
 db 0x50

@@ -36,6 +36,7 @@ $(obj)/mrc.o: $(src)/northbridge/intel/haswell/mrc.asm
 	nasm -f elf32 -o $@ $<
 
 romstage-y += mrc_utils.c
+romstage-y += mrc_main.c
 
 postcar-y += ram_calc.c
 
