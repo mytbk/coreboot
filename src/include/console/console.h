@@ -83,6 +83,8 @@ static inline void printk(int LEVEL, const char *fmt, ...) {}
 static inline void do_putchar(unsigned char byte) {}
 #endif
 
+int mrc_printk(const char *fmt, ...);
+
 #if IS_ENABLED(CONFIG_VBOOT)
 /* FIXME: Collision of varargs with AMD headers without guard. */
 #include <console/vtxprintf.h>
