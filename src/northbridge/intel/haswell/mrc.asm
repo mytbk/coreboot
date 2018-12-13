@@ -17,6 +17,9 @@ extern mrc_alloc
 extern mrc_sku_type
 extern mrc_smbus_inb
 extern mrc_smbus_outb
+extern mrc_sku_5d89
+extern mrc_sku_5da5
+extern fcn_fffa0250
 
 mrc_entry:
 mov ecx, esp
@@ -222,110 +225,6 @@ cmovne esi, edx
 lea esp, [esp + 0x1c]
 pop ebx
 mov eax, esi
-pop esi
-pop edi
-pop ebp
-ret
-
-fcn_fffa0250:
-push ebp
-shl edx, 0xf
-shl ecx, 0xc
-mov ebp, esp
-push edi
-shl eax, 0x14
-push esi
-lea esi, [ecx + edx]
-add edx, eax
-push ebx
-push ebx
-mov ebx, dword [ebp + 8]
-mov dword [ebx], 0
-mov ebx, dword [0xf0000060]
-and ebx, 0xfc000000
-mov dword [ebp - 0x10], esi
-lea edx, [ebx + edx + 0xb]
-add ecx, edx
-mov dl, byte [ecx]
-mov ecx, 0x10
-cmp dl, 6
-je loc_fffa0369  ; je 0xfffa0369
-
-loc_fffa0293:
-mov ebx, dword [0xf0000060]
-mov edx, dword [ebp - 0x10]
-and ebx, 0xfc000000
-add edx, ecx
-add ebx, eax
-add ebx, edx
-mov ebx, dword [ebx]
-mov esi, dword [0xf0000060]
-and esi, 0xfc000000
-add esi, eax
-add esi, edx
-mov esi, dword [esi]
-mov esi, dword [0xf0000060]
-and esi, 0xfc000000
-add esi, eax
-add esi, edx
-mov dword [esi], 0
-mov edi, dword [0xf0000060]
-mov esi, dword [0xf0000060]
-and edi, 0xfc000000
-and esi, 0xfc000000
-add edi, eax
-add esi, eax
-add edi, edx
-add esi, edx
-mov esi, dword [esi]
-mov dword [edi], 0xffffffff
-mov esi, dword [0xf0000060]
-and esi, 0xfc000000
-add esi, eax
-add esi, edx
-mov esi, dword [esi]
-cmp ebx, esi
-mov esi, dword [0xf0000060]
-jne short loc_fffa0322  ; jne 0xfffa0322
-and esi, 0xfc000000
-add esi, eax
-add esi, edx
-jmp short loc_fffa0331  ; jmp 0xfffa0331
-
-loc_fffa0322:
-and esi, 0xfc000000
-add esi, eax
-add esi, edx
-test bl, 1
-je short loc_fffa0335  ; je 0xfffa0335
-
-loc_fffa0331:
-mov dword [esi], ebx
-jmp short loc_fffa035d  ; jmp 0xfffa035d
-
-loc_fffa0335:
-mov edi, dword [ebp + 8]
-mov esi, dword [esi]
-and esi, 0xfffffff0
-sub dword [edi], esi
-mov esi, dword [0xf0000060]
-and esi, 0xfc000000
-add esi, eax
-add esi, edx
-lea edx, [ecx + 4]
-mov dword [esi], ebx
-and ebx, 6
-cmp ebx, 4
-cmove ecx, edx
-
-loc_fffa035d:
-add ecx, 4
-cmp ecx, 0x24
-jbe loc_fffa0293  ; jbe 0xfffa0293
-
-loc_fffa0369:
-pop edi
-pop ebx
 pop esi
 pop edi
 pop ebp
@@ -747,7 +646,7 @@ loc_fffa0742:
 inc ebx
 
 loc_fffa0743:
-call fcn_fffc5da5  ; call 0xfffc5da5
+call mrc_sku_5da5
 cmp bl, al
 jb loc_fffa06aa  ; jb 0xfffa06aa
 mov dword [ebp - 0x60], 0
@@ -887,7 +786,7 @@ loc_fffa08db:
 xor ebx, ebx
 
 loc_fffa08dd:
-call fcn_fffc5da5  ; call 0xfffc5da5
+call mrc_sku_5da5
 cmp bl, al
 jb short loc_fffa08b9  ; jb 0xfffa08b9
 mov edx, dword [ebp - 0x44]
@@ -3512,7 +3411,7 @@ loc_fffa3aa7:
 xor ebx, ebx
 
 loc_fffa3aa9:
-call fcn_fffc5d89  ; call 0xfffc5d89
+call mrc_sku_5d89
 movzx eax, al
 cmp ebx, eax
 jl short loc_fffa3a6d  ; jl 0xfffa3a6d
@@ -3604,7 +3503,7 @@ loc_fffa3ba2:
 xor ebx, ebx
 
 loc_fffa3ba4:
-call fcn_fffc5d89  ; call 0xfffc5d89
+call mrc_sku_5d89
 movzx eax, al
 cmp ebx, eax
 jl short loc_fffa3b4e  ; jl 0xfffa3b4e
@@ -3664,7 +3563,7 @@ loc_fffa3c1b:
 xor ebx, ebx
 
 loc_fffa3c1d:
-call fcn_fffc5d89  ; call 0xfffc5d89
+call mrc_sku_5d89
 movzx eax, al
 cmp ebx, eax
 jl short loc_fffa3bc0  ; jl 0xfffa3bc0
@@ -16974,7 +16873,7 @@ call fcn_fffc90fb  ; call 0xfffc90fb
 add esp, 0x10
 
 loc_fffaed00:
-call fcn_fffc5d89  ; call 0xfffc5d89
+call mrc_sku_5d89
 mov ecx, esi
 cmp cl, al
 jb short loc_fffaecdc  ; jb 0xfffaecdc
@@ -17783,7 +17682,7 @@ inc ebx
 
 loc_fffaf635:
 mov dword [ebp - 0x70], edx
-call fcn_fffc5d89  ; call 0xfffc5d89
+call mrc_sku_5d89
 movzx eax, al
 mov ecx, dword [ebp - 0x30]
 cmp ebx, eax
@@ -17845,7 +17744,7 @@ mov dword [ebp - 0x34], 0
 xor ebx, ebx
 
 loc_fffaf6d2:
-call fcn_fffc5d89  ; call 0xfffc5d89
+call mrc_sku_5d89
 movzx eax, al
 cmp ebx, eax
 jb short loc_fffaf684  ; jb 0xfffaf684
@@ -17922,7 +17821,7 @@ add esi, 6
 add esp, 0x10
 
 loc_fffaf797:
-call fcn_fffc5d89  ; call 0xfffc5d89
+call mrc_sku_5d89
 movzx eax, al
 cmp ebx, eax
 jb short loc_fffaf762  ; jb 0xfffaf762
@@ -18005,7 +17904,7 @@ loc_fffaf865:
 inc ebx
 
 loc_fffaf866:
-call fcn_fffc5d89  ; call 0xfffc5d89
+call mrc_sku_5d89
 movzx eax, al
 cmp ebx, eax
 jb loc_fffaf7d8  ; jb 0xfffaf7d8
@@ -18044,7 +17943,7 @@ loc_fffaf8cb:
 inc ebx
 
 loc_fffaf8cc:
-call fcn_fffc5d89  ; call 0xfffc5d89
+call mrc_sku_5d89
 movzx eax, al
 cmp ebx, eax
 jb short loc_fffaf89b  ; jb 0xfffaf89b
@@ -31982,7 +31881,7 @@ loc_fffb9c90:
 xor ebx, ebx
 
 loc_fffb9c92:
-call fcn_fffc5da5  ; call 0xfffc5da5
+call mrc_sku_5da5
 cmp bl, al
 jb short loc_fffb9c57  ; jb 0xfffb9c57
 jmp short loc_fffb9c35  ; jmp 0xfffb9c35
@@ -32197,7 +32096,7 @@ loc_fffb9f25:
 inc byte [ebp - 0x34]
 
 loc_fffb9f28:
-call fcn_fffc5da5  ; call 0xfffc5da5
+call mrc_sku_5da5
 cmp byte [ebp - 0x34], al
 jb short loc_fffb9ec7  ; jb 0xfffb9ec7
 mov eax, esi
@@ -32237,7 +32136,7 @@ inc edx
 
 loc_fffb9f95:
 mov byte [ebp - 0x48], dl
-call fcn_fffc5da5  ; call 0xfffc5da5
+call mrc_sku_5da5
 mov dl, byte [ebp - 0x48]
 cmp dl, al
 jb short loc_fffb9f46  ; jb 0xfffb9f46
@@ -47402,36 +47301,6 @@ loc_fffc5d87:  ; not directly referenced
 pop ebp
 ret
 
-fcn_fffc5d89:
-push ebp
-mov ebp, esp
-call mrc_sku_type
-lea ecx, [eax - 1]
-xor edx, edx
-cmp ecx, 1
-ja short loc_fffc5da1  ; ja 0xfffc5da1
-mov dl, byte [eax + ref_fffcc240 - 1]
-
-loc_fffc5da1:
-mov al, dl
-pop ebp
-ret
-
-fcn_fffc5da5:
-push ebp
-mov ebp, esp
-call mrc_sku_type
-lea ecx, [eax - 1]
-xor edx, edx
-cmp ecx, 1
-ja short loc_fffc5dbd  ; ja 0xfffc5dbd
-mov dl, byte [eax + ref_fffcc241]  ; mov dl, byte [eax - 0x33dbf]
-
-loc_fffc5dbd:
-mov al, dl
-pop ebp
-ret
-
 fcn_fffc5dc1:
 push ebp
 mov ebp, esp
@@ -55764,14 +55633,6 @@ dd loc_fffc6365
 dd loc_fffc6354
 dd loc_fffc6283
 dd loc_fffc63a7
-
-ref_fffcc240:
-db 0x0e
-
-ref_fffcc241:
-db 0x08
-db 0x08
-db 0x06
 
 ref_fffcc244:
 dd 0x03020100
