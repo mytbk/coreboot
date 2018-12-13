@@ -674,7 +674,7 @@ mov edx, dword [0xf0000060]
 and edx, 0xfc000000
 cmp eax, 1
 mov dx, word [edx + 0xf8002]
-jne loc_fffa3bb5  ; jne 0xfffa3bb5
+jne loc_fffa3bb5
 mov eax, edx
 and eax, 0xfffffffd
 cmp ax, 0x8c44
@@ -730,6 +730,256 @@ movzx eax, al
 cmp ebx, eax
 jl short loc_fffa3a6d
 
+loc_fffa3ab5:
+sub esp, 0xc
+push ref_fffcc5c7  ; push 0xfffcc5c7
+call mrc_printk  ; call 0xfffa1253
+mov eax, dword [0xf0000060]
+mov ebx, dword [0xff7d7538]
+and eax, 0xfc000000
+mov edx, dword [eax + 0xf80f0]
+and edx, 0xfffffffe
+mov word [edx + 0x3424], 0x10
+mov eax, dword [edx + 0x3428]
+or eax, 1
+mov dword [edx + 0x3428], eax
+mov eax, dword [0xf0000060]
+add esp, 0x10
+and eax, 0xfc000000
+mov ax, word [eax + 0xf80a4]
+test al, 4
+je loc_fffa3c99
+jmp near loc_fffa3c2e
+
+loc_fffa3b14:
+cmp dx, 0x8c4f
+sete cl
+cmp dx, 0x8c49
+sete al
+or cl, al
+jne short loc_fffa3ba2  ; jne 0xfffa3ba2
+cmp dx, 0x8c41
+sete cl
+cmp dx, 0x8c4b
+sete al
+or cl, al
+jne short loc_fffa3ba2  ; jne 0xfffa3ba2
+add dx, 0x63bf
+xor ebx, ebx
+cmp dx, 6
+jbe short loc_fffa3ba4  ; jbe 0xfffa3ba4
+jmp near loc_fffa3ab5
+
+loc_fffa3b4e:
+imul eax, ebx, 6
+lea eax, [ebp + eax - 0x402]
+mov dl, byte [eax + 1]
+cmp dl, 5
+jne short loc_fffa3b62  ; jne 0xfffa3b62
+jmp short loc_fffa3b84  ; jmp 0xfffa3b84
+
+loc_fffa3b62:
+cmp dl, 2
+jne short loc_fffa3b7a  ; jne 0xfffa3b7a
+cmp word [eax + 2], 0x50
+mov byte [eax + 4], 4
+sbb edx, edx
+add edx, 2
+mov byte [eax + 5], dl
+jmp short loc_fffa3b9f  ; jmp 0xfffa3b9f
+
+loc_fffa3b7a:
+mov dx, word [eax + 2]
+cmp dx, 0x6f
+ja short loc_fffa3b8a  ; ja 0xfffa3b8a
+
+loc_fffa3b84:
+mov byte [eax + 4], 5
+jmp short loc_fffa3b95  ; jmp 0xfffa3b95
+
+loc_fffa3b8a:
+cmp dx, 0xff
+mov byte [eax + 4], 6
+ja short loc_fffa3b9b  ; ja 0xfffa3b9b
+
+loc_fffa3b95:
+mov byte [eax + 5], 2
+jmp short loc_fffa3b9f  ; jmp 0xfffa3b9f
+
+loc_fffa3b9b:
+mov byte [eax + 5], 3
+
+loc_fffa3b9f:
+inc ebx
+jmp short loc_fffa3ba4  ; jmp 0xfffa3ba4
+
+loc_fffa3ba2:
+xor ebx, ebx
+
+loc_fffa3ba4:
+call fcn_fffc5d89  ; call 0xfffc5d89
+movzx eax, al
+cmp ebx, eax
+jl short loc_fffa3b4e
+jmp near loc_fffa3ab5
+
+loc_fffa3bb5:
+cmp eax, 2
+jne loc_fffa3ab5
+jmp short loc_fffa3c1b  ; jmp 0xfffa3c1b
+
+loc_fffa3bc0:
+imul eax, ebx, 6
+lea esi, [ebp + eax - 0x402]
+mov al, byte [esi + 1]
+cmp al, 3
+sete cl
+test al, al
+sete dl
+or cl, dl
+je short loc_fffa3bf3
+mov ax, word [esi + 2]
+cmp ax, 0x6f
+ja short loc_fffa3be7
+jmp short loc_fffa3c0a
+
+loc_fffa3be7:
+cmp ax, 0xff
+mov byte [esi + 4], 6
+ja short loc_fffa3c14  ; ja 0xfffa3c14
+jmp short loc_fffa3c0e  ; jmp 0xfffa3c0e
+
+loc_fffa3bf3:
+cmp al, 2
+jne short loc_fffa3c0a  ; jne 0xfffa3c0a
+cmp word [esi + 2], 0x50
+mov byte [esi + 4], 4
+sbb eax, eax
+add eax, 2
+mov byte [esi + 5], al
+jmp short loc_fffa3c18
+
+loc_fffa3c0a:
+mov byte [esi + 4], 5
+
+loc_fffa3c0e:
+mov byte [esi + 5], 2
+jmp short loc_fffa3c18  ; jmp 0xfffa3c18
+
+loc_fffa3c14:
+mov byte [esi + 5], 3
+
+loc_fffa3c18:
+inc ebx
+jmp short loc_fffa3c1d  ; jmp 0xfffa3c1d
+
+loc_fffa3c1b:
+xor ebx, ebx
+
+loc_fffa3c1d:
+call fcn_fffc5d89  ; call 0xfffc5d89
+movzx eax, al
+cmp ebx, eax
+jl short loc_fffa3bc0  ; jl 0xfffa3bc0
+jmp near loc_fffa3ab5
+
+loc_fffa3c2e:
+mov eax, dword [edx + 0x3410]
+or eax, 0x10
+mov dword [edx + 0x3410], eax
+mov eax, dword [edx + 0x3410]
+in al, 0x70
+mov esi, eax
+mov eax, dword [edx + 0x3410]
+and eax, 0xffffffef
+and esi, 0xffffff80
+mov dword [edx + 0x3410], eax
+mov ecx, esi
+mov eax, dword [edx + 0x3410]
+or ecx, 0xa
+mov al, cl
+out 0x70, al
+in al, 0x71
+and eax, 0xffffff8f
+or eax, 0x60
+out 0x71, al
+or esi, 0xb
+mov eax, esi
+out 0x70, al
+in al, 0x71
+or eax, 0xffffff80
+out 0x71, al
+mov al, cl
+out 0x70, al
+in al, 0x71
+and eax, 0xffffff8f
+or eax, 0x20
+out 0x71, al
+mov eax, esi
+out 0x70, al
+in al, 0x71
+and eax, 0x7f
+out 0x71, al
+
+loc_fffa3c99:
+mov dword [edx + 0x3310], 0x10
+mov eax, ebx
+call fcn_fffc7c9d  ; call 0xfffc7c9d
+mov eax, 0xc
+call mrc_alloc
+test eax, eax
+mov esi, eax
+je short loc_fffa3d32  ; je 0xfffa3d32
+mov edx, 0xc
+call mrc_zeromem
+mov eax, 0x28
+call mrc_alloc
+test eax, eax
+mov edi, eax
+je short loc_fffa3d32  ; je 0xfffa3d32
+mov edx, 0x28
+call mrc_zeromem
+mov ecx, 0x28
+mov edx, ref_fffcc8dc  ; mov edx, 0xfffcc8dc
+mov eax, edi
+call mrc_memcpy
+mov dword [esi + 8], edi
+mov dword [esi], 0x80000010
+mov dword [esi + 4], ref_fffcd534  ; mov dword [esi + 4], 0xfffcd534
+push edi
+push edi
+mov eax, dword [ebx]
+push esi
+push ebx
+call dword [eax + 0x18]  ; ucall
+pop eax
+pop edx
+mov eax, dword [ebx]
+push ref_fffcc97c  ; push 0xfffcc97c
+push ebx
+call dword [eax + 0x18]  ; ucall
+pop ecx
+pop esi
+mov eax, dword [ebx]
+push ref_fffcca30  ; push 0xfffcca30
+push ebx
+call dword [eax + 0x24]  ; ucall
+pop edi
+pop eax
+mov eax, dword [ebx]
+push ref_fffcd560  ; push 0xfffcd560
+push ebx
+call dword [eax + 0x24]  ; ucall
+add esp, 0x10
+
+loc_fffa3d32:
+push ecx
+push 0
+push 0
+push dword [0xff7d7538]
+call fcn_fffb9720  ; call 0xfffb9720
+mov dword [esp], ref_fffcc5e7  ; 'System Agent: Initializing PCH (SMBUS)',0x0a,0x00
+call mrc_printk  ; call 0xfffa1253
 */
 ref_fffc9e38:
 dd fcn_fffaea18
@@ -814,6 +1064,7 @@ struct usb2_setting
   uint8_t f5;
 };
 
+static *PeiCore; // 0xff7d7538
 int __attribute((regparm(1))) do_raminit(struct pei_data *pd)
 {
   struct pei_data *pei; // ebp - 0x63c
@@ -1254,8 +1505,12 @@ mov dword [ebp - 0x1c], edx
   edx = [0xf0000060] & 0xfc000000;
   dx = word [edx + 0xf8002];
 
-  if (eax != 1)
-    goto loc_fffa3bb5;
+  if (eax != 1) {
+	  if (eax != 2)
+		  goto loc_fffa3ab5;
+	  else
+		  goto loc_fffa3c1b;
+  }
 
   eax = edx & 0xfffffffd;
   if (ax == 0x8c44 || ax == 0x8c4c)
@@ -1266,18 +1521,16 @@ mov dword [ebp - 0x1c], edx
   if (dx == 0x8c50)
     al = 1;
   cl |= al;
-  if (cl != 0)
-    goto loc_fffa3aa7;
-
-  eax = edx & 0xfffffff7;
-  if (ax == 0x8c42)
-    goto loc_fffa3aa7;
-  goto loc_fffa3b14;
+  if (cl == 0) {
+	  eax = edx & 0xfffffff7;
+	  if (ax != 0x8c42)
+		  goto loc_fffa3b14;
+  }
 
  loc_fffa3a6d:
  loc_fffa3aa7:
   for (int i = 0; i < fcn_fffc5d89(); i++) {
-    eax = (ebp - 0x402)[i]; /* usb2 {.en, .location, .length, .f4, .f5 } */
+    eax = &(ebp - 0x402)[i]; /* usb2 {.en, .location, .length, .f4, .f5 } */
     if (eax->location == 0) {
       dx = eax->length;
       eax->f4 = 4;
@@ -1296,109 +1549,61 @@ mov dword [ebp - 0x1c], edx
 
  loc_fffa3ab5:
   mrc_printk("System Agent: Initializing PCH\n");
-
-
-}
-
-do_raminit:
-loc_fffa3ab5:
-sub esp, 0xc
-push ref_fffcc5c7  ; push 0xfffcc5c7
-call mrc_printk  ; call 0xfffa1253
-mov eax, dword [0xf0000060]
-mov ebx, dword [0xff7d7538]
-and eax, 0xfc000000
-mov edx, dword [eax + 0xf80f0]
-and edx, 0xfffffffe
-mov word [edx + 0x3424], 0x10
+  eax = pci_mmio_read_config32(PCI_DEV(0, 0, 0), PCIEXBAR) & 0xfc000000;
+  ebx = PeiCore;
+  edx = dword [eax + 0xf80f0] & 0xfffffffe;
+  word [edx + 0x3424] = 0x10;
+  /* write to C
 mov eax, dword [edx + 0x3428]
 or eax, 1
 mov dword [edx + 0x3428], eax
-mov eax, dword [0xf0000060]
-add esp, 0x10
-and eax, 0xfc000000
-mov ax, word [eax + 0xf80a4]
-test al, 4
-je loc_fffa3c99  ; je 0xfffa3c99
-jmp near loc_fffa3c2e  ; jmp 0xfffa3c2e
+*/
+
+  eax = pci_mmio_read_config32(PCI_DEV(0, 0, 0), PCIEXBAR) & 0xfc000000;
+  ax = word [eax + 0xf80a4];
+  if ((al & 4) == 0)
+	  goto loc_fffa3c99;
+  else
+	  goto loc_fffa3c2e;
 
 loc_fffa3b14:
-cmp dx, 0x8c4f
-sete cl
-cmp dx, 0x8c49
-sete al
-or cl, al
-jne short loc_fffa3ba2  ; jne 0xfffa3ba2
-cmp dx, 0x8c41
-sete cl
-cmp dx, 0x8c4b
-sete al
-or cl, al
-jne short loc_fffa3ba2  ; jne 0xfffa3ba2
-add dx, 0x63bf
-xor ebx, ebx
-cmp dx, 6
-jbe short loc_fffa3ba4  ; jbe 0xfffa3ba4
-jmp near loc_fffa3ab5  ; jmp 0xfffa3ab5
+  if (dx == 0x8c4f || dx == 0x8c49 || dx == 0x8c41 || dx == 0x8c4b)
+	  goto loc_fffa3b4e;
+  dx += 0x63bf;
+  ebx = 0;
+  if (dx > 6)
+	  goto loc_fffa3ab5;
 
 loc_fffa3b4e:
-imul eax, ebx, 6
-lea eax, [ebp + eax - 0x402]
-mov dl, byte [eax + 1]
-cmp dl, 5
-jne short loc_fffa3b62  ; jne 0xfffa3b62
-jmp short loc_fffa3b84  ; jmp 0xfffa3b84
+  for (int i = 0; i < fcn_fffc5d89(); i++) {
+    eax = &(ebp - 0x402)[i]; /* usb2 {.en, .location, .length, .f4, .f5 } */
+    dl = eax->location;
+    if (dl != 5) {
+	    if (dl == 2) {
+		    eax->f4 = 4;
+		    eax->f5 = 2 - (eax->length < 0x50);
+	    } else {
+		    dx = eax->length;
+		    if (dx <= 0x6f) {
+			    eax->f4 = 5;
+			    eax->f5 = 2;
+		    } else {
+			    eax->f4 = 6;
+			    if (dx <= 0xff) {
+				    eax->f5 = 2;
+			    } else {
+				    eax->f5 = 3;
+			    }
+		    }
+	    }
+    } else {
+	    eax->f4 = 5;
+	    eax->f5 = 2;
+    }
+  }
+  goto loc_fffa3ab5;
 
-loc_fffa3b62:
-cmp dl, 2
-jne short loc_fffa3b7a  ; jne 0xfffa3b7a
-cmp word [eax + 2], 0x50
-mov byte [eax + 4], 4
-sbb edx, edx
-add edx, 2
-mov byte [eax + 5], dl
-jmp short loc_fffa3b9f  ; jmp 0xfffa3b9f
-
-loc_fffa3b7a:
-mov dx, word [eax + 2]
-cmp dx, 0x6f
-ja short loc_fffa3b8a  ; ja 0xfffa3b8a
-
-loc_fffa3b84:
-mov byte [eax + 4], 5
-jmp short loc_fffa3b95  ; jmp 0xfffa3b95
-
-loc_fffa3b8a:
-cmp dx, 0xff
-mov byte [eax + 4], 6
-ja short loc_fffa3b9b  ; ja 0xfffa3b9b
-
-loc_fffa3b95:
-mov byte [eax + 5], 2
-jmp short loc_fffa3b9f  ; jmp 0xfffa3b9f
-
-loc_fffa3b9b:
-mov byte [eax + 5], 3
-
-loc_fffa3b9f:
-inc ebx
-jmp short loc_fffa3ba4  ; jmp 0xfffa3ba4
-
-loc_fffa3ba2:
-xor ebx, ebx
-
-loc_fffa3ba4:
-call fcn_fffc5d89  ; call 0xfffc5d89
-movzx eax, al
-cmp ebx, eax
-jl short loc_fffa3b4e  ; jl 0xfffa3b4e
-jmp near loc_fffa3ab5  ; jmp 0xfffa3ab5
-
-loc_fffa3bb5:
-cmp eax, 2
-jne loc_fffa3ab5  ; jne 0xfffa3ab5
-jmp short loc_fffa3c1b  ; jmp 0xfffa3c1b
-
+  /* loc_fffa3c1b
 loc_fffa3bc0:
 imul eax, ebx, 6
 lea esi, [ebp + eax - 0x402]
@@ -1408,11 +1613,11 @@ sete cl
 test al, al
 sete dl
 or cl, dl
-je short loc_fffa3bf3  ; je 0xfffa3bf3
+je short loc_fffa3bf3
 mov ax, word [esi + 2]
 cmp ax, 0x6f
-ja short loc_fffa3be7  ; ja 0xfffa3be7
-jmp short loc_fffa3c0a  ; jmp 0xfffa3c0a
+ja short loc_fffa3be7
+jmp short loc_fffa3c0a
 
 loc_fffa3be7:
 cmp ax, 0xff
@@ -1428,7 +1633,7 @@ mov byte [esi + 4], 4
 sbb eax, eax
 add eax, 2
 mov byte [esi + 5], al
-jmp short loc_fffa3c18  ; jmp 0xfffa3c18
+jmp short loc_fffa3c18
 
 loc_fffa3c0a:
 mov byte [esi + 4], 5
@@ -1452,9 +1657,11 @@ call fcn_fffc5d89  ; call 0xfffc5d89
 movzx eax, al
 cmp ebx, eax
 jl short loc_fffa3bc0  ; jl 0xfffa3bc0
-jmp near loc_fffa3ab5  ; jmp 0xfffa3ab5
+jmp near loc_fffa3ab5
+*/
 
 loc_fffa3c2e:
+  /*
 mov eax, dword [edx + 0x3410]
 or eax, 0x10
 mov dword [edx + 0x3410], eax
@@ -1491,66 +1698,34 @@ out 0x70, al
 in al, 0x71
 and eax, 0x7f
 out 0x71, al
-
+*/
 loc_fffa3c99:
-mov dword [edx + 0x3310], 0x10
-mov eax, ebx
-call fcn_fffc7c9d  ; call 0xfffc7c9d
-mov eax, 0xc
-call mrc_alloc
-test eax, eax
-mov esi, eax
-je short loc_fffa3d32  ; je 0xfffa3d32
-mov edx, 0xc
-call mrc_zeromem
-mov eax, 0x28
-call mrc_alloc
-test eax, eax
-mov edi, eax
-je short loc_fffa3d32  ; je 0xfffa3d32
-mov edx, 0x28
-call mrc_zeromem
-mov ecx, 0x28
-mov edx, ref_fffcc8dc  ; mov edx, 0xfffcc8dc
-mov eax, edi
-call mrc_memcpy
-mov dword [esi + 8], edi
-mov dword [esi], 0x80000010
-mov dword [esi + 4], ref_fffcd534  ; mov dword [esi + 4], 0xfffcd534
-push edi
-push edi
-mov eax, dword [ebx]
-push esi
-push ebx
-call dword [eax + 0x18]  ; ucall
-pop eax
-pop edx
-mov eax, dword [ebx]
-push ref_fffcc97c  ; push 0xfffcc97c
-push ebx
-call dword [eax + 0x18]  ; ucall
-pop ecx
-pop esi
-mov eax, dword [ebx]
-push ref_fffcca30  ; push 0xfffcca30
-push ebx
-call dword [eax + 0x24]  ; ucall
-pop edi
-pop eax
-mov eax, dword [ebx]
-push ref_fffcd560  ; push 0xfffcd560
-push ebx
-call dword [eax + 0x24]  ; ucall
-add esp, 0x10
+  [edx + 0x3310] = 0x10;
+  eax = ebx;
+  fcn_fffc7c9d();
+  esi = eax = mrc_alloc(12);
+  if (eax != NULL) {
+	  mrc_zeromem(eax, 12);
+	  edi = eax = mrc_alloc(0x28);
+	  if (eax != NULL) {
+		  mrc_zeromem(eax, 0x28);
+		  mrc_memcpy(edi, ref_fffcc8dc, 0x28);
+		  [esi + 8] = edi;
+		  [esi] = 0x80000010;
+		  [esi + 4] = ref_fffcd534;
 
-loc_fffa3d32:
-push ecx
-push 0
-push 0
-push dword [0xff7d7538]
-call fcn_fffb9720  ; call 0xfffb9720
-mov dword [esp], ref_fffcc5e7  ; 'System Agent: Initializing PCH (SMBUS)',0x0a,0x00
-call mrc_printk  ; call 0xfffa1253
+		  PeiCore->[0]->0x18(PeiCore, esi, edi, edi);
+		  PeiCore->[0]->0x18(PeiCore, ref_fffcc97c);
+		  PeiCore->[0]->0x24 ...;
+		  PeiCore->[0]->0x24 ...;
+	  }
+  }
+
+  fcn_fffb9720(PeiCore, 0, 0, ecx);
+  mrc_printk("System Agent: Initializing PCH (SMBUS)\n");
+}
+
+do_raminit:
 mov eax, 0x10f
 mov esi, dword [0xff7d7538]
 call mrc_alloc
