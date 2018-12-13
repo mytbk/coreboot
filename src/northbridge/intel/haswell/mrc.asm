@@ -47410,7 +47410,7 @@ lea ecx, [eax - 1]
 xor edx, edx
 cmp ecx, 1
 ja short loc_fffc5da1  ; ja 0xfffc5da1
-mov dl, byte [eax + ref_fffcc23f]  ; mov dl, byte [eax - 0x33dc1]
+mov dl, byte [eax + ref_fffcc240 - 1]
 
 loc_fffc5da1:
 mov al, dl
@@ -55763,12 +55763,9 @@ dd loc_fffc63f4
 dd loc_fffc6365
 dd loc_fffc6354
 dd loc_fffc6283
-db 0xa7
-db 0x63
-db 0xfc
+dd loc_fffc63a7
 
-ref_fffcc23f:
-db 0xff
+ref_fffcc240:
 db 0x0e
 
 ref_fffcc241:
