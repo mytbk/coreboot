@@ -20,6 +20,7 @@ extern mrc_smbus_outb
 extern mrc_sku_5d89
 extern mrc_sku_5da5
 extern fcn_fffa0250
+extern printGuid
 
 mrc_entry:
 mov ecx, esp
@@ -2438,37 +2439,6 @@ pop edi
 pop ebp
 ret
 
-fcn_fffa2a2c:  ; not directly referenced
-push ebp
-mov ebp, esp
-lea esp, [esp - 8]
-movzx edx, byte [eax + 0xf]
-push edx
-movzx edx, byte [eax + 0xe]
-push edx
-movzx edx, byte [eax + 0xd]
-push edx
-movzx edx, byte [eax + 0xc]
-push edx
-movzx edx, byte [eax + 0xb]
-push edx
-movzx edx, byte [eax + 0xa]
-push edx
-movzx edx, byte [eax + 9]
-push edx
-movzx edx, byte [eax + 8]
-push edx
-movzx edx, word [eax + 6]
-push edx
-movzx edx, word [eax + 4]
-push edx
-push dword [eax]
-push ref_fffcc4d1  ; push 0xfffcc4d1
-call mrc_printk  ; call 0xfffa1253
-add esp, 0x30
-leave
-ret
-
 fcn_fffa2a76:  ; not directly referenced
 push ebp
 mov ebp, esp
@@ -2529,7 +2499,7 @@ inc edx
 loc_fffa2aea:  ; not directly referenced
 cmp edx, dword [ebp - 0x20]
 jl short loc_fffa2aa6  ; jl 0xfffa2aa6
-call fcn_fffa2a2c  ; call 0xfffa2a2c
+call printGuid
 mov eax, 0x8000000e
 
 loc_fffa2af9:  ; not directly referenced
@@ -2596,7 +2566,7 @@ push ref_fffcc505  ; push 0xfffcc505
 call mrc_printk  ; call 0xfffa1253
 mov edx, dword [ebp + 0xc]
 mov eax, dword [edx + 4]
-call fcn_fffa2a2c  ; call 0xfffa2a2c
+call printGuid
 add esp, 0x10
 jmp short loc_fffa2b8c  ; jmp 0xfffa2b8c
 
@@ -55803,9 +55773,6 @@ dd loc_fffc85f0
 
 ref_fffcc46a:
 db 'Copy SPD for Channel %d Dimm %d',0x0a,0x00
-
-ref_fffcc4d1:
-db '{%08x-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x}',0x0a,0x00
 
 ref_fffcc505:
 db '%s: overwrite GUID ',0x00

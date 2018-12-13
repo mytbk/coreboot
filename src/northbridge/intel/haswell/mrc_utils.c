@@ -12,12 +12,14 @@
  */
 
 #include <string.h>
+#include <console/console.h>
 
 void __attribute((regparm(3))) mrc_setmem(void *s, size_t n, int c);
 void __attribute((regparm(3))) mrc_memcpy(void *dst, const void *src, size_t n);
 void __attribute((regparm(3))) mrc_fillword(int *s, int c, size_t n);
 void __attribute((regparm(3))) mrc_zeromem(void *s, size_t n);
 char __attribute((regparm(3))) mrc_highest_bit(int a);
+void __attribute((regparm(1))) printGuid(const void *g);
 
 void __attribute((regparm(3))) mrc_setmem(void *s, size_t n, int c)
 {
@@ -53,4 +55,19 @@ char __attribute((regparm(3))) mrc_highest_bit(int a)
 	}
 
 	return result;
+}
+
+void __attribute((regparm(1))) printGuid(const void *g)
+{
+	struct guid {
+		u32 g0;
+		u16 g4;
+		u16 g6;
+		u8 g8[8];
+	};
+	const struct guid *gg = g;
+	mrc_printk("{%08x-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x}\n",
+			gg->g0, gg->g4, gg->g6, gg->g8[0], gg->g8[1],
+			gg->g8[2], gg->g8[3], gg->g8[4], gg->g8[5],
+			gg->g8[6], gg->g8[7]);
 }
