@@ -15,6 +15,8 @@ extern mrc_highest_bit
 extern mrc_main
 extern mrc_alloc
 extern mrc_sku_type
+extern mrc_smbus_inb
+extern mrc_smbus_outb
 
 mrc_entry:
 mov ecx, esp
@@ -3793,7 +3795,7 @@ or edx, 1
 mov byte [eax + 0xfb040], dl
 mov edx, 0xff
 xor eax, eax
-call fcn_fffc917f  ; call 0xfffc917f
+call mrc_smbus_outb
 mov eax, dword [0xff7d7538]
 lea ecx, [ebx + 0x10]
 push edi
@@ -47585,7 +47587,7 @@ jne loc_fffc642a  ; jne 0xfffc642a
 loc_fffc5f40:  ; not directly referenced
 xor eax, eax
 mov ebx, 0x80000012
-call fcn_fffc91a8  ; call 0xfffc91a8
+call mrc_smbus_inb
 test al, 0x40
 jne loc_fffc642a  ; jne 0xfffc642a
 test al, 1
@@ -47597,7 +47599,7 @@ jmp near loc_fffc6416  ; jmp 0xfffc6416
 loc_fffc5f64:  ; not directly referenced
 movzx edx, al
 xor eax, eax
-call fcn_fffc917f  ; call 0xfffc917f
+call mrc_smbus_outb
 lea ecx, [esi + esi + 1]
 mov byte [ebp - 0x1d], cl
 dec ecx
@@ -47651,7 +47653,7 @@ loc_fffc5ff0:  ; not directly referenced
 mov ecx, dword [ebp + 0x24]
 mov eax, 5
 movzx edx, byte [ecx]
-call fcn_fffc917f  ; call 0xfffc917f
+call mrc_smbus_outb
 movzx esi, byte [ebp - 0x1e]
 mov dword [edi], 1
 jmp short loc_fffc6010  ; jmp 0xfffc6010
@@ -47684,11 +47686,11 @@ loc_fffc6058:  ; not directly referenced
 mov ecx, dword [ebp + 0x24]
 mov eax, 6
 movzx edx, byte [ecx + 1]
-call fcn_fffc917f  ; call 0xfffc917f
+call mrc_smbus_outb
 mov ecx, dword [ebp + 0x24]
 mov eax, 5
 movzx edx, byte [ecx]
-call fcn_fffc917f  ; call 0xfffc917f
+call mrc_smbus_outb
 movzx esi, byte [ebp - 0x1e]
 cmp dword [edi], 2
 sbb ebx, ebx
@@ -47702,7 +47704,7 @@ jmp short loc_fffc60f4  ; jmp 0xfffc60f4
 loc_fffc6094:  ; not directly referenced
 movzx edx, byte [edi]
 mov eax, 5
-call fcn_fffc917f  ; call 0xfffc917f
+call mrc_smbus_outb
 movzx esi, byte [ebp - 0x1e]
 mov cl, byte [edi]
 mov byte [ebp - 0x20], cl
@@ -47722,11 +47724,11 @@ loc_fffc60ba:  ; not directly referenced
 mov ecx, dword [ebp + 0x24]
 mov eax, 6
 movzx edx, byte [ecx + 1]
-call fcn_fffc917f  ; call 0xfffc917f
+call mrc_smbus_outb
 mov ecx, dword [ebp + 0x24]
 mov eax, 5
 movzx edx, byte [ecx]
-call fcn_fffc917f  ; call 0xfffc917f
+call mrc_smbus_outb
 cmp dword [edi], 2
 mov byte [ebp - 0x1c], 0x10
 sbb ebx, ebx
@@ -47745,7 +47747,7 @@ cmp eax, 0x1f
 ja short loc_fffc6138  ; ja 0xfffc6138
 movzx edx, byte [edi]
 mov eax, 5
-call fcn_fffc917f  ; call 0xfffc917f
+call mrc_smbus_outb
 mov cl, byte [edi]
 mov byte [ebp - 0x1c], 0x1c
 movzx esi, byte [ebp - 0x1d]
@@ -47788,9 +47790,9 @@ cmp byte [ebp - 0x25], 1
 cmove edx, eax
 mov eax, 0xd
 movzx edx, dl
-call fcn_fffc917f  ; call 0xfffc917f
+call mrc_smbus_outb
 mov eax, 2
-call fcn_fffc91a8  ; call 0xfffc91a8
+call mrc_smbus_inb
 cmp dword [ebp - 0x30], 9
 je short loc_fffc61a4  ; je 0xfffc61a4
 
@@ -47798,7 +47800,7 @@ loc_fffc6173:  ; not directly referenced
 mov eax, esi
 movzx edx, al
 mov eax, 4
-call fcn_fffc917f  ; call 0xfffc917f
+call mrc_smbus_outb
 cmp dword [ebp + 0x18], 4
 jne short loc_fffc61c4  ; jne 0xfffc61c4
 jmp short loc_fffc61b4  ; jmp 0xfffc61b4
@@ -47808,7 +47810,7 @@ mov eax, dword [ebp + 0x24]
 movzx edx, byte [eax + ecx]
 mov eax, 7
 mov dword [ebp - 0x34], ecx
-call fcn_fffc917f  ; call 0xfffc917f
+call mrc_smbus_outb
 mov ecx, dword [ebp - 0x34]
 inc ecx
 jmp short loc_fffc61ad  ; jmp 0xfffc61ad
@@ -47835,17 +47837,17 @@ movzx edx, byte [ebp - 0x1f]
 mov eax, 3
 
 loc_fffc61cd:  ; not directly referenced
-call fcn_fffc917f  ; call 0xfffc917f
+call mrc_smbus_outb
 mov dl, byte [ebp - 0x1c]
 mov eax, 2
 add edx, 0x40
 mov esi, 0x186a0
 movzx edx, dl
-call fcn_fffc917f  ; call 0xfffc917f
+call mrc_smbus_outb
 
 loc_fffc61ea:  ; not directly referenced
 xor eax, eax
-call fcn_fffc91a8  ; call 0xfffc91a8
+call mrc_smbus_inb
 test al, 0x8e
 jne loc_fffc641d  ; jne 0xfffc641d
 mov eax, 0xa
@@ -47856,7 +47858,7 @@ jmp near loc_fffc6328  ; jmp 0xfffc6328
 
 loc_fffc620b:  ; not directly referenced
 mov eax, 0xc
-call fcn_fffc91a8  ; call 0xfffc91a8
+call mrc_smbus_inb
 and eax, 1
 cmp al, 1
 sbb ebx, ebx
@@ -47869,13 +47871,13 @@ test al, 8
 je short loc_fffc626d  ; je 0xfffc626d
 xor eax, eax
 mov edx, 8
-call fcn_fffc917f  ; call 0xfffc917f
+call mrc_smbus_outb
 xor eax, eax
 mov edx, 0xff
-call fcn_fffc917f  ; call 0xfffc917f
+call mrc_smbus_outb
 mov edx, 1
 mov eax, 0xc
-call fcn_fffc917f  ; call 0xfffc917f
+call mrc_smbus_outb
 mov eax, 0xa
 call fcn_fffc5e98  ; call 0xfffc5e98
 dec dword [ebp - 0x24]
@@ -47891,7 +47893,7 @@ jmp dword [eax*4 + ref_fffcc218]  ; ujmp: jmp dword [eax*4 - 0x33de8]
 
 loc_fffc6283:  ; not directly referenced
 mov eax, 6
-call fcn_fffc91a8  ; call 0xfffc91a8
+call mrc_smbus_inb
 mov ecx, dword [ebp + 0x24]
 mov byte [ecx + 1], al
 jmp near loc_fffc6340  ; jmp 0xfffc6340
@@ -47904,7 +47906,7 @@ jmp near loc_fffc6340  ; jmp 0xfffc6340
 
 loc_fffc62a8:  ; not directly referenced
 mov eax, 7
-call fcn_fffc91a8  ; call 0xfffc91a8
+call mrc_smbus_inb
 mov ecx, dword [ebp + 0x24]
 mov byte [ecx + esi], al
 mov eax, dword [edi]
@@ -47912,7 +47914,7 @@ lea edx, [eax - 2]
 cmp esi, edx
 jne short loc_fffc62d3  ; jne 0xfffc62d3
 mov eax, 2
-call fcn_fffc91a8  ; call 0xfffc91a8
+call mrc_smbus_inb
 or eax, 0x20
 movzx edx, al
 jmp short loc_fffc62ea  ; jmp 0xfffc62ea
@@ -47922,18 +47924,18 @@ dec eax
 cmp esi, eax
 jne short loc_fffc62f4  ; jne 0xfffc62f4
 mov eax, 2
-call fcn_fffc91a8  ; call 0xfffc91a8
+call mrc_smbus_inb
 mov edx, eax
 and edx, 0xdf
 
 loc_fffc62ea:  ; not directly referenced
 mov eax, 2
-call fcn_fffc917f  ; call 0xfffc917f
+call mrc_smbus_outb
 
 loc_fffc62f4:  ; not directly referenced
 xor eax, eax
 mov edx, 0x80
-call fcn_fffc917f  ; call 0xfffc917f
+call mrc_smbus_outb
 mov eax, dword [edi]
 dec eax
 cmp esi, eax
@@ -47942,7 +47944,7 @@ mov dword [ebp - 0x1c], 0x64
 
 loc_fffc630e:  ; not directly referenced
 xor eax, eax
-call fcn_fffc91a8  ; call 0xfffc91a8
+call mrc_smbus_inb
 test al, al
 js short loc_fffc6332  ; js 0xfffc6332
 mov eax, 0xa
@@ -47964,7 +47966,7 @@ jmp near loc_fffc63f4  ; jmp 0xfffc63f4
 
 loc_fffc6340:  ; not directly referenced
 mov eax, 5
-call fcn_fffc91a8  ; call 0xfffc91a8
+call mrc_smbus_inb
 mov ecx, dword [ebp + 0x24]
 mov byte [ecx], al
 jmp near loc_fffc63f4  ; jmp 0xfffc63f4
@@ -47972,13 +47974,13 @@ jmp near loc_fffc63f4  ; jmp 0xfffc63f4
 loc_fffc6354:  ; not directly referenced
 mov edx, 0x80
 xor eax, eax
-call fcn_fffc917f  ; call 0xfffc917f
+call mrc_smbus_outb
 jmp near loc_fffc63f4  ; jmp 0xfffc63f4
 
 loc_fffc6365:  ; not directly referenced
 mov eax, 5
 xor esi, esi
-call fcn_fffc91a8  ; call 0xfffc91a8
+call mrc_smbus_inb
 movzx edx, al
 cmp dword [edi], edx
 mov al, 1
@@ -47988,7 +47990,7 @@ jmp short loc_fffc6399  ; jmp 0xfffc6399
 loc_fffc637c:  ; not directly referenced
 mov eax, 7
 mov dword [ebp - 0x34], edx
-call fcn_fffc91a8  ; call 0xfffc91a8
+call mrc_smbus_inb
 mov ecx, dword [ebp + 0x24]
 mov byte [ecx + esi], al
 inc esi
@@ -48008,7 +48010,7 @@ jmp short loc_fffc63f4  ; jmp 0xfffc63f4
 
 loc_fffc63a7:  ; not directly referenced
 mov eax, 5
-call fcn_fffc91a8  ; call 0xfffc91a8
+call mrc_smbus_inb
 test al, al
 je short loc_fffc63e8  ; je 0xfffc63e8
 movzx ecx, al
@@ -48023,7 +48025,7 @@ jmp short loc_fffc63e0  ; jmp 0xfffc63e0
 loc_fffc63c9:  ; not directly referenced
 mov eax, 7
 mov dword [ebp - 0x34], edx
-call fcn_fffc91a8  ; call 0xfffc91a8
+call mrc_smbus_inb
 mov ecx, dword [ebp + 0x24]
 mov byte [ecx + esi], al
 inc esi
@@ -48045,15 +48047,15 @@ mov ebx, 0x80000007
 loc_fffc63f4:  ; not directly referenced
 mov edx, 0xff
 xor eax, eax
-call fcn_fffc917f  ; call 0xfffc917f
+call mrc_smbus_outb
 mov edx, 1
 mov eax, 0xc
-call fcn_fffc917f  ; call 0xfffc917f
+call mrc_smbus_outb
 xor edx, edx
 mov eax, 0xd
 
 loc_fffc6416:  ; not directly referenced
-call fcn_fffc917f  ; call 0xfffc917f
+call mrc_smbus_outb
 jmp short loc_fffc642a  ; jmp 0xfffc642a
 
 loc_fffc641d:  ; not directly referenced
@@ -52052,36 +52054,6 @@ loc_fffc9177:
 lea esp, [esp + 0x10]
 pop ebx
 pop esi
-pop ebp
-ret
-
-fcn_fffc917f:
-push ebp
-mov ebp, esp
-push esi
-mov esi, edx
-push ebx
-mov ebx, dword [0xf0000060]
-and ebx, 0xfc000000
-mov ecx, dword [ebx + 0xfb020]
-and ecx, 0xffe0
-lea edx, [eax + ecx]
-mov eax, esi
-out dx, al
-pop ebx
-pop esi
-pop ebp
-ret
-
-fcn_fffc91a8:  ; not directly referenced
-push ebp
-mov ecx, dword [0xf0000060]
-and ecx, 0xfc000000
-mov ebp, esp
-mov edx, dword [ecx + 0xfb020]
-and edx, 0xffe0
-add edx, eax
-in al, dx
 pop ebp
 ret
 
