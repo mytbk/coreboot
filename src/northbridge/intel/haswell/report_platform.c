@@ -107,6 +107,24 @@ static void report_pch_info(void)
 		pch_type, dev_id, pci_read_config8(PCH_LPC_DEV, 8));
 }
 
+int mrc_sku_type(void);
+int mrc_sku_type(void)
+{
+	int i;
+	u16 dev_id = pci_read_config16(PCH_LPC_DEV, 2);
+
+	for (i = 0; i < ARRAY_SIZE(pch_table); i++) {
+		if (pch_table[i].dev_id == dev_id)
+			break;
+	}
+	if (dev_id == 0x9c47 || i == ARRAY_SIZE(pch_table))
+		return 3;
+	if (dev_id < 0x9000)
+		return 1;
+	else
+		return 2;
+}
+
 void report_platform_info(void)
 {
 	report_cpu_info();
