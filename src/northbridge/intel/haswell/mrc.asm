@@ -14,6 +14,7 @@ extern mrc_zeromem
 extern mrc_highest_bit
 extern mrc_main
 extern mrc_alloc
+extern mrc_sku_type
 
 mrc_entry:
 mov ecx, esp
@@ -3453,7 +3454,7 @@ mov eax, 0xfffffffe
 jmp near loc_fffa56a4  ; jmp 0xfffa56a4
 
 loc_fffa3a17:
-call fcn_fffc5ca7  ; call 0xfffc5ca7
+call mrc_sku_type
 mov edx, dword [0xf0000060]
 and edx, 0xfc000000
 cmp eax, 1
@@ -16769,7 +16770,7 @@ and eax, 0xfffffffe
 mov dword [ebp - 0x44], eax
 mov ecx, dword [eax + 0x3418]
 mov dword [ebp - 0x48], ecx
-call fcn_fffc5ca7  ; call 0xfffc5ca7
+call mrc_sku_type
 mov dword [ebp - 0x5c], eax
 mov eax, dword [0xf0000060]
 and eax, 0xfc000000
@@ -16813,7 +16814,7 @@ or eax, 0x8000000
 test byte [edx + 0x57], 3
 cmovne eax, dword [ebp - 0x48]
 mov dword [ebp - 0x48], eax
-call fcn_fffc5ca7  ; call 0xfffc5ca7
+call mrc_sku_type
 mov dword [ebp - 0x60], eax
 mov byte [ebp - 0x3c], 0
 jmp near loc_fffaeca4  ; jmp 0xfffaeca4
@@ -16938,7 +16939,7 @@ loc_fffaeca1:
 inc byte [ebp - 0x3c]
 
 loc_fffaeca4:
-call fcn_fffc5ca7  ; call 0xfffc5ca7
+call mrc_sku_type
 dec eax
 cmp eax, 1
 ja short loc_fffaecbe  ; ja 0xfffaecbe
@@ -17002,7 +17003,7 @@ or eax, 6
 mov word [edi + 0xa0004], ax
 
 loc_fffaed66:
-call fcn_fffc5ca7  ; call 0xfffc5ca7
+call mrc_sku_type
 mov esi, eax
 call fcn_fffc5dc1  ; call 0xfffc5dc1
 mov edx, dword [ebp - 0x30]
@@ -17155,7 +17156,7 @@ loc_fffaefca:
 mov dword [ebx + 0x8188], eax
 
 loc_fffaefd0:
-call fcn_fffc5ca7  ; call 0xfffc5ca7
+call mrc_sku_type
 dec eax
 cmp eax, 1
 ja short loc_fffaefee  ; ja 0xfffaefee
@@ -17172,7 +17173,7 @@ loc_fffaeff7:
 mov ecx, dword [ebp - 0x30]
 test byte [ecx + 0x57], 3
 je loc_fffaf5ea  ; je 0xfffaf5ea
-call fcn_fffc5ca7  ; call 0xfffc5ca7
+call mrc_sku_type
 cmp eax, 1
 jne loc_fffaf0b7  ; jne 0xfffaf0b7
 mov eax, dword [edi + 0xa00e0]
@@ -17743,7 +17744,7 @@ and eax, 0xfffffffe
 mov dword [ebx + 0x80], eax
 
 loc_fffaf5ea:
-call fcn_fffc5ca7  ; call 0xfffc5ca7
+call mrc_sku_type
 mov dword [ebp - 0x34], eax
 xor esi, esi
 xor edx, edx
@@ -17801,7 +17802,7 @@ mov ecx, dword [ebp - 0x50]
 mov dword [ecx + 0x74], esi
 
 loc_fffaf66e:
-call fcn_fffc5ca7  ; call 0xfffc5ca7
+call mrc_sku_type
 mov dword [ebp - 0x3c], eax
 mov eax, dword [ebp - 0x30]
 test byte [eax + 0x57], 3
@@ -17874,7 +17875,7 @@ loc_fffaf71b:
 inc ebx
 
 loc_fffaf71c:
-call fcn_fffc5ca7  ; call 0xfffc5ca7
+call mrc_sku_type
 dec eax
 xor edx, edx
 cmp eax, 1
@@ -17935,7 +17936,7 @@ in ax, dx
 mov word [ebp - 0x38], ax
 or eax, 2
 out dx, ax
-call fcn_fffc5ca7  ; call 0xfffc5ca7
+call mrc_sku_type
 mov esi, eax
 xor ebx, ebx
 jmp near loc_fffaf866  ; jmp 0xfffaf866
@@ -18006,7 +18007,7 @@ call fcn_fffc5d89  ; call 0xfffc5d89
 movzx eax, al
 cmp ebx, eax
 jb loc_fffaf7d8  ; jb 0xfffaf7d8
-call fcn_fffc5ca7  ; call 0xfffc5ca7
+call mrc_sku_type
 mov edx, dword [ebp - 0x30]
 mov dword [ebp - 0x2c], eax
 test byte [edx + 0x57], 3
@@ -18079,7 +18080,7 @@ inc ecx
 
 loc_fffaf91a:
 mov dword [ebp - 0x70], ecx
-call fcn_fffc5ca7  ; call 0xfffc5ca7
+call mrc_sku_type
 dec eax
 xor edx, edx
 cmp eax, 1
@@ -31649,7 +31650,7 @@ and edx, 0xfc000000
 lea edx, [ecx + edx + 0xf80dc]
 mov byte [edx], al
 mov ebx, dword [ebp - 0x28]
-call fcn_fffc5ca7  ; call 0xfffc5ca7
+call mrc_sku_type
 mov dword [ebp - 0x38], eax
 mov ebx, dword [ebx + 2]
 mov dword [ebp - 0x2c], ebx
@@ -31945,7 +31946,7 @@ call fcn_fffc90fb  ; call 0xfffc90fb
 add esp, 0x10
 
 loc_fffb9c2b:
-call fcn_fffc5ca7  ; call 0xfffc5ca7
+call mrc_sku_type
 cmp eax, 2
 je short loc_fffb9c90  ; je 0xfffb9c90
 
@@ -31955,7 +31956,7 @@ mov eax, dword [esi + 0xa00b0]
 and al, 0x7f
 or eax, 0x10000
 mov dword [esi + 0xa00b0], eax
-call fcn_fffc5ca7  ; call 0xfffc5ca7
+call mrc_sku_type
 cmp eax, 2
 jne short loc_fffb9cc6  ; jne 0xfffb9cc6
 jmp short loc_fffb9c9d  ; jmp 0xfffb9c9d
@@ -32131,7 +32132,7 @@ mov byte [ebp - 0x1c], 0x1d
 mov byte [ebp - 0x1b], 0
 mov byte [ebp - 0x1a], 0x1a
 mov byte [ebp - 0x19], 0
-call fcn_fffc5ca7  ; call 0xfffc5ca7
+call mrc_sku_type
 movzx edx, byte [ebx + 1]
 mov dword [ebp - 0x38], eax
 shl edx, 0x14
@@ -32263,7 +32264,7 @@ mov dword [ecx], eax
 inc byte [ebp - 0x34]
 
 loc_fffb9ff7:
-call fcn_fffc5ca7  ; call 0xfffc5ca7
+call mrc_sku_type
 dec eax
 cmp eax, 1
 ja short loc_fffba00d  ; ja 0xfffba00d
@@ -32535,7 +32536,7 @@ shl eax, 0x18
 mov dword [edx], eax
 
 loc_fffba3cf:
-call fcn_fffc5ca7  ; call 0xfffc5ca7
+call mrc_sku_type
 cmp eax, 2
 jne short loc_fffba3f0  ; jne 0xfffba3f0
 test byte [esi + 2], 1
@@ -37447,7 +37448,7 @@ mov ebx, eax
 lea esp, [esp - 0x20]
 mov byte [ebp - 0x1c], dl
 mov dword [ebp - 0xc], 0
-call fcn_fffc5ca7  ; call 0xfffc5ca7
+call mrc_sku_type
 sub esp, 0xc
 lea edx, [ebp - 0xc]
 mov esi, eax
@@ -47376,66 +47377,10 @@ xor eax, eax
 leave
 ret
 
-fcn_fffc5ca7:
-mov dx, word [0xf00f8002]
-mov eax, 1
-mov ecx, edx
-and ecx, 0xfffffffd
-cmp cx, 0x8c44
-je loc_fffc5d48  ; je 0xfffc5d48
-cmp cx, 0x8c4c
-je short loc_fffc5d48  ; je 0xfffc5d48
-push ebp
-cmp dx, 0x8c5c
-mov ebp, esp
-push ebx
-sete bl
-cmp dx, 0x8c50
-sete cl
-or bl, cl
-jne short loc_fffc5d46  ; jne 0xfffc5d46
-mov ecx, edx
-and ecx, 0xfffffff7
-cmp cx, 0x8c42
-je short loc_fffc5d46  ; je 0xfffc5d46
-cmp dx, 0x8c4f
-sete bl
-cmp dx, 0x8c49
-sete cl
-or bl, cl
-jne short loc_fffc5d46  ; jne 0xfffc5d46
-cmp dx, 0x8c41
-sete bl
-cmp dx, 0x8c4b
-sete cl
-or bl, cl
-jne short loc_fffc5d46  ; jne 0xfffc5d46
-cmp dx, 0x8c58
-je short loc_fffc5d46  ; je 0xfffc5d46
-cmp dx, 0x8c54
-sete bl
-cmp dx, 0x8c52
-sete cl
-or bl, cl
-jne short loc_fffc5d46  ; jne 0xfffc5d46
-cmp dx, 0x8c56
-je short loc_fffc5d46  ; je 0xfffc5d46
-add dx, 0x63bf
-cmp dx, 7
-sbb eax, eax
-add eax, 3
-
-loc_fffc5d46:
-pop ebx
-pop ebp
-
-loc_fffc5d48:
-ret
-
 fcn_fffc5d49:  ; not directly referenced
 push ebp
 mov ebp, esp
-call fcn_fffc5ca7  ; call 0xfffc5ca7
+call mrc_sku_type
 dec eax
 jne short loc_fffc5d87  ; jne 0xfffc5d87
 mov eax, dword [0xf0000060]
@@ -47458,7 +47403,7 @@ ret
 fcn_fffc5d89:
 push ebp
 mov ebp, esp
-call fcn_fffc5ca7  ; call 0xfffc5ca7
+call mrc_sku_type
 lea ecx, [eax - 1]
 xor edx, edx
 cmp ecx, 1
@@ -47473,7 +47418,7 @@ ret
 fcn_fffc5da5:
 push ebp
 mov ebp, esp
-call fcn_fffc5ca7  ; call 0xfffc5ca7
+call mrc_sku_type
 lea ecx, [eax - 1]
 xor edx, edx
 cmp ecx, 1
@@ -50004,7 +49949,7 @@ push edi
 push esi
 push ebx
 lea esp, [esp - 0x3c]
-call fcn_fffc5ca7  ; call 0xfffc5ca7
+call mrc_sku_type
 mov dword [ebp - 0x34], eax
 mov eax, dword [0xf0000060]
 and eax, 0xfc000000
