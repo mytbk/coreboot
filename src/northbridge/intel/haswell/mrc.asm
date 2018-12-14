@@ -2224,7 +2224,7 @@ push dword [ebp - 0x1c]
 mov dword [ebp - 0x30], edx
 push esi
 push ref_fffcc46a  ; push 0xfffcc46a
-call mrc_printk  ; call 0xfffa1253
+call mrc_printk
 mov edx, dword [ebp - 0x30]
 mov ecx, 0x100
 lea eax, [edx + 0x40]
@@ -2879,7 +2879,7 @@ mov dword [0xff7d753c], eax
 cmp dword [edx], 0xf
 mov dword [ebp - 0x1bc], ref_fffcd488  ; mov dword [ebp - 0x1bc], 0xfffcd488
 mov dword [ebp - 0x1b0], ref_fffcd534  ; mov dword [ebp - 0x1b0], 0xfffcd534
-mov dword [ebp - 0x1a4], ref_fffcd524  ; mov dword [ebp - 0x1a4], 0xfffcd524
+mov dword [ebp - 0x1a4], gPeiSmbusPolicyPpiGuid
 mov dword [ebp - 0x198], ref_fffcc88c  ; mov dword [ebp - 0x198], 0xfffcc88c
 mov dword [ebp - 0x18c], ref_fffcc89c  ; mov dword [ebp - 0x18c], 0xfffcc89c
 mov dword [ebp - 0x180], gPeiBaseMemoryTestPpiGuid
@@ -2892,7 +2892,7 @@ sub esp, 0xc
 lea eax, [ebp - 0x62c]
 push ref_fffcc534  ; push 0xfffcc534
 mov dword [0xff7d7538], eax
-call mrc_printk  ; call 0xfffa1253
+call mrc_printk
 add esp, 0x10
 cmp dword [ebp - 0x20c], 2
 jne short loc_fffa39a6  ; jne 0xfffa39a6
@@ -2902,7 +2902,7 @@ je short loc_fffa39a6  ; je 0xfffa39a6
 sub esp, 0xc
 mov dword [ebp - 0x20c], 0x11
 push ref_fffcc552  ; push 0xfffcc552
-call mrc_printk  ; call 0xfffa1253
+call mrc_printk
 mov eax, dword [ebp - 0x63c]
 add esp, 0x10
 cmp dword [eax + 0x6e], 0
@@ -2952,7 +2952,7 @@ push edx
 push edx
 push eax
 push ref_fffcc574  ; push 0xfffcc574
-call mrc_printk  ; call 0xfffa1253
+call mrc_printk
 add esp, 0x10
 mov eax, 0xfffffffe
 jmp near loc_fffa56a4  ; jmp 0xfffa56a4
@@ -3021,8 +3021,8 @@ jl short loc_fffa3a6d  ; jl 0xfffa3a6d
 
 loc_fffa3ab5:
 sub esp, 0xc
-push ref_fffcc5c7  ; push 0xfffcc5c7
-call mrc_printk  ; call 0xfffa1253
+push str_init_pch  ; push 0xfffcc5c7
+call mrc_printk
 mov eax, dword [0xf0000060]
 mov ebx, dword [0xff7d7538]
 and eax, 0xfc000000
@@ -3267,15 +3267,15 @@ push 0
 push 0
 push dword [0xff7d7538]
 call fcn_fffb9720  ; call 0xfffb9720
-mov dword [esp], ref_fffcc5e7  ; mov dword [esp], 0xfffcc5e7
-call mrc_printk  ; call 0xfffa1253
+mov dword [esp], str_init_smbus
+call mrc_printk
 mov eax, 0x10f
 mov esi, dword [0xff7d7538]
 call mrc_alloc
 add esp, 0x10
 test eax, eax
 mov ebx, eax
-je loc_fffa3def  ; je 0xfffa3def
+je loc_init_usb
 mov edx, eax
 mov eax, esi
 call fcn_fffc5bf6  ; call 0xfffc5bf6
@@ -3315,15 +3315,15 @@ push esi
 call dword [eax + 0x24]  ; ucall
 add esp, 0x10
 
-loc_fffa3def:
+loc_init_usb:
 sub esp, 0xc
-push ref_fffcc60f  ; push 0xfffcc60f
-call mrc_printk  ; call 0xfffa1253
+push str_init_usb
+call mrc_printk
 pop ebx
 push dword [0xff7d7538]
 call fcn_fffaea18  ; call 0xfffaea18
-mov dword [esp], ref_fffcc635  ; mov dword [esp], 0xfffcc635
-call mrc_printk  ; call 0xfffa1253
+mov dword [esp], str_init_sa
+call mrc_printk
 mov edx, dword [0xff7d7538]
 mov dword [ebp - 0x640], edx
 call haswell_family_model
@@ -4796,8 +4796,8 @@ mov eax, dword [ecx]
 push ref_fffcc910  ; push 0xfffcc910
 push ecx
 call dword [eax + 0x18]  ; ucall
-mov dword [esp], ref_fffcc65f  ; mov dword [esp], 0xfffcc65f
-call mrc_printk  ; call 0xfffa1253
+mov dword [esp], str_init_me_uma  ; mov dword [esp], 0xfffcc65f
+call mrc_printk
 mov eax, dword [0xff7d7538]
 pop edx
 pop ecx
@@ -4805,8 +4805,8 @@ mov edx, dword [eax]
 push ref_fffcd498  ; push 0xfffcd498
 push eax
 call dword [edx + 0x18]  ; ucall
-mov dword [esp], ref_fffcc688  ; mov dword [esp], 0xfffcc688
-call mrc_printk  ; call 0xfffa1253
+mov dword [esp], str_init_memory  ; mov dword [esp], 0xfffcc688
+call mrc_printk
 mov eax, dword [0xff7d7538]
 call fcn_fffc1b54  ; call 0xfffc1b54
 mov edx, 0xfffe
@@ -4819,7 +4819,7 @@ cmp dword [ebp - 0x20c], 0x11
 je short loc_fffa555d  ; je 0xfffa555d
 sub esp, 0xc
 push ref_fffcc6ab  ; push 0xfffcc6ab
-call mrc_printk  ; call 0xfffa1253
+call mrc_printk
 add esp, 0x10
 
 loc_fffa555d:
@@ -4838,7 +4838,7 @@ mov dword [ecx + 0x62], eax
 loc_fffa5585:
 sub esp, 0xc
 push ref_fffcc6dd  ; push 0xfffcc6dd
-call mrc_printk  ; call 0xfffa1253
+call mrc_printk
 add esp, 0x10
 xor eax, eax
 jmp near loc_fffa56a4  ; jmp 0xfffa56a4
@@ -41664,7 +41664,7 @@ mov dword [ebp - 0x2c], ecx
 push edx
 push 0
 push 0
-push ref_fffcd4f4  ; push 0xfffcd4f4
+push gEfiPeiSmbusPpiGuid
 push esi
 call dword [eax + 0x20]  ; ucall
 add esp, 0x20
@@ -46691,23 +46691,9 @@ pop edi
 pop ebp
 ret
 
-fcn_fffc5ad9:  ; not directly referenced
+error_unsupported:
 push ebp
-mov eax, 0x80000003
-mov ebp, esp
-pop ebp
-ret
-
-fcn_fffc5ae3:  ; not directly referenced
-push ebp
-mov eax, 0x80000003
-mov ebp, esp
-pop ebp
-ret
-
-fcn_fffc5aed:  ; not directly referenced
-push ebp
-mov eax, 0x80000003
+mov eax, 0x80000003 ; EFI_UNSUPPORTED
 mov ebp, esp
 pop ebp
 ret
@@ -46841,7 +46827,7 @@ lea ecx, [ebx + 8]
 push ecx
 push 0
 push 0
-push ref_fffcd524  ; push 0xfffcd524
+push gPeiSmbusPolicyPpiGuid
 push eax
 call dword [edx + 0x20]  ; ucall
 mov eax, dword [ebx + 8]
@@ -46849,13 +46835,13 @@ add esp, 0x20
 mov edx, dword [eax]
 mov dword [ebx + 0x10], 0x80000010
 mov dword [ebx + 0xc], edx
-mov dword [ebx + 0x14], ref_fffcd4f4  ; mov dword [ebx + 0x14], 0xfffcd4f4
+mov dword [ebx + 0x14], gEfiPeiSmbusPpiGuid
 mov dword [ebx + 0x1c], fcn_fffc5f08  ; mov dword [ebx + 0x1c], 0xfffc5f08
-mov dword [ebx + 0x20], fcn_fffc5aed  ; mov dword [ebx + 0x20], 0xfffc5aed
-mov dword [ebx + 0x24], fcn_fffc5ae3  ; mov dword [ebx + 0x24], 0xfffc5ae3
-mov dword [ebx + 0x28], fcn_fffc5ad9  ; mov dword [ebx + 0x28], 0xfffc5ad9
+mov dword [ebx + 0x20], error_unsupported
+mov dword [ebx + 0x24], error_unsupported
+mov dword [ebx + 0x28], error_unsupported
 mov dword [ebx + 0x2c], 0x80000020
-mov dword [ebx + 0x30], ref_fffcd544  ; mov dword [ebx + 0x30], 0xfffcd544
+mov dword [ebx + 0x30], gEfiPeiMemoryDiscoveredPpiGuid
 mov dword [ebx + 0x34], fcn_fffc5c8e  ; mov dword [ebx + 0x34], 0xfffc5c8e
 mov byte [ebx + 0x38], 0
 lea edx, [ebx + 0x1c]
@@ -55413,22 +55399,22 @@ db 'System Agent: S3 resume detected',0x0a,0x00
 ref_fffcc574:
 db 'System Agent: Unsupported DDR3 frequence %d (Supported are 800, 1067, 1333, 1600)',0x0a,0x00
 
-ref_fffcc5c7:
+str_init_pch:
 db 'System Agent: Initializing PCH',0x0a,0x00
 
-ref_fffcc5e7:
+str_init_smbus:
 db 'System Agent: Initializing PCH (SMBUS)',0x0a,0x00
 
-ref_fffcc60f:
+str_init_usb:
 db 'System Agent: Initializing PCH (USB)',0x0a,0x00
 
-ref_fffcc635:
+str_init_sa:
 db 'System Agent: Initializing PCH (SA Init)',0x0a,0x00
 
-ref_fffcc65f:
+str_init_me_uma:
 db 'System Agent: Initializing PCH (Me UMA)',0x0a,0x00
 
-ref_fffcc688:
+str_init_memory:
 db 'System Agent: Initializing Memory',0x0a,0x00
 
 ref_fffcc6ab:
@@ -56402,7 +56388,7 @@ dd 0x46b5f445
 dd 0x4abcd5a5
 dd 0xf3983593
 
-ref_fffcd4f4:
+gEfiPeiSmbusPpiGuid:
 dd 0xabd42895
 dd 0x487278cf
 dd 0x5c1b4484
@@ -56420,7 +56406,7 @@ dd fcn_fffbe070
 dd fcn_fffbe14d
 dd fcn_fffbe110
 
-ref_fffcd524:
+gPeiSmbusPolicyPpiGuid:
 dd 0x63b6e435
 dd 0x49c632bc
 dd 0xa1b7bd81
@@ -56432,7 +56418,7 @@ dd 0x445a9041
 dd 0x9db2b680
 dd 0x45889e50
 
-ref_fffcd544:
+gEfiPeiMemoryDiscoveredPpiGuid:
 dd 0xf894643d
 dd 0x42d1c449
 dd 0xbd85a88e
