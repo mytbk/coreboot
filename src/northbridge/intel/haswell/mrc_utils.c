@@ -14,12 +14,7 @@
 #include <string.h>
 #include <console/console.h>
 
-void __attribute((regparm(3))) mrc_setmem(void *s, size_t n, int c);
-void __attribute((regparm(3))) mrc_memcpy(void *dst, const void *src, size_t n);
-void __attribute((regparm(3))) mrc_fillword(int *s, int c, size_t n);
-void __attribute((regparm(3))) mrc_zeromem(void *s, size_t n);
-char __attribute((regparm(3))) mrc_highest_bit(int a);
-void __attribute((regparm(1))) printGuid(const void *g);
+#include "mrc_utils.h"
 
 void __attribute((regparm(3))) mrc_setmem(void *s, size_t n, int c)
 {
