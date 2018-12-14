@@ -37,6 +37,7 @@ $(obj)/%.o: $(src)/northbridge/intel/haswell/%.asm
 	echo "NASM $@"
 	nasm -f elf32 -o $@ $<
 
+romstage-y += pei_svc.c
 romstage-y += mrc_utils.c
 romstage-y += mrc_smbus.c
 romstage-y += mrc_sku.c
