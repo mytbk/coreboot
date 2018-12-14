@@ -328,21 +328,7 @@ xor eax, eax
 pop ebp
 ret
 
-fcn_fffa04e0:  ; not directly referenced
-push ebp
-xor eax, eax
-mov ebp, esp
-pop ebp
-ret
-
 dummy_func:
-push ebp
-xor eax, eax
-mov ebp, esp
-pop ebp
-ret
-
-fcn_fffa04ee:  ; not directly referenced
 push ebp
 xor eax, eax
 mov ebp, esp
@@ -2835,7 +2821,7 @@ rep stosb  ; rep stosb byte es:[edi], al
 mov eax, ebx
 lea edi, [ebp - 0x278]
 mov cl, 0x98
-mov dword [ebp - 0x60e], fcn_fffa04e0  ; mov dword [ebp - 0x60e], 0xfffa04e0
+mov dword [ebp - 0x60e], dummy_func
 rep stosd  ; rep stosd dword es:[edi], eax
 mov eax, dword [edx + 0x3e]
 mov byte [ebp - 0x553], 1
@@ -2860,7 +2846,7 @@ mov dword [ebp - 0x230], dummy_func
 lea eax, [ebp - 0x565]
 mov dword [ebp - 0x224], memcpy  ; mov dword [ebp - 0x224], 0xfffa1178
 mov dword [ebp - 0x1d0], eax
-mov dword [ebp - 0x21c], fcn_fffa04ee  ; mov dword [ebp - 0x21c], 0xfffa04ee
+mov dword [ebp - 0x21c], dummy_func
 lea eax, [ebp - 0x585]
 mov dword [ebp - 0x214], ref_fffcc83c  ; mov dword [ebp - 0x214], 0xfffcc83c
 mov dword [ebp - 0x204], ref_fffcd4b4  ; mov dword [ebp - 0x204], 0xfffcd4b4
