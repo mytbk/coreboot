@@ -149,7 +149,10 @@ typedef struct {
 	int nb_notify_desc; // 0x254
 } MRC_PEI;
 
-EFI_PEI_INSTALL_PPI PeiInstallPpi;
-EFI_PEI_GET_BOOT_MODE PeiGetBootMode;
+int EFIAPI PeiInstallPpi(const EFI_PEI_SERVICES **PeiServices,
+		const EFI_PEI_PPI_DESCRIPTOR *PpiList);
+int EFIAPI PeiGetBootMode(const EFI_PEI_SERVICES **PeiServices,
+		int *BootMode);
+
 
 #endif
