@@ -1157,7 +1157,7 @@ mov eax, dword [ecx]
 push edx
 push 0
 push 0
-push ref_fffcd4b4  ; push 0xfffcd4b4
+push gEfiPeiStallPpiGuid
 push ecx
 call dword [eax + 0x20]  ; ucall
 add esp, 0x20
@@ -2849,9 +2849,9 @@ mov dword [ebp - 0x1d0], eax
 mov dword [ebp - 0x21c], dummy_func
 lea eax, [ebp - 0x585]
 mov dword [ebp - 0x214], ref_fffcc83c  ; mov dword [ebp - 0x214], 0xfffcc83c
-mov dword [ebp - 0x204], ref_fffcd4b4  ; mov dword [ebp - 0x204], 0xfffcd4b4
+mov dword [ebp - 0x204], gEfiPeiStallPpiGuid
 mov dword [ebp - 0x1f8], ref_fffcd4e4  ; mov dword [ebp - 0x1f8], 0xfffcd4e4
-mov dword [ebp - 0x1ec], ref_fffcd4d4  ; mov dword [ebp - 0x1ec], 0xfffcd4d4
+mov dword [ebp - 0x1ec], gEfiPeiReadOnlyVariablePpiGuid
 mov dword [ebp - 0x1e0], ref_fffcca3c  ; mov dword [ebp - 0x1e0], 0xfffcca3c
 mov dword [ebp - 0x1d4], ref_fffcc988  ; mov dword [ebp - 0x1d4], 0xfffcc988
 mov dword [ebp - 0x1c8], ref_fffcc96c  ; mov dword [ebp - 0x1c8], 0xfffcc96c
@@ -2882,9 +2882,9 @@ mov dword [ebp - 0x1b0], ref_fffcd534  ; mov dword [ebp - 0x1b0], 0xfffcd534
 mov dword [ebp - 0x1a4], ref_fffcd524  ; mov dword [ebp - 0x1a4], 0xfffcd524
 mov dword [ebp - 0x198], ref_fffcc88c  ; mov dword [ebp - 0x198], 0xfffcc88c
 mov dword [ebp - 0x18c], ref_fffcc89c  ; mov dword [ebp - 0x18c], 0xfffcc89c
-mov dword [ebp - 0x180], ref_fffcc8ac  ; mov dword [ebp - 0x180], 0xfffcc8ac
+mov dword [ebp - 0x180], gPeiBaseMemoryTestPpiGuid
 mov dword [ebp - 0x174], ref_fffcc8bc  ; mov dword [ebp - 0x174], 0xfffcc8bc
-mov dword [ebp - 0x168], ref_fffcc8cc  ; mov dword [ebp - 0x168], 0xfffcc8cc
+mov dword [ebp - 0x168], gPeiSeCPlatformPolicyPpiGuid
 mov dword [ebp - 0x118], 0xe
 mov dword [ebp - 0x1c], edx
 jne loc_fffa559c  ; jne 0xfffa559c
@@ -37071,7 +37071,7 @@ mov eax, dword [ebx]
 push edx
 push 0
 push 0
-push ref_fffcd4b4  ; push 0xfffcd4b4
+push gEfiPeiStallPpiGuid
 push ebx
 call dword [eax + 0x20]  ; ucall
 mov edi, eax
@@ -37181,7 +37181,7 @@ mov byte [ebp - 0x1c], cl
 push edx
 push 0
 push 0
-push ref_fffcd4b4  ; push 0xfffcd4b4
+push gEfiPeiStallPpiGuid
 push ebx
 call dword [eax + 0x20]  ; ucall
 mov eax, dword [0xf00b0040]
@@ -41778,7 +41778,7 @@ mov eax, dword [ecx]
 push edx
 push 0
 push 0
-push ref_fffcd4d4  ; push 0xfffcd4d4
+push gEfiPeiReadOnlyVariablePpiGuid
 push ecx
 call dword [eax + 0x20]  ; ucall
 mov eax, esi
@@ -41814,7 +41814,7 @@ lea edx, [ebp - 0x5088]
 push edx
 push 0
 push 0
-push ref_fffcd4b4  ; push 0xfffcd4b4
+push gEfiPeiStallPpiGuid
 push dword [ebp - 0x50bc]
 call dword [eax + 0x20]  ; ucall
 add esp, 0x20
@@ -49388,7 +49388,7 @@ mov eax, dword [ebx]
 push edx
 push 0
 push 0
-push ref_fffcd4d4  ; push 0xfffcd4d4
+push gEfiPeiReadOnlyVariablePpiGuid
 push ebx
 call dword [eax + 0x20]  ; ucall
 add esp, 0x18
@@ -51025,7 +51025,7 @@ xor ebx, ebx
 push edx
 push 0
 push 0
-push ref_fffcd4b4  ; push 0xfffcd4b4
+push gEfiPeiStallPpiGuid
 push esi
 call dword [eax + 0x20]  ; ucall
 add esp, 0x20
@@ -55532,7 +55532,7 @@ dd 0x4bd1c140
 dd 0x111e84b8
 dd 0xe64c0b24
 
-ref_fffcc8ac:
+gPeiBaseMemoryTestPpiGuid:
 dd 0xb6ec423c
 dd 0x490d21d2
 dd 0x58ddc685
@@ -55544,7 +55544,7 @@ dd 0x481d26e1
 dd 0xd6303cb6
 dd 0x20a4f4ef
 
-ref_fffcc8cc:
+gPeiSeCPlatformPolicyPpiGuid:
 dd 0x7ae3ceb7
 dd 0x48fa2ee2
 dd 0x103549aa
@@ -56378,7 +56378,7 @@ dd 0x45a438e6
 dd 0x792a249a
 dd 0x7fcb3db9
 
-ref_fffcd4b4:
+gEfiPeiStallPpiGuid:
 dd 0x1f4c6f90
 dd 0x48d8b06b
 dd 0xe5ba01a2
@@ -56390,7 +56390,7 @@ dd 0x41057304
 dd 0x71317cbb
 dd 0x3bc2cc43
 
-ref_fffcd4d4:
+gEfiPeiReadOnlyVariablePpiGuid:
 dd 0x3cdc90c6
 dd 0x4a7513fb
 dd 0xe959799e
