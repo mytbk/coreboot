@@ -32,7 +32,6 @@ romstage-y += report_platform.c
 smm-y += finalize.c
 
 romstage-libs += $(obj)/mrc.o
-romstage-libs += $(obj)/pei_svc.o
 romstage-libs += $(obj)/me_uma.o
 romstage-libs += $(obj)/pei_cpuio.o
 romstage-libs += $(obj)/mrc_init_memory.o
@@ -40,6 +39,7 @@ $(obj)/%.o: $(src)/northbridge/intel/haswell/%.asm
 	echo "NASM $@"
 	nasm -f elf32 -o $@ $<
 
+romstage-y += pei_svc.c
 romstage-y += mrc_utils.c
 romstage-y += mrc_smbus.c
 romstage-y += mrc_sku.c
