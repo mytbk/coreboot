@@ -32,7 +32,9 @@ romstage-y += ../../../arch/x86/walkcbfs.S
 smm-$(CONFIG_HAVE_SMI_HANDLER) += finalize.c
 
 romstage-libs += $(obj)/mrc.o
-$(obj)/mrc.o: $(src)/northbridge/intel/haswell/mrc.asm
+romstage-libs += $(obj)/pei_svc.o
+$(obj)/%.o: $(src)/northbridge/intel/haswell/%.asm
+	echo "NASM $@"
 	nasm -f elf32 -o $@ $<
 
 romstage-y += mrc_utils.c
