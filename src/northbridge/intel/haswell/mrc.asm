@@ -36,6 +36,8 @@ extern gPchMeUmaPpiGuid
 global gEfiPeiStallPpiGuid
 global gWdtPpiGuid
 
+extern gCpuIoPpi
+
 mrc_entry:
 mov ecx, esp
 mov esp, 0xff800000
@@ -339,31 +341,6 @@ push ebp
 xor eax, eax
 mov ebp, esp
 pop ebp
-ret
-
-fcn_fffa04f5:  ; not directly referenced
-push ebp
-mov ebp, esp
-mov edx, dword [ebp + 0x10]
-mov eax, dword [ebp + 0x18]
-out dx, ax
-pop ebp
-ret
-
-fcn_fffa0502:  ; not directly referenced
-push ebp
-mov ebp, esp
-mov eax, dword [ebp + 0x10]
-pop ebp
-mov eax, dword [eax]
-ret
-
-fcn_fffa050c:  ; not directly referenced
-push ebp
-mov ebp, esp
-mov eax, dword [ebp + 0x10]
-pop ebp
-mov al, byte [eax]
 ret
 
 fcn_fffa0516:
@@ -2854,7 +2831,7 @@ mov dword [ebp - 0x224], memcpy  ; mov dword [ebp - 0x224], 0xfffa1178
 mov dword [ebp - 0x1d0], eax
 mov dword [ebp - 0x21c], dummy_func
 lea eax, [ebp - 0x585]
-mov dword [ebp - 0x214], ref_fffcc83c  ; mov dword [ebp - 0x214], 0xfffcc83c
+mov dword [ebp - 0x214], gCpuIoPpi
 mov dword [ebp - 0x204], gEfiPeiStallPpiGuid
 mov dword [ebp - 0x1f8], ref_fffcd4e4  ; mov dword [ebp - 0x1f8], 0xfffcd4e4
 mov dword [ebp - 0x1ec], gEfiPeiReadOnlyVariablePpiGuid
@@ -55100,28 +55077,6 @@ dd 0xffffc9b0
 dd 0xffffff64
 dd 0xffffcae0
 dd 0xffffffb0
-
-ref_fffcc83c:
-dd 0x00000000
-dd 0x00000000
-dd 0x00000000
-dd 0x00000000
-dd 0x00000000
-dd 0x00000000
-dd 0x00000000
-dd 0x00000000
-dd 0x00000000
-dd fcn_fffa04f5
-dd 0x00000000
-dd 0x00000000
-dd fcn_fffa050c
-dd 0x00000000
-dd fcn_fffa0502
-dd 0x00000000
-dd 0x00000000
-dd 0x00000000
-dd 0x00000000
-dd 0x00000000
 
 ref_fffcc88c:
 dd 0x30eb2979
