@@ -34,6 +34,7 @@ smm-$(CONFIG_HAVE_SMI_HANDLER) += finalize.c
 romstage-libs += $(obj)/mrc.o
 romstage-libs += $(obj)/pei_svc.o
 romstage-libs += $(obj)/me_uma.o
+romstage-libs += $(obj)/pei_cpuio.o
 $(obj)/%.o: $(src)/northbridge/intel/haswell/%.asm
 	echo "NASM $@"
 	nasm -f elf32 -o $@ $<
