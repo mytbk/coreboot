@@ -178,4 +178,6 @@ int EFIAPI PeiCreateHob(const EFI_PEI_SERVICES **PeiServices,
 		uint16_t Type, uint16_t Length, void **Hob);
 int EFIAPI PeiGetHobList(const EFI_PEI_SERVICES **PeiServices, void **HobList);
 
+int __attribute((regparm(1))) PeiServiceGetBootMode(int *BootMode);
+
 #endif
