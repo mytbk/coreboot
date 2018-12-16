@@ -3,6 +3,8 @@
 #include <string.h>
 #include <console/console.h>
 
+static const EFI_PEI_SERVICES ***gpPei = (const EFI_PEI_SERVICES***)0xff7d7538;
+
 static inline
 MRC_PEI *PEI_FROM_PEI_SERVICE(const EFI_PEI_SERVICES *ps)
 {
@@ -121,4 +123,10 @@ int EFIAPI PeiGetHobList(const EFI_PEI_SERVICES **PeiServices, void **HobList)
 	MRC_PEI *pei = PEI_FROM_PEI_SERVICE(*PeiServices);
 	*HobList = pei->hobList;
 	return 0;
+}
+
+int __attribute((regparm(1))) PeiServiceGetBootMode(int *BootMode)
+{
+	const EFI_PEI_SERVICES **pps = *gpPei;
+	return (*pps)->GetBootMode(pps, BootMode);
 }

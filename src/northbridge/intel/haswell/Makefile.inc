@@ -33,6 +33,7 @@ smm-$(CONFIG_HAVE_SMI_HANDLER) += finalize.c
 
 romstage-libs += $(obj)/mrc.o
 romstage-libs += $(obj)/me_uma.o
+romstage-libs += $(obj)/pei_usb.o
 romstage-libs += $(obj)/pei_cpuio.o
 romstage-libs += $(obj)/mrc_init_memory.o
 $(obj)/%.o: $(src)/northbridge/intel/haswell/%.asm
