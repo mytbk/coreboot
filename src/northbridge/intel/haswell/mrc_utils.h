@@ -17,3 +17,4 @@ void __attribute((regparm(3))) mrc_fillword(int *s, int c, size_t n);
 void __attribute((regparm(3))) mrc_zeromem(void *s, size_t n);
 char __attribute((regparm(3))) mrc_highest_bit(int a);
 void __attribute((regparm(1))) printGuid(const void *g);
+void *__attribute((regparm(1))) mrc_alloc(int n);

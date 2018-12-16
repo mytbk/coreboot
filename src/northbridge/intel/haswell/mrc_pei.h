@@ -140,6 +140,19 @@ typedef struct _EFI_PEI_SVC {
 } EFI_PEI_SERVICES;
 
 typedef struct {
+	uint16_t htype;
+	uint16_t hlen;
+	int data[1];
+} EFI_HOB_DATA;
+
+struct _EFI_HOB {
+	struct _EFI_HOB *next;
+	EFI_HOB_DATA hobdata;
+};
+
+typedef struct _EFI_HOB EFI_HOB;
+
+typedef struct {
 	uint32_t sig;
 	EFI_PEI_SERVICES peisv; // 0x00, 0x04
 	int bootmode; // 0x68, 0x6c
@@ -147,12 +160,22 @@ typedef struct {
 	int nb_installed_ppi; // 0x160
 	EFI_PEI_NOTIFY_DESCRIPTOR notify_dsc[20]; // 0x164
 	int nb_notify_desc; // 0x254
+	EFI_HOB *hobList;
 } MRC_PEI;
 
 int EFIAPI PeiInstallPpi(const EFI_PEI_SERVICES **PeiServices,
 		const EFI_PEI_PPI_DESCRIPTOR *PpiList);
+int EFIAPI PeiLocatePpi(const EFI_PEI_SERVICES **PeiServices,
+		const EFI_GUID *Guid,
+		unsigned long Instance,
+		EFI_PEI_PPI_DESCRIPTOR **PpiDescriptor,
+		void **Ppi);
+int EFIAPI PeiNotifyPpi(const EFI_PEI_SERVICES **PeiServices,
+		const EFI_PEI_NOTIFY_DESCRIPTOR *NotifyList);
 int EFIAPI PeiGetBootMode(const EFI_PEI_SERVICES **PeiServices,
 		int *BootMode);
-
+int EFIAPI PeiCreateHob(const EFI_PEI_SERVICES **PeiServices,
+		uint16_t Type, uint16_t Length, void **Hob);
+int EFIAPI PeiGetHobList(const EFI_PEI_SERVICES **PeiServices, void **HobList);
 
 #endif
