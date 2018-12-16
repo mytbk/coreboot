@@ -52,10 +52,73 @@ PeiInstallPpi(const EFI_PEI_SERVICES **PeiServices,
 	}
 }
 
+int EFIAPI PeiLocatePpi(const EFI_PEI_SERVICES **PeiServices,
+		const EFI_GUID *Guid,
+		unsigned long Instance,
+		EFI_PEI_PPI_DESCRIPTOR **PpiDescriptor,
+		void **Ppi)
+{
+	MRC_PEI *pei = PEI_FROM_PEI_SERVICE(*PeiServices);
+	int nppi = pei->nb_installed_ppi;
+
+	for (int i = 0; i < nppi; i++) {
+		if (memcmp(Guid, pei->installedPpi[i].Guid, 16) == 0) {
+			*Ppi = pei->installedPpi[i].Ppi;
+			return 0;
+		}
+	}
+	printGuid(Guid);
+	return 0x8000000e;
+}
+
+int EFIAPI PeiNotifyPpi(const EFI_PEI_SERVICES **PeiServices,
+		const EFI_PEI_NOTIFY_DESCRIPTOR *NotifyList)
+{
+	MRC_PEI *pei = PEI_FROM_PEI_SERVICE(*PeiServices);
+
+	while (1) {
+		int nb_notify = pei->nb_notify_desc;
+		if (nb_notify >= 20)
+			return 0x80000009;
+
+		pei->notify_dsc[nb_notify] = *NotifyList;
+		pei->nb_notify_desc++;
+		if (NotifyList->Flags & (1 << 31))
+			return 0;
+		else
+			NotifyList++;
+	}
+}
+
 int PeiGetBootMode(const EFI_PEI_SERVICES **PeiServices, int *mode)
 {
 	MRC_PEI *pei = PEI_FROM_PEI_SERVICE(*PeiServices);
 
 	*mode = pei->bootmode;
+	return 0;
+}
+
+int EFIAPI PeiCreateHob(const EFI_PEI_SERVICES **PeiServices,
+		uint16_t Type, uint16_t Length, void **Hob)
+{
+	MRC_PEI *pei = PEI_FROM_PEI_SERVICE(*PeiServices);
+	EFI_HOB *hb = mrc_alloc(Length + sizeof(void*));
+	if (hb == NULL)
+		return 0x80000009;
+
+	EFI_HOB_DATA *hbb = &hb->hobdata;
+	*Hob = hbb;
+	hbb->htype = Type;
+	hbb->hlen = Length;
+	hbb->data[0] = 0;
+	hb->next = pei->hobList;
+	pei->hobList = hb;
+	return 0;
+}
+
+int EFIAPI PeiGetHobList(const EFI_PEI_SERVICES **PeiServices, void **HobList)
+{
+	MRC_PEI *pei = PEI_FROM_PEI_SERVICE(*PeiServices);
+	*HobList = pei->hobList;
 	return 0;
 }
