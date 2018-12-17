@@ -18,6 +18,7 @@ ifeq ($(CONFIG_NORTHBRIDGE_INTEL_HASWELL),y)
 ramstage-y += ram_calc.c
 ramstage-y += northbridge.c
 ramstage-y += gma.c
+ramstage-y += pcie.c
 
 ramstage-y += acpi.c
 ramstage-y += minihd.c

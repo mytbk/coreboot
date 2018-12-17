@@ -119,8 +119,33 @@ static void haswell_setup_iommu(void)
 			reg32 | DMAR_LCKDN | GLBIOTLBINV | GLBCTXTINV);
 }
 
+static void start_peg_link_training(void)
+{
+	u32 tmp;
+	u32 deven;
+
+	deven = pci_read_config32(PCI_DEV(0, 0, 0), DEVEN);
+
+	if (deven & DEVEN_D1F0EN) {
+		tmp = pci_read_config32(PCI_DEV(0, 1, 0), 0xC24) & ~(1 << 16);
+		pci_write_config32(PCI_DEV(0, 1, 0), 0xC24, tmp | (1 << 5));
+	}
+
+	if (deven & DEVEN_D1F1EN) {
+		tmp = pci_read_config32(PCI_DEV(0, 1, 1), 0xC24) & ~(1 << 16);
+		pci_write_config32(PCI_DEV(0, 1, 1), 0xC24, tmp | (1 << 5));
+	}
+
+	if (deven & DEVEN_D1F2EN) {
+		tmp = pci_read_config32(PCI_DEV(0, 1, 2), 0xC24) & ~(1 << 16);
+		pci_write_config32(PCI_DEV(0, 1, 2), 0xC24, tmp | (1 << 5));
+	}
+}
+
 void haswell_early_initialization(int chipset_type)
 {
+	u32 tmp;
+
 	/* Setup all BARs required for early PCIe and raminit */
 	haswell_setup_bars();
 
@@ -128,8 +153,11 @@ void haswell_early_initialization(int chipset_type)
 	haswell_setup_iommu();
 
 	/* Device Enable: IGD and Mini-HD Audio */
+	tmp = pci_read_config32(PCI_DEV(0, 0, 0), DEVEN);
 	pci_write_config32(PCI_DEV(0, 0, 0), DEVEN,
-			   DEVEN_D0EN | DEVEN_D2EN | DEVEN_D3EN);
+			tmp | DEVEN_D0EN | DEVEN_D2EN | DEVEN_D3EN);
 
 	haswell_setup_graphics();
+
+	start_peg_link_training();
 }
