@@ -132,6 +132,29 @@ static void haswell_setup_iommu(void)
 			reg32 | DMAR_LCKDN | GLBIOTLBINV | GLBCTXTINV);
 }
 
+static void start_peg_link_training(void)
+{
+	u32 tmp;
+	u32 deven;
+
+	deven = pci_read_config32(PCI_DEV(0, 0, 0), DEVEN);
+
+	if (deven & DEVEN_D1F0EN) {
+		tmp = pci_read_config32(PCI_DEV(0, 1, 0), 0xC24) & ~(1 << 16);
+		pci_write_config32(PCI_DEV(0, 1, 0), 0xC24, tmp | (1 << 5));
+	}
+
+	if (deven & DEVEN_D1F1EN) {
+		tmp = pci_read_config32(PCI_DEV(0, 1, 1), 0xC24) & ~(1 << 16);
+		pci_write_config32(PCI_DEV(0, 1, 1), 0xC24, tmp | (1 << 5));
+	}
+
+	if (deven & DEVEN_D1F2EN) {
+		tmp = pci_read_config32(PCI_DEV(0, 1, 2), 0xC24) & ~(1 << 16);
+		pci_write_config32(PCI_DEV(0, 1, 2), 0xC24, tmp | (1 << 5));
+	}
+}
+
 void haswell_early_initialization(int chipset_type)
 {
 	/* Setup all BARs required for early PCIe and raminit */
@@ -143,4 +166,6 @@ void haswell_early_initialization(int chipset_type)
 	haswell_setup_graphics();
 
 	haswell_setup_misc();
+
+	start_peg_link_training();
 }
