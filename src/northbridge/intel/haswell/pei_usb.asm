@@ -2,7 +2,7 @@ global mrc_init_usb
 
 extern PeiServiceGetBootMode
 extern fcn_fffc5dc1
-extern fcn_fffc5e98
+extern usleep
 extern fcn_fffc90fb
 extern mrc_sku_5d89
 extern mrc_sku_type
@@ -649,7 +649,7 @@ cmp eax, dword [ebp - 0x40]
 jne short loc_fffaf243  ; jne 0xfffaf243
 mov eax, 0x2710
 mov dword [ebp - 0x70], edx
-call fcn_fffc5e98  ; call 0xfffc5e98
+call usleep
 mov edx, dword [ebp - 0x70]
 and dl, 0x10
 je loc_fffaf9e7  ; je 0xfffaf9e7
@@ -704,7 +704,7 @@ or dword [ebp - 0x60], edx
 cmp eax, dword [ebp - 0x38]
 jb short loc_fffaf2d1  ; jb 0xfffaf2d1
 mov eax, 0x2710
-call fcn_fffc5e98  ; call 0xfffc5e98
+call usleep
 test byte [ebp - 0x60], 0x10
 je short loc_fffaf2f9  ; je 0xfffaf2f9
 dec dword [ebp - 0x2c]
@@ -773,7 +773,7 @@ cmp eax, dword [ebp - 0x40]
 jne short loc_fffaf385  ; jne 0xfffaf385
 mov eax, 0x2710
 mov dword [ebp - 0x70], edx
-call fcn_fffc5e98  ; call 0xfffc5e98
+call usleep
 mov edx, dword [ebp - 0x70]
 and dl, 0x10
 je short loc_fffaf3af  ; je 0xfffaf3af
@@ -834,7 +834,7 @@ cmp eax, dword [ebp - 0x34]
 jb short loc_fffaf423  ; jb 0xfffaf423
 mov eax, 0x2710
 mov dword [ebp - 0x70], ecx
-call fcn_fffc5e98  ; call 0xfffc5e98
+call usleep
 mov ecx, dword [ebp - 0x70]
 and cl, 0x10
 je short loc_fffaf44c  ; je 0xfffaf44c
@@ -879,7 +879,7 @@ or dword [ebp - 0x60], edx
 cmp eax, dword [ebp - 0x38]
 jb short loc_fffaf489  ; jb 0xfffaf489
 mov eax, 0x2710
-call fcn_fffc5e98  ; call 0xfffc5e98
+call usleep
 test byte [ebp - 0x60], 0x10
 je short loc_fffaf4b1  ; je 0xfffaf4b1
 dec dword [ebp - 0x2c]
@@ -988,7 +988,7 @@ cmp eax, dword [ebp - 0x2c]
 jne short loc_fffaf581  ; jne 0xfffaf581
 mov eax, 0x2710
 mov dword [ebp - 0x70], edx
-call fcn_fffc5e98  ; call 0xfffc5e98
+call usleep
 mov edx, dword [ebp - 0x70]
 and dl, 0x10
 je short loc_fffaf5c5  ; je 0xfffaf5c5
