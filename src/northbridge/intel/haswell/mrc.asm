@@ -21,6 +21,7 @@ extern mrc_sku_5d89
 extern mrc_sku_5da5
 extern fcn_fffa0250
 extern printGuid
+extern usleep
 
 ; PEI services
 extern PeiInstallPpi
@@ -34,6 +35,7 @@ extern PeiServiceGetBootMode
 extern PchMeUmaDesc
 
 global gEfiPeiStallPpiGuid
+extern PeiStall
 global gWdtPpiGuid
 global mEfiMemoryRestoreDataGuid
 global gEfiPeiReadOnlyVariablePpiGuid
@@ -115,7 +117,6 @@ global fcn_fffc83be
 
 extern mrc_init_usb
 global fcn_fffc5dc1
-global fcn_fffc5e98
 global fcn_fffc90fb
 global ref_fffcb998
 global ref_fffcb99c
@@ -1390,20 +1391,6 @@ pop edi
 pop ebp
 ret
 
-fcn_fffa10c8:  ; not directly referenced
-push ebp
-mov ebp, esp
-lea esp, [esp - 8]
-mov eax, dword [ebp + 0x10]
-test eax, eax
-je short loc_fffa10db  ; je 0xfffa10db
-call fcn_fffc5e98  ; call 0xfffc5e98
-
-loc_fffa10db:  ; not directly referenced
-xor eax, eax
-leave
-ret
-
 fcn_fffa10df:
 push ebp
 mov ebp, esp
@@ -2386,7 +2373,7 @@ lea edi, [ebp - 0x59f]
 mov dword [ebp - 0x5dc], 0
 mov dword [ebp - 0x5d8], 0
 mov dword [ebp - 0x5d4], 0
-mov dword [ebp - 0x5d0], fcn_fffa10c8  ; mov dword [ebp - 0x5d0], 0xfffa10c8
+mov dword [ebp - 0x5d0], PeiStall
 mov byte [ebp - 0x60a], 1
 mov eax, dword [ecx + 0x1e]
 mov ecx, 0xd
@@ -4668,7 +4655,7 @@ lea eax, [ebp - 0x5bc]
 lea edx, [ebp - 0x5e8]
 call mrc_memcpy
 mov eax, 0xa
-call fcn_fffc5e98  ; call 0xfffc5e98
+call usleep
 mov edx, dword [ebp - 0x648]
 mov ecx, dword [ebp - 0x644]
 mov dword [ebp - 0x5e8], edx
@@ -6211,7 +6198,7 @@ call fcn_fffc8e6f  ; call 0xfffc8e6f
 mov eax, dword [esi + 0x5da4]
 mov eax, dword [esi + 0x5da0]
 mov eax, 0xa
-call fcn_fffc5e98  ; call 0xfffc5e98
+call usleep
 mov eax, dword [esi + 0x5da4]
 mov eax, dword [esi + 0x5da0]
 
@@ -29834,7 +29821,7 @@ add esp, 0x10
 loc_fffb99c8:
 mov eax, 1
 mov dword [ebp - 0x48], edx
-call fcn_fffc5e98  ; call 0xfffc5e98
+call usleep
 dec esi
 mov eax, dword [0xf00b0040]
 mov edx, dword [ebp - 0x48]
@@ -30329,7 +30316,7 @@ mov eax, esi
 test al, al
 je short loc_fffb9f42  ; je 0xfffb9f42
 mov eax, 0x186a0
-call fcn_fffc5e98  ; call 0xfffc5e98
+call usleep
 
 loc_fffb9f42:
 xor edx, edx
@@ -44564,62 +44551,6 @@ pop ebx
 pop ebp
 ret
 
-fcn_fffc5e98:
-push ebp
-mov ebp, esp
-push edi
-push esi
-push ebx
-mov ebx, eax
-push ecx
-mov di, word [0xf00f8040]
-and edi, 0xfffffffc
-add edi, 8
-mov word [ebp - 0xe], di
-mov edx, edi
-in eax, dx
-mov ecx, eax
-xor edx, edx
-imul eax, ebx, 0x166
-mov ebx, 0x64
-div ebx
-and ecx, 0xffffff
-lea eax, [ecx + eax + 1]
-mov esi, eax
-shr esi, 0x18
-mov edi, eax
-and edi, 0xffffff
-jmp short loc_fffc5ef4  ; jmp 0xfffc5ef4
-
-loc_fffc5edf:
-mov dx, word [ebp - 0xe]
-in eax, dx
-and eax, 0xffffff
-cmp eax, ecx
-jae short loc_fffc5ef2  ; jae 0xfffc5ef2
-test bl, bl
-je short loc_fffc5f02  ; je 0xfffc5f02
-dec esi
-
-loc_fffc5ef2:
-mov ecx, eax
-
-loc_fffc5ef4:
-test esi, esi
-setne bl
-cmp edi, ecx
-seta al
-or al, bl
-jne short loc_fffc5edf  ; jne 0xfffc5edf
-
-loc_fffc5f02:
-pop edx
-pop ebx
-pop esi
-pop edi
-pop ebp
-ret
-
 fcn_fffc5f08:  ; not directly referenced
 push ebp
 mov ebp, esp
@@ -44909,7 +44840,7 @@ call mrc_smbus_inb
 test al, 0x8e
 jne loc_fffc641d  ; jne 0xfffc641d
 mov eax, 0xa
-call fcn_fffc5e98  ; call 0xfffc5e98
+call usleep
 dec esi
 jne short loc_fffc61ea  ; jne 0xfffc61ea
 jmp near loc_fffc6328  ; jmp 0xfffc6328
@@ -44937,7 +44868,7 @@ mov edx, 1
 mov eax, 0xc
 call mrc_smbus_outb
 mov eax, 0xa
-call fcn_fffc5e98  ; call 0xfffc5e98
+call usleep
 dec dword [ebp - 0x24]
 jne loc_fffc5f8d  ; jne 0xfffc5f8d
 jmp near loc_fffc63ef  ; jmp 0xfffc63ef
@@ -45006,7 +44937,7 @@ call mrc_smbus_inb
 test al, al
 js short loc_fffc6332  ; js 0xfffc6332
 mov eax, 0xa
-call fcn_fffc5e98  ; call 0xfffc5e98
+call usleep
 dec dword [ebp - 0x1c]
 jne short loc_fffc630e  ; jne 0xfffc630e
 
@@ -48793,7 +48724,7 @@ jmp short loc_fffc8ed7  ; jmp 0xfffc8ed7
 loc_fffc8ed7:
 mov eax, 1
 inc esi
-call fcn_fffc5e98  ; call 0xfffc5e98
+call usleep
 and ebx, 1
 cmp si, 0x3e7
 setbe al
@@ -48849,7 +48780,7 @@ mov dword [ebp - 0x20], eax
 mov eax, dword [edi + 0x5da0]
 mov dword [ebp - 0x1c], eax
 mov eax, 0xa
-call fcn_fffc5e98  ; call 0xfffc5e98
+call usleep
 mov edx, dword [edi + 0x5da4]
 mov eax, dword [ebp - 0x20]
 cmp eax, edx
@@ -48896,7 +48827,7 @@ lea eax, [ebp - 0x28]
 lea edx, [ebp - 0x30]
 call mrc_memcpy
 mov eax, 0xa
-call fcn_fffc5e98  ; call 0xfffc5e98
+call usleep
 mov eax, dword [ebp - 0x40]
 mov edx, dword [ebp - 0x3c]
 mov dword [ebp - 0x30], eax
