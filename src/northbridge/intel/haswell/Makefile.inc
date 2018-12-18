@@ -45,6 +45,7 @@ romstage-y += mrc_utils.c
 romstage-y += mrc_smbus.c
 romstage-y += mrc_sku.c
 romstage-y += mrc_io.c
+romstage-y += mrc_pch.c
 romstage-y += stall.c
 romstage-y += mrc_main.c
 

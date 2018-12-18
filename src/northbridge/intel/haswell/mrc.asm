@@ -22,6 +22,8 @@ extern mrc_sku_5da5
 extern fcn_fffa0250
 extern printGuid
 extern usleep
+extern mrc_pch_iobp_read
+extern mrc_pch_iobp_update
 
 ; PEI services
 extern PeiInstallPpi
@@ -117,7 +119,6 @@ global fcn_fffc83be
 
 extern mrc_init_usb
 global fcn_fffc5dc1
-global fcn_fffc90fb
 global ref_fffcb998
 global ref_fffcb99c
 global ref_fffcc988
@@ -29897,7 +29898,7 @@ mov ecx, dword [ebx + 4]
 push dword [ebx + 8]
 mov eax, dword [ebp - 0x2c]
 mov edx, dword [ebx]
-call fcn_fffc90fb  ; call 0xfffc90fb
+call mrc_pch_iobp_update
 inc edi
 add ebx, 0xc
 add esp, 0x10
@@ -29922,7 +29923,7 @@ mov ecx, dword [ebx + 4]
 push dword [ebx + 8]
 mov eax, dword [ebp - 0x2c]
 mov edx, dword [ebx]
-call fcn_fffc90fb  ; call 0xfffc90fb
+call mrc_pch_iobp_update
 inc esi
 add ebx, 0xc
 add esp, 0x10
@@ -29993,7 +29994,7 @@ mov ecx, dword [esi + 4]
 push dword [esi + 8]
 mov eax, dword [ebp - 0x2c]
 mov edx, dword [esi]
-call fcn_fffc90fb  ; call 0xfffc90fb
+call mrc_pch_iobp_update
 add esp, 0x10
 
 loc_fffb9b9a:
@@ -30056,7 +30057,7 @@ mov edx, dword [eax]
 
 loc_fffb9c20:
 mov eax, dword [ebp - 0x2c]
-call fcn_fffc90fb  ; call 0xfffc90fb
+call mrc_pch_iobp_update
 add esp, 0x10
 
 loc_fffb9c2b:
@@ -30107,7 +30108,7 @@ mov ecx, 0xffffceff
 push 0x3100
 mov edx, 0xec000106
 mov eax, dword [ebp - 0x2c]
-call fcn_fffc90fb  ; call 0xfffc90fb
+call mrc_pch_iobp_update
 add esp, 0x10
 
 loc_fffb9cc6:
@@ -30511,17 +30512,17 @@ push 0x3700
 mov ecx, 0xfffff7ff
 mov edx, 0xed00015c
 mov eax, ebx
-call fcn_fffc90fb  ; call 0xfffc90fb
+call mrc_pch_iobp_update
 or ecx, 0xffffffff
 mov edx, 0xed000118
 mov eax, ebx
 mov dword [esp], 0xc00000
-call fcn_fffc90fb  ; call 0xfffc90fb
+call mrc_pch_iobp_update
 or ecx, 0xffffffff
 mov edx, 0xed000120
 mov eax, ebx
 mov dword [esp], 0x240000
-call fcn_fffc90fb  ; call 0xfffc90fb
+call mrc_pch_iobp_update
 add esp, 0x10
 
 loc_fffba1df:
@@ -46967,7 +46968,7 @@ loc_fffc7d10:
 lea ecx, [ebp - 0x1c]
 mov edx, 0xea000aac
 mov eax, dword [ebp - 0x38]
-call fcn_fffc909f  ; call 0xfffc909f
+call mrc_pch_iobp_read
 jmp near loc_fffc8288  ; jmp 0xfffc8288
 
 loc_fffc7d25:
@@ -47020,7 +47021,7 @@ mov ecx, dword [ebx + 4]
 push dword [ebx + 8]
 mov eax, dword [ebp - 0x38]
 mov edx, dword [ebx]
-call fcn_fffc90fb  ; call 0xfffc90fb
+call mrc_pch_iobp_update
 add ebx, 0xc
 inc word [ebp - 0x2a]
 add esp, 0x10
@@ -47105,7 +47106,7 @@ mov ecx, dword [ebx + 4]
 push dword [ebx + 8]
 mov eax, dword [ebp - 0x38]
 mov edx, dword [ebx]
-call fcn_fffc90fb  ; call 0xfffc90fb
+call mrc_pch_iobp_update
 add esp, 0x10
 
 loc_fffc7e85:
@@ -47154,7 +47155,7 @@ mov ecx, dword [ebx + 4]
 push dword [ebx + 8]
 mov eax, dword [ebp - 0x38]
 mov edx, dword [ebx]
-call fcn_fffc90fb  ; call 0xfffc90fb
+call mrc_pch_iobp_update
 add ebx, 0xc
 inc word [ebp - 0x2a]
 add esp, 0x10
@@ -47239,7 +47240,7 @@ mov ecx, dword [ebx + 4]
 push dword [ebx + 8]
 mov eax, dword [ebp - 0x38]
 mov edx, dword [ebx]
-call fcn_fffc90fb  ; call 0xfffc90fb
+call mrc_pch_iobp_update
 add esp, 0x10
 
 loc_fffc7fc5:
@@ -47278,7 +47279,7 @@ mov ecx, dword [ebx + 4]
 push dword [ebx + 8]
 mov eax, dword [ebp - 0x38]
 mov edx, dword [ebx]
-call fcn_fffc90fb  ; call 0xfffc90fb
+call mrc_pch_iobp_update
 add ebx, 0xc
 inc word [ebp - 0x2a]
 add esp, 0x10
@@ -47363,7 +47364,7 @@ mov ecx, dword [ebx + 4]
 push dword [ebx + 8]
 mov eax, dword [ebp - 0x38]
 mov edx, dword [ebx]
-call fcn_fffc90fb  ; call 0xfffc90fb
+call mrc_pch_iobp_update
 add esp, 0x10
 
 loc_fffc80da:
@@ -48888,92 +48889,6 @@ push ebx
 cpuid
 and eax, 0xfff0ff0
 pop ebx
-pop ebp
-ret
-
-fcn_fffc909f:
-push ebp
-mov ebp, esp
-push esi
-mov esi, eax
-push ebx
-
-loc_fffc90a6:
-mov al, byte [esi + 0x2338]
-lea ebx, [esi + 0x2338]
-test al, 1
-jne short loc_fffc90a6  ; jne 0xfffc90a6
-mov dword [esi + 0x2330], edx
-mov ax, word [ebx]
-and ax, 0xff
-or ah, 6
-mov word [ebx], ax
-mov word [esi + 0x233a], 0xf000
-mov ax, word [ebx]
-or eax, 1
-mov word [ebx], ax
-
-loc_fffc90db:
-mov al, byte [ebx]
-test al, 1
-jne short loc_fffc90db  ; jne 0xfffc90db
-mov dl, byte [ebx]
-mov eax, 0x80000007
-and dl, 6
-jne short loc_fffc90f7  ; jne 0xfffc90f7
-mov eax, dword [esi + 0x2334]
-mov dword [ecx], eax
-xor eax, eax
-
-loc_fffc90f7:
-pop ebx
-pop esi
-pop ebp
-ret
-
-fcn_fffc90fb:
-push ebp
-mov ebp, esp
-push esi
-mov esi, ecx
-push ebx
-lea ecx, [ebp - 0xc]
-mov ebx, eax
-lea esp, [esp - 0x10]
-call fcn_fffc909f  ; call 0xfffc909f
-test eax, eax
-js short loc_fffc9177  ; js 0xfffc9177
-mov ax, word [ebx + 0x2338]
-mov ecx, dword [ebp - 0xc]
-and ax, 0xff
-and ecx, esi
-or ah, 7
-or ecx, dword [ebp + 8]
-mov word [ebx + 0x2338], ax
-mov dword [ebp - 0xc], ecx
-lea edx, [ebx + 0x2338]
-mov eax, dword [ebp - 0xc]
-mov dword [ebx + 0x2334], eax
-mov word [ebx + 0x233a], 0xf000
-mov ax, word [ebx + 0x2338]
-or eax, 1
-mov word [ebx + 0x2338], ax
-
-loc_fffc915d:
-mov al, byte [edx]
-test al, 1
-jne short loc_fffc915d  ; jne 0xfffc915d
-mov al, byte [ebx + 0x2338]
-and eax, 6
-cmp al, 1
-sbb eax, eax
-not eax
-and eax, 0x80000007
-
-loc_fffc9177:
-lea esp, [esp + 0x10]
-pop ebx
-pop esi
 pop ebp
 ret
 

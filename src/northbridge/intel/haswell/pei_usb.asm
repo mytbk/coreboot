@@ -3,7 +3,7 @@ global mrc_init_usb
 extern PeiServiceGetBootMode
 extern fcn_fffc5dc1
 extern usleep
-extern fcn_fffc90fb
+extern mrc_pch_iobp_update
 extern mrc_sku_5d89
 extern mrc_sku_type
 extern ref_fffcb998
@@ -229,7 +229,7 @@ xor ecx, ecx
 push 0x4481
 mov edx, 0xe5007f04
 mov eax, dword [ebp - 0x44]
-call fcn_fffc90fb  ; call 0xfffc90fb
+call mrc_pch_iobp_update
 xor esi, esi
 add esp, 0x10
 jmp short loc_fffaed00  ; jmp 0xfffaed00
@@ -244,7 +244,7 @@ inc esi
 push 0
 lea edx, [eax - 0x1affbef1]
 mov eax, dword [ebp - 0x44]
-call fcn_fffc90fb  ; call 0xfffc90fb
+call mrc_pch_iobp_update
 add esp, 0x10
 
 loc_fffaed00:
@@ -257,7 +257,7 @@ or ecx, 0xffffffff
 push 0x180000
 mov edx, 0xe5007f14
 mov eax, dword [ebp - 0x44]
-call fcn_fffc90fb  ; call 0xfffc90fb
+call mrc_pch_iobp_update
 add esp, 0x10
 cmp dword [ebp - 0x60], 2
 jne short loc_fffaed46  ; jne 0xfffaed46
@@ -266,7 +266,7 @@ mov ecx, 0xff3fffff
 push 0
 mov edx, 0xe5007f02
 mov eax, dword [ebp - 0x44]
-call fcn_fffc90fb  ; call 0xfffc90fb
+call mrc_pch_iobp_update
 add esp, 0x10
 
 loc_fffaed46:
@@ -1190,7 +1190,7 @@ mov ecx, 0xffff80ff
 push eax
 shl edx, 8
 mov eax, dword [ebp - 0x44]
-call fcn_fffc90fb  ; call 0xfffc90fb
+call mrc_pch_iobp_update
 inc ebx
 add esi, 6
 add esp, 0x10
