@@ -1,4 +1,6 @@
 #include "mrc_sku.h"
+#include <southbridge/intel/lynxpoint/pch.h>
+#include <arch/io.h>
 
 uint8_t nb_usb2_ports(void)
 {
@@ -24,7 +26,7 @@ uint8_t nb_usb3_ports(void)
 
 uint8_t mrc_pch_revision(void)
 {
-	uint8_t rid = pci_config_read8(PCH_LPC_DEV, 8);
+	uint8_t rid = pci_read_config8(PCH_LPC_DEV, 8);
 	int sku = mrc_sku_type();
 	if (sku == 1) {
 		rid -= 2;
