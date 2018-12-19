@@ -1,22 +1,17 @@
-#include <stdint.h>
+#include "mrc_sku.h"
 
-int mrc_sku_type(void);
-
-uint8_t mrc_sku_5d89(void);
-uint8_t mrc_sku_5da5(void);
-
-uint8_t mrc_sku_5d89(void)
+uint8_t nb_usb2_ports(void)
 {
 	int t = mrc_sku_type();
 	if (t > 2)
 		return 0;
-	if (t == 1)
-		return 0x0e;
-	else
+	if (t == 1) /* t = 1, not low power */
+		return 14;
+	else /* t = 2, low power */
 		return 8;
 }
 
-uint8_t mrc_sku_5da5(void)
+uint8_t nb_usb3_ports(void)
 {
 	int t = mrc_sku_type();
 	if (t > 2)

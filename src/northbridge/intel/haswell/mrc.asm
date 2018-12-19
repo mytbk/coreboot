@@ -17,8 +17,8 @@ extern mrc_alloc
 extern mrc_sku_type
 extern mrc_smbus_inb
 extern mrc_smbus_outb
-extern mrc_sku_5d89
-extern mrc_sku_5da5
+extern nb_usb2_ports
+extern nb_usb3_ports
 extern fcn_fffa0250
 extern printGuid
 extern usleep
@@ -626,7 +626,7 @@ loc_fffa0742:
 inc ebx
 
 loc_fffa0743:
-call mrc_sku_5da5
+call nb_usb3_ports
 cmp bl, al
 jb loc_fffa06aa  ; jb 0xfffa06aa
 mov dword [ebp - 0x60], 0
@@ -766,7 +766,7 @@ loc_fffa08db:
 xor ebx, ebx
 
 loc_fffa08dd:
-call mrc_sku_5da5
+call nb_usb3_ports
 cmp bl, al
 jb short loc_fffa08b9  ; jb 0xfffa08b9
 mov edx, dword [ebp - 0x44]
@@ -3070,7 +3070,7 @@ loc_fffa3aa7:
 xor ebx, ebx
 
 loc_fffa3aa9:
-call mrc_sku_5d89
+call nb_usb2_ports
 movzx eax, al
 cmp ebx, eax
 jl short loc_fffa3a6d  ; jl 0xfffa3a6d
@@ -3162,7 +3162,7 @@ loc_fffa3ba2:
 xor ebx, ebx
 
 loc_fffa3ba4:
-call mrc_sku_5d89
+call nb_usb2_ports
 movzx eax, al
 cmp ebx, eax
 jl short loc_fffa3b4e  ; jl 0xfffa3b4e
@@ -3222,7 +3222,7 @@ loc_fffa3c1b:
 xor ebx, ebx
 
 loc_fffa3c1d:
-call mrc_sku_5d89
+call nb_usb2_ports
 movzx eax, al
 cmp ebx, eax
 jl short loc_fffa3bc0  ; jl 0xfffa3bc0
@@ -30095,7 +30095,7 @@ loc_fffb9c90:
 xor ebx, ebx
 
 loc_fffb9c92:
-call mrc_sku_5da5
+call nb_usb3_ports
 cmp bl, al
 jb short loc_fffb9c57  ; jb 0xfffb9c57
 jmp short loc_fffb9c35  ; jmp 0xfffb9c35
@@ -30310,7 +30310,7 @@ loc_fffb9f25:
 inc byte [ebp - 0x34]
 
 loc_fffb9f28:
-call mrc_sku_5da5
+call nb_usb3_ports
 cmp byte [ebp - 0x34], al
 jb short loc_fffb9ec7  ; jb 0xfffb9ec7
 mov eax, esi
@@ -30350,7 +30350,7 @@ inc edx
 
 loc_fffb9f95:
 mov byte [ebp - 0x48], dl
-call mrc_sku_5da5
+call nb_usb3_ports
 mov dl, byte [ebp - 0x48]
 cmp dl, al
 jb short loc_fffb9f46  ; jb 0xfffb9f46
