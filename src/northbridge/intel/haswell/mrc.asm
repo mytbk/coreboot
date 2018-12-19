@@ -15,6 +15,7 @@ extern mrc_highest_bit
 extern mrc_main
 extern mrc_alloc
 extern mrc_sku_type
+extern mrc_pch_revision
 extern mrc_smbus_inb
 extern mrc_smbus_outb
 extern nb_usb2_ports
@@ -118,7 +119,6 @@ global fcn_fffc83be
 ;; pei_usb
 
 extern mrc_init_usb
-global fcn_fffc5dc1
 global ref_fffcb998
 global ref_fffcb99c
 global ref_fffcc988
@@ -29778,7 +29778,7 @@ mov ecx, dword [0xf0000060]
 and ecx, 0xfc000000
 mov dword [ebp - 0x40], ecx
 mov ax, word [eax + 0xf8002]
-call fcn_fffc5dc1  ; call 0xfffc5dc1
+call mrc_pch_revision
 and eax, 0xff
 cmp eax, 6
 mov dword [ebp - 0x30], eax
@@ -44478,80 +44478,6 @@ loc_fffc5d87:  ; not directly referenced
 pop ebp
 ret
 
-fcn_fffc5dc1:
-push ebp
-mov ebp, esp
-push ebx
-mov eax, dword [0xf0000060]
-and eax, 0xfc000000
-mov dl, byte [eax + 0xf8008]
-mov eax, dword [0xf0000060]
-and eax, 0xfc000000
-mov ax, word [eax + 0xf8002]
-mov ecx, eax
-and ecx, 0xfffffffd
-cmp cx, 0x8c44
-je short loc_fffc5e59  ; je 0xfffc5e59
-cmp cx, 0x8c4c
-je short loc_fffc5e59  ; je 0xfffc5e59
-cmp ax, 0x8c5c
-sete bl
-cmp ax, 0x8c50
-sete cl
-or bl, cl
-jne short loc_fffc5e59  ; jne 0xfffc5e59
-mov ecx, eax
-and ecx, 0xfffffff7
-cmp cx, 0x8c42
-je short loc_fffc5e59  ; je 0xfffc5e59
-cmp ax, 0x8c4f
-sete bl
-cmp ax, 0x8c49
-sete cl
-or bl, cl
-jne short loc_fffc5e59  ; jne 0xfffc5e59
-cmp ax, 0x8c41
-sete bl
-cmp ax, 0x8c4b
-sete cl
-or bl, cl
-jne short loc_fffc5e59  ; jne 0xfffc5e59
-cmp ax, 0x8c58
-je short loc_fffc5e59  ; je 0xfffc5e59
-cmp ax, 0x8c54
-sete bl
-cmp ax, 0x8c52
-sete cl
-or bl, cl
-jne short loc_fffc5e59  ; jne 0xfffc5e59
-cmp ax, 0x8c56
-jne short loc_fffc5e72  ; jne 0xfffc5e72
-
-loc_fffc5e59:
-sub edx, 2
-mov eax, 7
-cmp dl, 3
-ja short loc_fffc5e95  ; ja 0xfffc5e95
-movzx edx, dl
-movzx eax, byte [edx + ref_fffcc244]  ; movzx eax, byte [edx - 0x33dbc]
-jmp short loc_fffc5e95  ; jmp 0xfffc5e95
-
-loc_fffc5e72:
-lea ecx, [eax + 0x63bf]
-mov eax, 7
-cmp cx, 6
-ja short loc_fffc5e95  ; ja 0xfffc5e95
-sub edx, 2
-cmp dl, 2
-ja short loc_fffc5e95  ; ja 0xfffc5e95
-movzx edx, dl
-movzx eax, byte [edx + ref_fffcc248]  ; movzx eax, byte [edx - 0x33db8]
-
-loc_fffc5e95:
-pop ebx
-pop ebp
-ret
-
 fcn_fffc5f08:  ; not directly referenced
 push ebp
 mov ebp, esp
@@ -47000,7 +46926,7 @@ and edx, 0xfc000000
 mov dword [ebp - 0x3c], edx
 mov al, byte [edx + 0xe0410]
 mov byte [ebp - 0x2d], al
-call fcn_fffc5dc1  ; call 0xfffc5dc1
+call mrc_pch_revision
 cmp eax, 3
 ja short loc_fffc7da6  ; ja 0xfffc7da6
 movzx edi, byte [eax + ref_fffcc32c]  ; movzx edi, byte [eax - 0x33cd4]
@@ -47029,7 +46955,7 @@ add esp, 0x10
 loc_fffc7dcf:
 cmp word [ebp - 0x2a], di
 jne short loc_fffc7db2  ; jne 0xfffc7db2
-call fcn_fffc5dc1  ; call 0xfffc5dc1
+call mrc_pch_revision
 cmp eax, 6
 ja short loc_fffc7def  ; ja 0xfffc7def
 movzx edx, byte [eax + ref_fffcc340]  ; movzx edx, byte [eax - 0x33cc0]
@@ -47134,7 +47060,7 @@ cmp ax, 6
 ja loc_fffc7fe1  ; ja 0xfffc7fe1
 
 loc_fffc7ecc:
-call fcn_fffc5dc1  ; call 0xfffc5dc1
+call mrc_pch_revision
 cmp eax, 3
 ja short loc_fffc7ee6  ; ja 0xfffc7ee6
 movzx edi, byte [eax + ref_fffcc364]  ; movzx edi, byte [eax - 0x33c9c]
@@ -47163,7 +47089,7 @@ add esp, 0x10
 loc_fffc7f0f:
 cmp word [ebp - 0x2a], di
 jne short loc_fffc7ef2  ; jne 0xfffc7ef2
-call fcn_fffc5dc1  ; call 0xfffc5dc1
+call mrc_pch_revision
 cmp eax, 6
 ja short loc_fffc7f2f  ; ja 0xfffc7f2f
 movzx edx, byte [eax + ref_fffcc378]  ; movzx edx, byte [eax - 0x33c88]
@@ -47258,7 +47184,7 @@ jne loc_fffc80e6  ; jne 0xfffc80e6
 jmp near loc_fffc8137  ; jmp 0xfffc8137
 
 loc_fffc7fe1:
-call fcn_fffc5dc1  ; call 0xfffc5dc1
+call mrc_pch_revision
 cmp eax, 3
 ja short loc_fffc7ffb  ; ja 0xfffc7ffb
 movzx edi, byte [eax + ref_fffcc39c]  ; movzx edi, byte [eax - 0x33c64]
@@ -47287,7 +47213,7 @@ add esp, 0x10
 loc_fffc8024:
 cmp word [ebp - 0x2a], di
 jne short loc_fffc8007  ; jne 0xfffc8007
-call fcn_fffc5dc1  ; call 0xfffc5dc1
+call mrc_pch_revision
 cmp eax, 6
 ja short loc_fffc8044  ; ja 0xfffc8044
 movzx edx, byte [eax + ref_fffcc3b0]  ; movzx edx, byte [eax - 0x33c50]
@@ -52380,12 +52306,6 @@ dd loc_fffc6365
 dd loc_fffc6354
 dd loc_fffc6283
 dd loc_fffc63a7
-
-ref_fffcc244:
-dd 0x03020100
-
-ref_fffcc248:
-dd 0x00060504
 
 ref_fffcc24c:
 dd loc_fffc645b

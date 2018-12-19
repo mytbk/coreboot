@@ -1,7 +1,7 @@
 global mrc_init_usb
 
 extern PeiServiceGetBootMode
-extern fcn_fffc5dc1
+extern mrc_pch_revision
 extern usleep
 extern mrc_pch_iobp_update
 extern nb_usb2_ports
@@ -281,7 +281,7 @@ mov word [edi + 0xa0004], ax
 loc_fffaed66:
 call mrc_sku_type
 mov esi, eax
-call fcn_fffc5dc1  ; call 0xfffc5dc1
+call mrc_pch_revision
 mov edx, dword [ebp - 0x30]
 mov dword [ebp - 0x3c], eax
 test byte [edx + 0x57], 3
