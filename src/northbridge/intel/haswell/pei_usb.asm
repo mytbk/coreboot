@@ -4,7 +4,7 @@ extern PeiServiceGetBootMode
 extern fcn_fffc5dc1
 extern usleep
 extern mrc_pch_iobp_update
-extern mrc_sku_5d89
+extern nb_usb2_ports
 extern mrc_sku_type
 extern ref_fffcb998
 extern ref_fffcb99c
@@ -248,7 +248,7 @@ call mrc_pch_iobp_update
 add esp, 0x10
 
 loc_fffaed00:
-call mrc_sku_5d89
+call nb_usb2_ports
 mov ecx, esi
 cmp cl, al
 jb short loc_fffaecdc  ; jb 0xfffaecdc
@@ -1057,7 +1057,7 @@ inc ebx
 
 loc_fffaf635:
 mov dword [ebp - 0x70], edx
-call mrc_sku_5d89
+call nb_usb2_ports
 movzx eax, al
 mov ecx, dword [ebp - 0x30]
 cmp ebx, eax
@@ -1119,7 +1119,7 @@ mov dword [ebp - 0x34], 0
 xor ebx, ebx
 
 loc_fffaf6d2:
-call mrc_sku_5d89
+call nb_usb2_ports
 movzx eax, al
 cmp ebx, eax
 jb short loc_fffaf684  ; jb 0xfffaf684
@@ -1196,7 +1196,7 @@ add esi, 6
 add esp, 0x10
 
 loc_fffaf797:
-call mrc_sku_5d89
+call nb_usb2_ports
 movzx eax, al
 cmp ebx, eax
 jb short loc_fffaf762  ; jb 0xfffaf762
@@ -1279,7 +1279,7 @@ loc_fffaf865:
 inc ebx
 
 loc_fffaf866:
-call mrc_sku_5d89
+call nb_usb2_ports
 movzx eax, al
 cmp ebx, eax
 jb loc_fffaf7d8  ; jb 0xfffaf7d8
@@ -1318,7 +1318,7 @@ loc_fffaf8cb:
 inc ebx
 
 loc_fffaf8cc:
-call mrc_sku_5d89
+call nb_usb2_ports
 movzx eax, al
 cmp ebx, eax
 jb short loc_fffaf89b  ; jb 0xfffaf89b
