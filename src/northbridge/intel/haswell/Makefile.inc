@@ -48,6 +48,7 @@ romstage-y += mrc_io.c
 romstage-y += mrc_pch.c
 romstage-y += stall.c
 romstage-y += mrc_main.c
+romstage-y += mrc_pch_init.c
 postcar-y += memmap.c
 
 endif
