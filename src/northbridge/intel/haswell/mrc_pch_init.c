@@ -239,55 +239,33 @@ label_24:
 	if (sku_type == 1) {
 		pci_or_config8(PCI_DEV(0, 0x1f, 2), 0x92, 0xf);
 		al = pci_read_config8(PCI_DEV(0, 0x1c, 0), 0x410);
-		if ((al & 0x10) != 0) {
-			goto label_25; // loc_fffc8255
+		if ((al & 0x10) == 0) {
+			pci_or_config8(PCI_DEV(0, 0x1f, 2), 0x92, 0x10);
 		}
-	} else {
-		if (sku_type != 2) {
-			return;
-		}
-		edx = pciexbar;
-		al = *((int8_t*) (edx + 0xe0410));
-		if (al >= 0) {
-			al = *((int8_t*) (esi + 0xfa092));
-			eax |= 1;
-			*((int8_t*) (esi + 0xfa092)) = al;
-		}
-		edx = pciexbar;
-		al = *((int8_t*) (edx + 0xe0410));
-		if ((al & 0x40) == 0) {
-			al = *((int8_t*) (esi + 0xfa092));
-			eax |= 2;
-			*((int8_t*) (esi + 0xfa092)) = al;
-		}
-		edx = pciexbar;
-		al = *((int8_t*) (edx + 0xe0410));
+		al = pci_read_config8(PCI_DEV(0, 0x1c, 0), 0x410);
 		if ((al & 0x20) == 0) {
-			al = *((int8_t*) (esi + 0xfa092));
-			eax |= 4;
-			*((int8_t*) (esi + 0xfa092)) = al;
+			pci_or_config8(PCI_DEV(0, 0x1f, 2), 0x92, 0x20);
 		}
-		edx = pciexbar;
-		al = *((int8_t*) (edx + 0xe0410));
-		if ((al & 0x10) != 0) {
-			return;
+		return;
+	} else {
+		if (sku_type == 2) {
+			al = pci_read_config8(PCI_DEV(0, 0x1c, 0), 0x410);
+			if ((al & 0x80) == 0) {
+				pci_or_config8(PCI_DEV(0, 0x1f, 2), 0x92, 1);
+			}
+			al = pci_read_config8(PCI_DEV(0, 0x1c, 0), 0x410);
+			if ((al & 0x40) == 0) {
+				pci_or_config8(PCI_DEV(0, 0x1f, 2), 0x92, 2);
+			}
+			al = pci_read_config8(PCI_DEV(0, 0x1c, 0), 0x410);
+			if ((al & 0x20) == 0) {
+				pci_or_config8(PCI_DEV(0, 0x1f, 2), 0x92, 4);
+			}
+			al = pci_read_config8(PCI_DEV(0, 0x1c, 0), 0x410);
+			if ((al & 0x10) == 0) {
+				pci_or_config8(PCI_DEV(0, 0x1f, 2), 0x92, 8);
+			}
 		}
-		al = *((int8_t*) (esi + 0xfa092));
-		eax |= 8;
-		*((int8_t*) (esi + 0xfa092)) = al;
 		return;
 	}
-	al = *((int8_t*) (esi + 0xfa092));
-	eax |= 0x10;
-	*((int8_t*) (esi + 0xfa092)) = al;
-label_25: // loc_fffc8255:
-	edx = pciexbar;
-	al = *((int8_t*) (edx + 0xe0410));
-	if ((al & 0x20) != 0) {
-		return;
-	}
-	al = *((int8_t*) (esi + 0xfa092));
-	eax |= 0x20;
-	*((int8_t*) (esi + 0xfa092)) = al;
-	return;
 }
