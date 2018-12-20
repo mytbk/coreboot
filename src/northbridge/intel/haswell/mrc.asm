@@ -26,6 +26,7 @@ extern usleep
 extern mrc_pch_iobp_read
 extern mrc_pch_iobp_update
 extern mrc_pch_init
+extern dmi_check_link
 
 ; PEI services
 extern PeiInstallPpi
@@ -44456,29 +44457,6 @@ xor eax, eax
 leave
 ret
 
-fcn_fffc5d49:  ; not directly referenced
-push ebp
-mov ebp, esp
-call mrc_sku_type
-dec eax
-jne short loc_fffc5d87  ; jne 0xfffc5d87
-mov eax, dword [0xf0000060]
-and eax, 0xfc000000
-mov eax, dword [eax + 0xf80f0]
-and eax, 0xfffffffe
-mov edx, dword [eax + 0x21a4]
-and edx, 0xf
-cmp edx, 2
-jne short loc_fffc5d87  ; jne 0xfffc5d87
-mov dl, byte [eax + 0x21b0]
-and edx, 0xfffffff0
-or edx, 2
-mov byte [eax + 0x21b0], dl
-
-loc_fffc5d87:  ; not directly referenced
-pop ebp
-ret
-
 fcn_fffc5f08:  ; not directly referenced
 push ebp
 mov ebp, esp
@@ -49515,7 +49493,7 @@ dd 0x00000202
 ref_fffc9e38:
 dd mrc_init_usb
 dd fcn_fffc5978
-dd fcn_fffc5d49
+dd dmi_check_link
 dd fcn_fffc7bc0
 
 ref_fffc9e48:
@@ -52025,7 +52003,7 @@ dd 0xf1bc63da
 ref_fffcc998:
 dd mrc_init_usb
 dd fcn_fffc5978
-dd fcn_fffc5d49
+dd dmi_check_link
 dd fcn_fffc7bc0
 
 ref_fffcca30:
