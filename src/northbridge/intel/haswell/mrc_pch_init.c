@@ -227,34 +227,18 @@ label_18:
 		}
 	}
 label_19:
-	eax = *((int32_t*) (esi + 0xfa098));
-	eax |= 0x400000;
-	*((int32_t*) (esi + 0xfa098)) = eax;
+	pci_or_config32(PCI_DEV(0, 0x1f, 2), 0x98, 0x400000);
 label_24:
-	eax = *((int32_t*) (esi + 0xfa098));
-	eax |= 0x80000;
-	*((int32_t*) (esi + 0xfa098)) = eax;
+	pci_or_config32(PCI_DEV(0, 0x1f, 2), 0x98, 0x80000);
 	local_1ch = 0xffffe27f;
-	eax = *((int32_t*) (esi + 0xfa098));
-	eax &= 0xffffe27f;
-	ah |= 2;
-	*((int32_t*) (esi + 0xfa098)) = eax;
-	eax = *((int32_t*) (esi + 0xfa098));
-	eax |= 0x100000;
-	*((int32_t*) (esi + 0xfa098)) = eax;
-	eax = *((int32_t*) (esi + 0xfa098));
-	eax &= 0xffffff9f;
-	eax |= 0x20;
-	*((int32_t*) (esi + 0xfa098)) = eax;
-	eax = *((int32_t*) (esi + 0xfa098));
-	eax |= 0x40000;
-	*((int32_t*) (esi + 0xfa098)) = eax;
+	pci_update_config32(PCI_DEV(0, 0x1f, 2), 0x98, 0xffffe27f, 2);
+	pci_or_config32(PCI_DEV(0, 0x1f, 2), 0x98, 0x100000);
+	pci_update_config32(PCI_DEV(0, 0x1f, 2), 0x98, 0xffffff9f, 0x20);
+	pci_or_config32(PCI_DEV(0, 0x1f, 2), 0x98, 0x40000);
+
 	if (sku_type == 1) {
-		al = *((int8_t*) (esi + 0xfa092));
-		eax |= 0xf;
-		*((int8_t*) (esi + 0xfa092)) = al;
-		edx = pciexbar;
-		al = *((int8_t*) (edx + 0xe0410));
+		pci_or_config8(PCI_DEV(0, 0x1f, 2), 0x92, 0xf);
+		al = pci_read_config8(PCI_DEV(0, 0x1c, 0), 0x410);
 		if ((al & 0x10) != 0) {
 			goto label_25; // loc_fffc8255
 		}
