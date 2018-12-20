@@ -1,6 +1,6 @@
 #include <stdint.h>
 
-#define __const_text //__attribute__((section(".data")))
+#define __const_text //__attribute__((section(".rodata")))
 
 typedef struct {
 	uint32_t address;
@@ -10,6 +10,21 @@ typedef struct {
 
 void mrc_pch_init(void);
 
+#if 1
+extern const iobp_upd_st * iobp0_ref[] __const_text;
+extern const iobp_upd_st * iobp1_ref[] __const_text;
+extern const iobp_upd_st * iobp2_ref[] __const_text;
+extern const iobp_upd_st * iobp3_ref[] __const_text;
+extern const iobp_upd_st * iobp4_ref[] __const_text;
+extern const iobp_upd_st * iobp5_ref[] __const_text;
+extern const uint8_t iobp0_sz[] __const_text;
+extern const uint8_t iobp1_sz[] __const_text;
+extern const uint8_t iobp2_sz[] __const_text;
+extern const uint8_t iobp3_sz[] __const_text;
+extern const uint8_t iobp4_sz[] __const_text;
+extern const uint8_t iobp5_sz[] __const_text;
+
+#else
 static const iobp_upd_st iobp0_0[] __const_text = {
 	{ 0xea008008, 0x00ffffff, 0x1c000000 },
 	{ 0xea00800c, 0xffff8000, 0x00002b50 },
@@ -443,3 +458,4 @@ static const uint8_t iobp5_sz[] __const_text = {
 	4,
 	6, 6, 6,
 	4, 4, 4 }; // ref_fffcc3b0
+#endif

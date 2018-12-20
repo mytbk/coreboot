@@ -49,6 +49,7 @@ romstage-y += mrc_io.c
 romstage-y += mrc_pch.c
 romstage-y += stall.c
 romstage-y += mrc_main.c
+romstage-y += iobp_data.c
 romstage-y += mrc_pch_init.c
 
 postcar-y += ram_calc.c
