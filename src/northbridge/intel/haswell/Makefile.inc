@@ -36,7 +36,7 @@ romstage-libs += $(obj)/me_uma.o
 romstage-libs += $(obj)/pei_usb.o
 romstage-libs += $(obj)/pei_cpuio.o
 romstage-libs += $(obj)/mrc_init_memory.o
-#romstage-libs += $(obj)/mrc_pch_init.o
+romstage-libs += $(obj)/iobp_data.o
 $(obj)/%.o: $(src)/northbridge/intel/haswell/%.asm
 	echo "NASM $@"
 	nasm -f elf32 -o $@ $<
@@ -49,7 +49,7 @@ romstage-y += mrc_io.c
 romstage-y += mrc_pch.c
 romstage-y += stall.c
 romstage-y += mrc_main.c
-romstage-y += iobp_data.c
+#romstage-y += iobp_data.c
 romstage-y += mrc_pch_init.c
 
 postcar-y += ram_calc.c
