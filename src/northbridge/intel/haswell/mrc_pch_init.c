@@ -1,8 +1,8 @@
-#include "mrc_pch_init.h"
-#include "mrc_pch.h"
-#include "mrc_sku.h"
 #include <southbridge/intel/lynxpoint/pch.h>
 #include <device/pci_ops.h>
+#include "mrc_pch.h"
+#include "mrc_sku.h"
+#include "mrc_pch_init.h"
 
 static void
 do_update_iopb(uint8_t pch_rev, uint8_t sku_type, const u8 r410_bits[],
