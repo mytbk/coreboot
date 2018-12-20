@@ -348,7 +348,7 @@ static const iobp_upd_st iobp2_1[] = {
 	{ 0xea000890, 0xffff0000, 0x00004c5a },
 	{ 0xea000a90, 0xffff0000, 0x00004c5a },
 };
-static const iobp_upd_st * iobp2_ref[] = { iobp2_0, iobp2_1, iobp2_1, iobp2_1 } // ref_fffcc368
+static const iobp_upd_st * iobp2_ref[] = { iobp2_0, iobp2_1, iobp2_1, iobp2_1 }; // ref_fffcc368
 static const uint8_t iobp2_sz[] = { 8, 12, 12, 12 }; // ref_fffcc364
 
 
@@ -372,7 +372,7 @@ static const iobp_upd_st iobp3_2[] = {
 	{ 0xea002490, 0xffff0000, 0x00004c5a },
 	{ 0xea002690, 0xffff0000, 0x00004c5a },
 };
-static const iobp_upd_st * iobp3_ref[] = { iobp3_0, iobp3_1, iobp3_1, iobp3_1, iobp3_2, iobp3_2, iobp3_2 } // ref_fffcc380
+static const iobp_upd_st * iobp3_ref[] = { iobp3_0, iobp3_1, iobp3_1, iobp3_1, iobp3_2, iobp3_2, iobp3_2 }; // ref_fffcc380
 static const uint8_t iobp3_sz[] = { 4, 6, 6, 6, 4, 4, 4 }; // ref_fffcc378
 
 
@@ -400,7 +400,7 @@ static const iobp_upd_st iobp4_1[] = {
 	{ 0xea000890, 0xffff0000, 0x00003e67 },
 	{ 0xea000a90, 0xffff0000, 0x00003e67 },
 };
-static const iobp_upd_st * iobp4_ref[] = { iobp4_0, iobp4_1, iobp4_1, iobp4_1 } // ref_fffcc3a0
+static const iobp_upd_st * iobp4_ref[] = { iobp4_0, iobp4_1, iobp4_1, iobp4_1 }; // ref_fffcc3a0
 static const uint8_t iobp4_sz[] = { 8, 12, 12, 12 }; // ref_fffcc39c
 
 static const iobp_upd_st iobp5_0[] = {
@@ -423,5 +423,5 @@ static const iobp_upd_st iobp5_2[] = {
 	{ 0xea002490, 0xffff0000, 0x00003e67 },
 	{ 0xea002690, 0xffff0000, 0x00003e67 },
 };
-static const iobp_upd_st * iobp5_ref[] = { iobp5_0, iobp5_1, iobp5_1, iobp5_1, iobp5_2, iobp5_2, iobp5_2 } // ref_fffcc3b8
+static const iobp_upd_st * iobp5_ref[] = { iobp5_0, iobp5_1, iobp5_1, iobp5_1, iobp5_2, iobp5_2, iobp5_2 }; // ref_fffcc3b8
 static const uint8_t iobp5_sz[] = { 4, 6, 6, 6, 4, 4, 4 }; // ref_fffcc3b0
