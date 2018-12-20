@@ -7,44 +7,43 @@ void mrc_pch_init()
 	int32_t sku_type;
 	int32_t local_2fh;
 	int32_t local_2eh;
-	int32_t local_2dh;
 	int32_t pch_did;
 	int32_t local_2ah;
 	int32_t local_1ch;
 	int32_t local_ch;
+       	u8 pch_rev;
+	int iobp_sz;
+	const iobp_upd *iobp_upd_data;
+	uint8_t reg_410;
+	uint8_t r410_bits[4];
 
 	sku_type = mrc_sku_type ();
 	rcba = get_rcba();
 	pch_did = pci_read_config16(PCH_LPC_DEV, 2);
 	u8 pcs = pci_read_config8(PCI_DEV(0, 0x1f, 2), 0x92);
 	al = ((pcs & 0xf) != 0) ? 1 : 0;
-	if (sku_type != 1) {
-		al--;
-		if (al != 0) {
-			goto label_3; // loc_fffc7d33
-		}
-		return eax;
-	}
-	pcs = pci_read_config8(PCI_DEV(0, 0x1f, 2), 0x92);
-	cl = pcs & 0x30;
-	if (cl == 0) {
-		al--;
-		if (al != 0) {
+
+	if (sku_type == 1) {
+		pcs = pci_read_config8(PCI_DEV(0, 0x1f, 2), 0x92);
+		cl = pcs & 0x30;
+		if (cl == 0 && al != 1) {
 			u8 al = pci_read_config8(PCI_DEV(0, 0x1f, 2), 0x90);
 			eax &= 0x1f;
 			eax |= 0x60;
-			goto label_7;
+			pci_write_config8(PCI_DEV(0, 0x1f, 2), 0x90, al);
+		} else {
+			mrc_pch_iobp_read (rcba, 0xea000aac, &local_1ch);
+			return;
 		}
-	}
-	mrc_pch_iobp_read (rcba, 0xea000aac, &local_1ch);
-	return;
-label_3:
-	if (sku_type == 2) {
-		al = pci_read_config8(PCI_DEV(0, 0x1f, 2), 0x90);
-		eax &= 0x3f;
-		eax |= 0x40;
-label_7:
-		pci_write_config8(PCI_DEV(0, 0x1f, 2), 0x90, al);
+	} else {
+		if (al == 1)
+			return;
+		if (sku_type == 2) {
+			al = pci_read_config8(PCI_DEV(0, 0x1f, 2), 0x90);
+			eax &= 0x3f;
+			eax |= 0x40;
+			pci_write_config8(PCI_DEV(0, 0x1f, 2), 0x90, al);
+		}
 	}
 	local_1ch = 0xfffffe00;
 
@@ -57,147 +56,100 @@ label_7:
 	ax |= 0x8000;
 	pci_write_config16(PCI_DEV(0, 0x1f, 2), 0x92, ax);
 
-	local_2dh = pci_read_config8(PCI_DEV(0, 0x1c, 0), 0x410); // pin ownership?
-	if (mrc_pch_revision() <= 3) {
-		u8 sz = ref_fffcc32c[eax]; /* size */
-		iobp_upd *upd_data = ref_fffcc330[eax]; /* data */
+	reg_410 = pci_read_config8(PCI_DEV(0, 0x1c, 0), 0x410); // pin ownership?
+	r410_bits[0] = reg_410 & 0x10;
+	r410_bits[1] = reg_410 & 0x20;
+	r410_bits[2] = reg_410 & 0x40;
+	r410_bits[3] = reg_410 & 0x80;
+	pch_rev = mrc_pch_revision();
+
+	if (pch_rev <= 3) {
+		iobp_sz = iobp0_sz[pch_rev];
+		iobp_upd_data = iobp0_ref[pch_rev];
 	} else {
-		sz = 0;
-		upd_data = 0;
+		iobp_sz = 0;
+		iobp_upd_data = NULL;
 	}
-	i = 0;
-	for (i = 0; i != sz; i++) {
-		mrc_pch_iobp_update (rcba, upd_data[i].addr, upd_data[i].andv, upd_data[i].orv);
+	for (int i = 0; i != iobp_sz; i++) {
+		mrc_pch_iobp_update (rcba, iobp_upd_data[i].addr,
+				iobp_upd_data[i].andv, iobp_upd_data[i].orv);
 	}
-	eax = mrc_pch_revision ();
-	if (eax <= 6) {
-		edx = *(eax+ ref_fffcc340);
-		ebx = *(eax*4 + ref_fffcc348);
+
+	if (pch_rev <= 6) {
+		iobp_sz = iobp1_sz[pch_rev];
+		iobp_upd_data = iobp1_ref[pch_rev];
 	} else {
-		ebx = 0;
-		edx = 0;
+		iobp_sz = 0;
+		iobp_upd_data = NULL;
 	}
-	local_2eh = local_2dh & 0x10;
-	edi = ebx + edx * 12;
-	local_2ah = local_2dh & 0x20;
-	for (; ebx != edi; ebx += 12) {
+	for (int i = 0; i != iobp_sz; i++) {
+		uint32_t m_addr = iobp_upd_data[i].address & 0xfe00;
 		if (sku_type == 2) {
-			eax = *((int32_t*) ebx) & 0xfe00;
-			if (eax == 0x2000) {
-				if (local_2eh != 0) {
-					continue;
-				}
-			}
-			if (eax == 0x2200) {
-				if (local_2ah != 0) {
-					continue;
-				}
-			}
-			if (eax == 0x2400) {
-				if ((local_2dh & 0x40) != 0) {
-					continue;
-				}
-			}
-			if (eax == 0x2600) {
-				if (local_2dh & 0x80) {
-					continue;
-				}
-			}
-		} else if (sku_type == 1) { /* sku_type != 2 */
-			eax = *((int32_t*) ebx) & 0xfe00;
-			if (eax == 0x2000) {
-				if (local_2eh != 0) {
-					continue;
-				}
-			}
-			if (eax == 0x2200) {
-				if (local_2ah != 0) {
-					continue;
-				}
-			}
+			if (m_addr == 0x2000 && r410_bits[0])
+				continue;
+			if (m_addr == 0x2200 && r410_bits[1])
+				continue;
+			if (m_addr == 0x2400 && r410_bits[2])
+				continue;
+			if (m_addr == 0x2600 && r410_bits[3])
+				continue;
+		} else if (sku_type == 1) {
+			if (m_addr == 0x2000 && r410_bits[0])
+				continue;
+			if (m_addr == 0x2200 && r410_bits[1])
+				continue;
 		}
-		ecx = *((int32_t*) (ebx + 4));
-		edx = *((int32_t*) ebx);
-		mrc_pch_iobp_update(rcba, edx, ecx, [ebx+8]);
+		mrc_pch_iobp_update (rcba, iobp_upd_data[i].addr,
+				iobp_upd_data[i].andv, iobp_upd_data[i].orv);
 	}
-	dl = (pch_did == 0x8c4f) ? 1 : 0;
-	al = (pch_did == 0x8c49) ? 1 : 0;
-	dl |= al;
+
+	dl = (pch_did == 0x8c4f || pch_did == 0x8c49);
 	local_2fh = dl;
 	if (dl == 0) {
-		dl = (pch_did == 0x8c41) ? 1 : 0;
-		al = (pch_did == 0x8c4b) ? 1 : 0;
-		dl |= al;
-		if (dl != 0) {
+		if (pch_did == 0x8c41 || pch_did == 0x8c4b) {
 			goto label_12;
-		}
-		eax = pch_did;
-		ax += 0x63bf;
-		if (ax > 6) {
+		} else if (pch_did - 0x9c41 > 6) {
 			goto label_13; // loc_fffc7fe1
 		}
 	}
 label_12:
-	eax = mrc_pch_revision ();
-	if (eax <= 3) {
-		edi = *((uint8_t*) (eax + ref_fffcc364));
-		ebx = *((int32_t*) (eax*4 + ref_fffcc368));
+	if (pch_rev <= 3) {
+		iobp_sz = iobp2_sz[pch_rev];
+		iobp_upd_data = iobp2_ref[pch_rev];
 	} else {
-		ebx = 0;
-		edi = 0;
+		iobp_sz = 0;
+		iobp_upd_data = NULL;
 	}
-	local_2ah = 0;
-	while (local_2ah != di) {
-		ecx = *((int32_t*) (ebx + 4));
-		eax = rcba;
-		edx = *((int32_t*) ebx);
-		mrc_pch_iobp_update (eax, edx, ecx, [ebx+8]);
-		ebx += 0xc;
-		local_2ah++;
+	for (int i = 0; i != iobp_sz; i++) {
+		mrc_pch_iobp_update (rcba, iobp_upd_data[i].addr,
+				iobp_upd_data[i].andv, iobp_upd_data[i].orv);
 	}
-	eax = mrc_pch_revision ();
-	if (eax <= 6) {
-		edx = *((uint8_t*) (eax + ref_fffcc378));
-		ebx = *((int32_t*) (eax*4 + ref_fffcc380));
+	if (pch_rev <= 6) {
+		iobp_sz = iobp3_sz[pch_rev];
+		iobp_upd_data = iobp3_ref[pch_rev];
 	} else {
-		ebx = 0;
-		edx = 0;
+		iobp_sz = 0;
+		iobp_upd_data = NULL;
 	}
-	edx *= 0xc;
-	al = local_2dh;
-	eax &= 0x10;
-	local_2eh = al;
-	edi = ebx + edx;
-	dl = local_2dh;
-	edx &= 0x20;
-	local_2ah = dl;
-	for (; ebx != edi; ebx += 12) {
+	for (int i = 0; i != iobp_sz; i++) {
+		uint32_t m_addr = iobp_upd_data[i].address & 0xfe00;
 		if (sku_type == 2) {
-			eax = *((int32_t*) ebx) & 0xfe00;
-			if (eax == 0x2000 && (local_2dh & 0x10))
+			if (m_addr == 0x2000 && r410_bits[0])
 				continue;
-
-			if (eax == 0x2200 && (local_2dh & 0x20))
+			if (m_addr == 0x2200 && r410_bits[1])
 				continue;
-
-			if (eax == 0x2400 && (local_2dh & 0x40))
+			if (m_addr == 0x2400 && r410_bits[2])
 				continue;
-
-			if (eax == 0x2600 && (local_2dh & 0x80))
+			if (m_addr == 0x2600 && r410_bits[3])
 				continue;
 		} else if (sku_type == 1) {
-			eax = *((int32_t*) ebx) & 0xfe00;
-			if (eax == 0x2000 && (local_2dh & 0x10))
+			if (m_addr == 0x2000 && r410_bits[0])
 				continue;
-
-			if (eax == 0x2200 && (local_2dh & 0x20))
+			if (m_addr == 0x2200 && r410_bits[1])
 				continue;
 		}
-label_16:
-		ecx = *((int32_t*) (ebx + 4));
-		eax = rcba;
-		edx = *((int32_t*) ebx);
-		mrc_pch_iobp_update (rcba, edx, ecx, [ebx+8]);
+		mrc_pch_iobp_update (rcba, iobp_upd_data[i].addr,
+				iobp_upd_data[i].andv, iobp_upd_data[i].orv);
 	}
 label_0:
 	eax = pch_did;
@@ -207,89 +159,43 @@ label_0:
 	}
 	goto label_19; // 0xfffc8137
 label_13: // loc_fffc7fe1:
-	eax = mrc_pch_revision ();
-	if (eax <= 3) {
-		edi = *((uint8_t*) (eax + ref_fffcc39c));
-		ebx = *((int32_t*) (eax*4 + ref_fffcc3a0));
+	if (pch_rev <= 3) {
+		iobp_sz = iobp4_sz[pch_rev];
+		iobp_upd_data = iobp4_ref[pch_rev];
 	} else {
-		ebx = 0;
-		edi = 0;
+		iobp_sz = 0;
+		iobp_upd_data = NULL;
 	}
-	local_2ah = 0;
-	while (local_2ah != di) {
-		ecx = *((int32_t*) (ebx + 4));
-		eax = rcba;
-		edx = *((int32_t*) ebx);
-		mrc_pch_iobp_update ();
-		ebx += 0xc;
-		local_2ah++;
+	for (int i = 0; i != iobp_sz; i++) {
+		mrc_pch_iobp_update (rcba, iobp_upd_data[i].addr,
+				iobp_upd_data[i].andv, iobp_upd_data[i].orv);
 	}
-	eax = mrc_pch_revision ();
-	if (eax <= 6) {
-		edx = *((uint8_t*) (eax + ref_fffcc3b0));
-		ebx = *((int32_t*) (eax*4 + ref_fffcc3b8));
+	if (pch_rev <= 6) {
+		iobp_sz = iobp5_sz[pch_rev];
+		iobp_upd_data = iobp5_ref[pch_rev];
 	} else {
-		ebx = 0;
-		edx = 0;
+		iobp_sz = 0;
+		iobp_upd_data = NULL;
 	}
-	edx *= 0xc;
-	al = local_2dh;
-	eax &= 0x10;
-	local_2eh = al;
-	edi = ebx + edx;
-	dl = local_2dh;
-	edx &= 0x20;
-	local_2ah = dl;
-	for (ebx; ebx != edi; ebx += 12) {
+	for (int i = 0; i != iobp_sz; i++) {
+		uint32_t m_addr = iobp_upd_data[i].address & 0xfe00;
 		if (sku_type == 2) {
-			eax = *((int32_t*) ebx);
-			eax &= 0xfe00;
-			if (eax == 0x2000) {
-				if (local_2eh != 0)
-					continue; // loc_fffc80da:
-				update; //loc_fffc80c4
-			}
-			if (eax == 0x2200) {
-				if (local_2ah != 0)
-					continue;
-				update;
-			}
-			if (eax == 0x2400) {
-				if ((local_2dh & 0x40) != 0) {
-					continue;
-				}
-				update;
-			}
-			if (eax == 0x2600) {
-				if (local_2dh & 0x80) {
-					update;
-				}
+			if (m_addr == 0x2000 && r410_bits[0])
 				continue;
-			}
-			update;
-		} else {
-			if (sku_type != 1) {
-				goto label_22;
-			}
-			eax = *((int32_t*) ebx);
-			eax &= 0xfe00;
-			if (eax == 0x2000) {
-				if (local_2eh != 0) {
-					continue;
-				}
-				goto label_22;
-			}
-			if (eax == 0x2200) {
-				if (local_2ah != 0) {
-					continue;
-				}
-			}
+			if (m_addr == 0x2200 && r410_bits[1])
+				continue;
+			if (m_addr == 0x2400 && r410_bits[2])
+				continue;
+			if (m_addr == 0x2600 && r410_bits[3])
+				continue;
+		} else if (sku_type == 1) {
+			if (m_addr == 0x2000 && r410_bits[0])
+				continue;
+			if (m_addr == 0x2200 && r410_bits[1])
+				continue;
 		}
-label_22:
-		ecx = *((int32_t*) (ebx + 4));
-		eax = rcba;
-		edx = *((int32_t*) ebx);
-		ax = mrc_pch_iobp_update ();
+		mrc_pch_iobp_update (rcba, iobp_upd_data[i].addr,
+				iobp_upd_data[i].andv, iobp_upd_data[i].orv);
 	}
 	goto label_0; // loc_fffc7fcc
 label_18:
@@ -384,7 +290,8 @@ label_24:
 		}
 		al = *((int8_t*) (esi + 0xfa092));
 		eax |= 8;
-		goto label_26; // loc_fffc826b
+		*((int8_t*) (esi + 0xfa092)) = al;
+		return;
 	}
 	al = *((int8_t*) (esi + 0xfa092));
 	eax |= 0x10;
@@ -397,7 +304,6 @@ label_25: // loc_fffc8255:
 	}
 	al = *((int8_t*) (esi + 0xfa092));
 	eax |= 0x20;
-label_26:
 	*((int8_t*) (esi + 0xfa092)) = al;
 	return;
 }
