@@ -1,3 +1,5 @@
+#include <stdint.h>
+
 typedef struct {
 	uint32_t address;
 	uint32_t andv;

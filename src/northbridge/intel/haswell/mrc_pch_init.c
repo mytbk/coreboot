@@ -1,36 +1,80 @@
-#include <stdint.h>
+#include "mrc_pch_init.h"
+#include "mrc_pch.h"
+#include "mrc_sku.h"
+#include <southbridge/intel/lynxpoint/pch.h>
+#include <device/pci_ops.h>
+
+static void
+do_update_iopb(uint8_t pch_rev, uint8_t sku_type, const u8 r410_bits[],
+		const uint8_t sz0[], const iobp_upd *upd0[],
+		const uint8_t sz1[], const iobp_upd *upd1[])
+{
+	int iobp_sz;
+	const iobp_upd *iobp_upd_data;
+	rcba = pci_read_config32(PCH_LPC_DEV, 0xf0) & 0xfffffffe;
+
+	if (pch_rev <= 3) {
+		iobp_sz = sz0[pch_rev];
+		iobp_upd_data = upd0[pch_rev];
+	} else {
+		iobp_sz = 0;
+		iobp_upd_data = NULL;
+	}
+	for (int i = 0; i != iobp_sz; i++) {
+		mrc_pch_iobp_update (rcba, iobp_upd_data[i].addr,
+				iobp_upd_data[i].andv, iobp_upd_data[i].orv);
+	}
+
+	if (pch_rev <= 6) {
+		iobp_sz = sz1[pch_rev];
+		iobp_upd_data = upd1[pch_rev];
+	} else {
+		iobp_sz = 0;
+		iobp_upd_data = NULL;
+	}
+	for (int i = 0; i != iobp_sz; i++) {
+		uint32_t m_addr = iobp_upd_data[i].address & 0xfe00;
+		if (sku_type == 2) {
+			if (m_addr == 0x2000 && r410_bits[0])
+				continue;
+			if (m_addr == 0x2200 && r410_bits[1])
+				continue;
+			if (m_addr == 0x2400 && r410_bits[2])
+				continue;
+			if (m_addr == 0x2600 && r410_bits[3])
+				continue;
+		} else if (sku_type == 1) {
+			if (m_addr == 0x2000 && r410_bits[0])
+				continue;
+			if (m_addr == 0x2200 && r410_bits[1])
+				continue;
+		}
+		mrc_pch_iobp_update (rcba, iobp_upd_data[i].addr,
+				iobp_upd_data[i].andv, iobp_upd_data[i].orv);
+	}
+}
 
 void mrc_pch_init()
 {
-	int32_t pciexbar;
-	int32_t rcba;
-	int32_t sku_type;
-	int32_t local_2fh;
-	int32_t local_2eh;
+	uint32_t rcba;
+	int sku_type;
 	int32_t pch_did;
-	int32_t local_2ah;
 	int32_t local_1ch;
-	int32_t local_ch;
-       	u8 pch_rev;
-	int iobp_sz;
-	const iobp_upd *iobp_upd_data;
+	uint8_t pch_rev;
 	uint8_t reg_410;
 	uint8_t r410_bits[4];
 
 	sku_type = mrc_sku_type ();
-	rcba = get_rcba();
+	rcba = pci_read_config32(PCH_LPC_DEV, 0xf0) & 0xfffffffe;
 	pch_did = pci_read_config16(PCH_LPC_DEV, 2);
-	u8 pcs = pci_read_config8(PCI_DEV(0, 0x1f, 2), 0x92);
-	al = ((pcs & 0xf) != 0) ? 1 : 0;
+	uint8_t pcs = pci_read_config8(PCI_DEV(0, 0x1f, 2), 0x92);
+	uint8_t al = ((pcs & 0xf) != 0) ? 1 : 0;
 
 	if (sku_type == 1) {
 		pcs = pci_read_config8(PCI_DEV(0, 0x1f, 2), 0x92);
 		cl = pcs & 0x30;
 		if (cl == 0 && al != 1) {
-			u8 al = pci_read_config8(PCI_DEV(0, 0x1f, 2), 0x90);
-			eax &= 0x1f;
-			eax |= 0x60;
-			pci_write_config8(PCI_DEV(0, 0x1f, 2), 0x90, al);
+			pci_update_config8(PCI_DEV(0, 0x1f, 2), 0x90, 0x1f, 0x60);
 		} else {
 			mrc_pch_iobp_read (rcba, 0xea000aac, &local_1ch);
 			return;
@@ -39,22 +83,13 @@ void mrc_pch_init()
 		if (al == 1)
 			return;
 		if (sku_type == 2) {
-			al = pci_read_config8(PCI_DEV(0, 0x1f, 2), 0x90);
-			eax &= 0x3f;
-			eax |= 0x40;
-			pci_write_config8(PCI_DEV(0, 0x1f, 2), 0x90, al);
+			pci_update_config8(PCI_DEV(0, 0x1f, 2), 0x90, 0x3f, 0x40);
 		}
 	}
 	local_1ch = 0xfffffe00;
 
-	eax = pci_read_config32(PCI_DEV(0, 0x1f, 2), 0x94);
-	eax &= 0xfffffe00;
-	eax |= 0x183;
-	pci_read_config32(PCI_DEV(0, 0x1f, 2), 0x94, eax);
-
-	ax = pci_read_config16(PCI_DEV(0, 0x1f, 2), 0x92);
-	ax |= 0x8000;
-	pci_write_config16(PCI_DEV(0, 0x1f, 2), 0x92, ax);
+	pci_update_config32(PCI_DEV(0, 0x1f, 2), 0x94, 0xfffffe00, 0x183);
+	pci_or_config16(PCI_DEV(0, 0x1f, 2), 0x92, 0x8000);
 
 	reg_410 = pci_read_config8(PCI_DEV(0, 0x1c, 0), 0x410); // pin ownership?
 	r410_bits[0] = reg_410 & 0x10;
@@ -63,171 +98,51 @@ void mrc_pch_init()
 	r410_bits[3] = reg_410 & 0x80;
 	pch_rev = mrc_pch_revision();
 
-	if (pch_rev <= 3) {
-		iobp_sz = iobp0_sz[pch_rev];
-		iobp_upd_data = iobp0_ref[pch_rev];
-	} else {
-		iobp_sz = 0;
-		iobp_upd_data = NULL;
-	}
-	for (int i = 0; i != iobp_sz; i++) {
-		mrc_pch_iobp_update (rcba, iobp_upd_data[i].addr,
-				iobp_upd_data[i].andv, iobp_upd_data[i].orv);
-	}
+	do_update_iopb(pch_rev, sku_type, r410_bits,
+			iobp0_sz, iobp0_ref, iobp1_sz, iobp1_ref);
 
-	if (pch_rev <= 6) {
-		iobp_sz = iobp1_sz[pch_rev];
-		iobp_upd_data = iobp1_ref[pch_rev];
+#if 0
+	if (pch_did == 0x8c4f || pch_did == 0x8c49)
+		goto label_12;
+	if (pch_did == 0x8c41 || pch_did == 0x8c4b) {
+		goto label_12;
+	} else if (pch_did - 0x9c41 > 6) {
+		do_update_iopb(pch_rev, r410_bits,
+				iobp4_sz, iobp4_ref, iobp5_sz, iobp5_ref);
+		goto label_0; // loc_fffc7fcc
+	}
+#endif
+	if (sku_type > 2) {
+		do_update_iopb(pch_rev, sku_type, r410_bits,
+				iobp4_sz, iobp4_ref, iobp5_sz, iobp5_ref);
 	} else {
-		iobp_sz = 0;
-		iobp_upd_data = NULL;
-	}
-	for (int i = 0; i != iobp_sz; i++) {
-		uint32_t m_addr = iobp_upd_data[i].address & 0xfe00;
-		if (sku_type == 2) {
-			if (m_addr == 0x2000 && r410_bits[0])
-				continue;
-			if (m_addr == 0x2200 && r410_bits[1])
-				continue;
-			if (m_addr == 0x2400 && r410_bits[2])
-				continue;
-			if (m_addr == 0x2600 && r410_bits[3])
-				continue;
-		} else if (sku_type == 1) {
-			if (m_addr == 0x2000 && r410_bits[0])
-				continue;
-			if (m_addr == 0x2200 && r410_bits[1])
-				continue;
-		}
-		mrc_pch_iobp_update (rcba, iobp_upd_data[i].addr,
-				iobp_upd_data[i].andv, iobp_upd_data[i].orv);
-	}
-
-	dl = (pch_did == 0x8c4f || pch_did == 0x8c49);
-	local_2fh = dl;
-	if (dl == 0) {
-		if (pch_did == 0x8c41 || pch_did == 0x8c4b) {
-			goto label_12;
-		} else if (pch_did - 0x9c41 > 6) {
-			goto label_13; // loc_fffc7fe1
-		}
-	}
 label_12:
-	if (pch_rev <= 3) {
-		iobp_sz = iobp2_sz[pch_rev];
-		iobp_upd_data = iobp2_ref[pch_rev];
-	} else {
-		iobp_sz = 0;
-		iobp_upd_data = NULL;
-	}
-	for (int i = 0; i != iobp_sz; i++) {
-		mrc_pch_iobp_update (rcba, iobp_upd_data[i].addr,
-				iobp_upd_data[i].andv, iobp_upd_data[i].orv);
-	}
-	if (pch_rev <= 6) {
-		iobp_sz = iobp3_sz[pch_rev];
-		iobp_upd_data = iobp3_ref[pch_rev];
-	} else {
-		iobp_sz = 0;
-		iobp_upd_data = NULL;
-	}
-	for (int i = 0; i != iobp_sz; i++) {
-		uint32_t m_addr = iobp_upd_data[i].address & 0xfe00;
-		if (sku_type == 2) {
-			if (m_addr == 0x2000 && r410_bits[0])
-				continue;
-			if (m_addr == 0x2200 && r410_bits[1])
-				continue;
-			if (m_addr == 0x2400 && r410_bits[2])
-				continue;
-			if (m_addr == 0x2600 && r410_bits[3])
-				continue;
-		} else if (sku_type == 1) {
-			if (m_addr == 0x2000 && r410_bits[0])
-				continue;
-			if (m_addr == 0x2200 && r410_bits[1])
-				continue;
-		}
-		mrc_pch_iobp_update (rcba, iobp_upd_data[i].addr,
-				iobp_upd_data[i].andv, iobp_upd_data[i].orv);
+		do_update_iopb(pch_rev, sku_type, r410_bits,
+				iobp2_sz, iobp2_ref, iobp3_sz, iobp3_ref);
 	}
 label_0:
-	eax = pch_did;
-	eax &= 0xfffffffd;
-	if (ax != 0x8c44) {
-		goto label_18; // 0xfffc80e6
-	}
-	goto label_19; // 0xfffc8137
-label_13: // loc_fffc7fe1:
-	if (pch_rev <= 3) {
-		iobp_sz = iobp4_sz[pch_rev];
-		iobp_upd_data = iobp4_ref[pch_rev];
-	} else {
-		iobp_sz = 0;
-		iobp_upd_data = NULL;
-	}
-	for (int i = 0; i != iobp_sz; i++) {
-		mrc_pch_iobp_update (rcba, iobp_upd_data[i].addr,
-				iobp_upd_data[i].andv, iobp_upd_data[i].orv);
-	}
-	if (pch_rev <= 6) {
-		iobp_sz = iobp5_sz[pch_rev];
-		iobp_upd_data = iobp5_ref[pch_rev];
-	} else {
-		iobp_sz = 0;
-		iobp_upd_data = NULL;
-	}
-	for (int i = 0; i != iobp_sz; i++) {
-		uint32_t m_addr = iobp_upd_data[i].address & 0xfe00;
-		if (sku_type == 2) {
-			if (m_addr == 0x2000 && r410_bits[0])
-				continue;
-			if (m_addr == 0x2200 && r410_bits[1])
-				continue;
-			if (m_addr == 0x2400 && r410_bits[2])
-				continue;
-			if (m_addr == 0x2600 && r410_bits[3])
-				continue;
-		} else if (sku_type == 1) {
-			if (m_addr == 0x2000 && r410_bits[0])
-				continue;
-			if (m_addr == 0x2200 && r410_bits[1])
-				continue;
-		}
-		mrc_pch_iobp_update (rcba, iobp_upd_data[i].addr,
-				iobp_upd_data[i].andv, iobp_upd_data[i].orv);
-	}
-	goto label_0; // loc_fffc7fcc
-label_18:
-	if (ax != 0x8c4c) {
-		dl = (pch_did == 0x8c5c) ? 1 : 0;
-		al = (pch_did == 0x8c50) ? 1 : 0;
-		dl |= al;
-		if (dl != 0) {
+#if 0
+	uint16_t tmp = pch_did & 0xfffd;
+	if (tmp != 0x8c44 && tmp != 0x8c4c) { /* 8c44, 8c46, 8c4c, 8c4e */
+		if (pch_did == 0x8c5c || pch_did == 0x8c50 || 
+				(pch_did & 0xfff7) == 0x8c42) /* 8c42, 8c4a */
 			goto label_19;
-		}
-		eax = pch_did;
-		eax &= 0xfffffff7;
-		if (ax == 0x8c42) {
+
+		if (pch_did == 0x8c4f || pch_did == 0x8c49)
 			goto label_19;
-		}
-		if (local_2fh != 0) {
+
+		if (pch_did == 0x8c41 || pch_did == 0x8c4b)
 			goto label_19;
-		}
-		dl = (pch_did == 0x8c41) ? 1 : 0;
-		al = (pch_did == 0x8c4b) ? 1 : 0;
-		dl |= al;
-		if (dl != 0) {
-			goto label_19;
-		}
-		eax = pch_did;
-		ax += 0x63bf;
-		if (ax > 6) {
+
+		if (pch_did - 0x9c41 > 6)
 			goto label_24;
-		}
 	}
+	goto label_19;
+#endif
+	if (sku_type <= 2) {
 label_19:
-	pci_or_config32(PCI_DEV(0, 0x1f, 2), 0x98, 0x400000);
+		pci_or_config32(PCI_DEV(0, 0x1f, 2), 0x98, 0x400000);
+	}
 label_24:
 	pci_or_config32(PCI_DEV(0, 0x1f, 2), 0x98, 0x80000);
 	local_1ch = 0xffffe27f;
@@ -238,31 +153,31 @@ label_24:
 
 	if (sku_type == 1) {
 		pci_or_config8(PCI_DEV(0, 0x1f, 2), 0x92, 0xf);
-		al = pci_read_config8(PCI_DEV(0, 0x1c, 0), 0x410);
-		if ((al & 0x10) == 0) {
+		reg_410 = pci_read_config8(PCI_DEV(0, 0x1c, 0), 0x410);
+		if ((reg_410 & 0x10) == 0) {
 			pci_or_config8(PCI_DEV(0, 0x1f, 2), 0x92, 0x10);
 		}
-		al = pci_read_config8(PCI_DEV(0, 0x1c, 0), 0x410);
-		if ((al & 0x20) == 0) {
+		reg_410 = pci_read_config8(PCI_DEV(0, 0x1c, 0), 0x410);
+		if ((reg_410 & 0x20) == 0) {
 			pci_or_config8(PCI_DEV(0, 0x1f, 2), 0x92, 0x20);
 		}
 		return;
 	} else {
 		if (sku_type == 2) {
-			al = pci_read_config8(PCI_DEV(0, 0x1c, 0), 0x410);
-			if ((al & 0x80) == 0) {
+			reg_410 = pci_read_config8(PCI_DEV(0, 0x1c, 0), 0x410);
+			if ((reg_410 & 0x80) == 0) {
 				pci_or_config8(PCI_DEV(0, 0x1f, 2), 0x92, 1);
 			}
-			al = pci_read_config8(PCI_DEV(0, 0x1c, 0), 0x410);
-			if ((al & 0x40) == 0) {
+			reg_410 = pci_read_config8(PCI_DEV(0, 0x1c, 0), 0x410);
+			if ((reg_410 & 0x40) == 0) {
 				pci_or_config8(PCI_DEV(0, 0x1f, 2), 0x92, 2);
 			}
-			al = pci_read_config8(PCI_DEV(0, 0x1c, 0), 0x410);
-			if ((al & 0x20) == 0) {
+			reg_410 = pci_read_config8(PCI_DEV(0, 0x1c, 0), 0x410);
+			if ((reg_410 & 0x20) == 0) {
 				pci_or_config8(PCI_DEV(0, 0x1f, 2), 0x92, 4);
 			}
-			al = pci_read_config8(PCI_DEV(0, 0x1c, 0), 0x410);
-			if ((al & 0x10) == 0) {
+			reg_410 = pci_read_config8(PCI_DEV(0, 0x1c, 0), 0x410);
+			if ((reg_410 & 0x10) == 0) {
 				pci_or_config8(PCI_DEV(0, 0x1f, 2), 0x92, 8);
 			}
 		}
