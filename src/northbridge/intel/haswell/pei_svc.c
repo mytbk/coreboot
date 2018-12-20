@@ -130,3 +130,10 @@ int __attribute((regparm(1))) PeiServiceGetBootMode(int *BootMode)
 	const EFI_PEI_SERVICES **pps = *gpPei;
 	return (*pps)->GetBootMode(pps, BootMode);
 }
+
+int __attribute((regparm(1)))
+PeiServiceNotifyPpi(const EFI_PEI_NOTIFY_DESCRIPTOR *NotifyList)
+{
+	const EFI_PEI_SERVICES **pps = *gpPei;
+	return (*pps)->NotifyPpi(pps, NotifyList);
+}

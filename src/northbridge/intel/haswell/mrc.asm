@@ -36,6 +36,7 @@ extern PeiGetBootMode
 extern PeiGetHobList
 extern PeiCreateHob
 extern PeiServiceGetBootMode
+extern PeiServiceNotifyPpi
 
 extern PchMeUmaDesc
 
@@ -4836,7 +4837,7 @@ mov eax, dword [edx + 0x5f00]
 or eax, 1
 mov dword [edx + 0x5f00], eax
 mov eax, ref_fffcc904  ; mov eax, 0xfffcc904
-call fcn_fffbf91e  ; call 0xfffbf91e
+call PeiServiceNotifyPpi
 lea eax, [ebp - 0x5e8]
 call PeiServiceGetBootMode  ; call 0xfffbf908
 test eax, eax
@@ -4844,7 +4845,7 @@ jne short loc_fffa54e7  ; jne 0xfffa54e7
 cmp dword [ebp - 0x5e8], 0x11
 jne short loc_fffa54e7  ; jne 0xfffa54e7
 mov eax, ref_fffcd554  ; mov eax, 0xfffcd554
-call fcn_fffbf91e  ; call 0xfffbf91e
+call PeiServiceNotifyPpi
 
 loc_fffa54e7:
 mov ecx, dword [ebp - 0x640]
@@ -37158,18 +37159,6 @@ pop ebx
 pop esi
 pop edi
 pop ebp
-ret
-
-fcn_fffbf91e:
-push ebp
-mov ebp, esp
-lea esp, [esp - 0x10]
-mov edx, dword [0xff7d7538]
-mov ecx, dword [edx]
-push eax
-push edx
-call dword [ecx + 0x24]  ; ucall
-leave
 ret
 
 fcn_fffbf934:  ; not directly referenced

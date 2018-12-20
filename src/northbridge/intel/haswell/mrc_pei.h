@@ -179,5 +179,7 @@ int EFIAPI PeiCreateHob(const EFI_PEI_SERVICES **PeiServices,
 int EFIAPI PeiGetHobList(const EFI_PEI_SERVICES **PeiServices, void **HobList);
 
 int __attribute((regparm(1))) PeiServiceGetBootMode(int *BootMode);
+int __attribute((regparm(1)))
+PeiServiceNotifyPpi(const EFI_PEI_NOTIFY_DESCRIPTOR *NotifyList);
 
 #endif
