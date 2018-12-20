@@ -90,7 +90,8 @@ void mrc_pch_init(void)
 	pci_update_config32(PCI_DEV(0, 0x1f, 2), 0x94, 0xfffffe00, 0x183);
 	pci_or_config16(PCI_DEV(0, 0x1f, 2), 0x92, 0x8000);
 
-	reg_410 = pci_read_config8(PCI_DEV(0, 0x1c, 0), 0x410); // pin ownership?
+	// PCIE 0x410: pin ownership?
+	reg_410 = pci_read_config8(PCI_DEV(0, 0x1c, 0), 0x410);
 	r410_bits[0] = reg_410 & 0x10;
 	r410_bits[1] = reg_410 & 0x20;
 	r410_bits[2] = reg_410 & 0x40;
@@ -109,30 +110,9 @@ void mrc_pch_init(void)
 		do_update_iopb(pch_rev, sku_type, r410_bits,
 				iobp4_sz, iobp4_ref, iobp5_sz, iobp5_ref);
 	}
-//label_0:
-#if 0
-	uint16_t tmp = pch_did & 0xfffd;
-	if (tmp != 0x8c44 && tmp != 0x8c4c) { /* 8c44, 8c46, 8c4c, 8c4e */
-		if (pch_did == 0x8c5c || pch_did == 0x8c50 || 
-				(pch_did & 0xfff7) == 0x8c42) /* 8c42, 8c4a */
-			goto label_19;
-
-		if (pch_did == 0x8c4f || pch_did == 0x8c49)
-			goto label_19;
-
-		if (pch_did == 0x8c41 || pch_did == 0x8c4b)
-			goto label_19;
-
-		if (pch_did - 0x9c41 > 6)
-			goto label_24;
-	}
-	goto label_19;
-#endif
 	if (sku_type <= 2) {
-//label_19:
 		pci_or_config32(PCI_DEV(0, 0x1f, 2), 0x98, 0x400000);
 	}
-//label_24:
 	pci_or_config32(PCI_DEV(0, 0x1f, 2), 0x98, 0x80000);
 	pci_update_config32(PCI_DEV(0, 0x1f, 2), 0x98, 0xffffe27f, 2);
 	pci_or_config32(PCI_DEV(0, 0x1f, 2), 0x98, 0x100000);
