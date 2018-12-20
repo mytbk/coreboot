@@ -6,6 +6,8 @@ typedef struct {
 	uint32_t orv;
 } iobp_upd_st;
 
+void mrc_pch_init(void);
+
 static const iobp_upd_st iobp0_0[] = {
 	{ 0xea008008, 0x00ffffff, 0x1c000000 },
 	{ 0xea00800c, 0xffff8000, 0x00002b50 },

@@ -54,13 +54,12 @@ do_update_iopb(uint8_t pch_rev, uint8_t sku_type, const u8 r410_bits[],
 	}
 }
 
-void mrc_pch_init(void);
 void mrc_pch_init(void)
 {
 	uint32_t rcba;
 	int sku_type;
 	uint16_t pch_did;
-	uint32_t local_1ch;
+	uint32_t tmp;
 	uint8_t pch_rev;
 	uint8_t reg_410;
 	uint8_t r410_bits[4];
@@ -77,7 +76,7 @@ void mrc_pch_init(void)
 		if (cl == 0 && al != 1) {
 			pci_update_config8(PCI_DEV(0, 0x1f, 2), 0x90, 0x1f, 0x60);
 		} else {
-			mrc_pch_iobp_read (rcba, 0xea000aac, &local_1ch);
+			mrc_pch_iobp_read (rcba, 0xea000aac, &tmp);
 			return;
 		}
 	} else {
@@ -87,7 +86,6 @@ void mrc_pch_init(void)
 			pci_update_config8(PCI_DEV(0, 0x1f, 2), 0x90, 0x3f, 0x40);
 		}
 	}
-	local_1ch = 0xfffffe00;
 
 	pci_update_config32(PCI_DEV(0, 0x1f, 2), 0x94, 0xfffffe00, 0x183);
 	pci_or_config16(PCI_DEV(0, 0x1f, 2), 0x92, 0x8000);
@@ -136,7 +134,6 @@ void mrc_pch_init(void)
 	}
 //label_24:
 	pci_or_config32(PCI_DEV(0, 0x1f, 2), 0x98, 0x80000);
-	local_1ch = 0xffffe27f;
 	pci_update_config32(PCI_DEV(0, 0x1f, 2), 0x98, 0xffffe27f, 2);
 	pci_or_config32(PCI_DEV(0, 0x1f, 2), 0x98, 0x100000);
 	pci_update_config32(PCI_DEV(0, 0x1f, 2), 0x98, 0xffffff9f, 0x20);
