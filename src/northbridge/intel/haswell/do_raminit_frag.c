@@ -172,3 +172,24 @@ void io_fffa476b(void)
 	pci_or_config32(PCI_DEV(0, 0, 0), 0x80c, 0x600000);
 	pci_or_config32(PCI_DEV(0, 0, 0), 0x82c, 0x600000);
 }
+
+void __attribute((regparm(1))) io_fffa49a0(uint32_t v);
+void __attribute((regparm(1))) io_fffa49a0(uint32_t v)
+{
+	pci_update_config16(PCI_DEV(0, 1, 0), 0xc38, 0xffbf, v);
+	pci_update_config16(PCI_DEV(0, 1, 1), 0xc38, 0xffbf, v);
+	pci_update_config16(PCI_DEV(0, 1, 2), 0xc38, 0xffbf, v);
+
+	pci_update_config16(PCI_DEV(0, 1, 0), 0x260, 0xfffc, 2);
+	pci_update_config16(PCI_DEV(0, 1, 1), 0x260, 0xfffc, 2);
+	pci_update_config16(PCI_DEV(0, 1, 2), 0x260, 0xfffc, 2);
+
+	pci_update_config32(PCI_DEV(0, 0, 0), 0x900, 0xf3ffffff, 0);
+	pci_update_config32(PCI_DEV(0, 0, 0), 0x920, 0xf3ffffff, 0);
+
+	pci_or_config32(PCI_DEV(0, 0, 0), 0x904, 0x0c00);
+	pci_or_config32(PCI_DEV(0, 0, 0), 0x924, 0x0c00);
+
+	pci_update_config32(PCI_DEV(0, 0, 0), 0x90c, 0xc1ffffff, 0xe000000);
+	pci_update_config32(PCI_DEV(0, 0, 0), 0x92c, 0xc1ffffff, 0xe000000);
+}
