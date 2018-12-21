@@ -137,6 +137,10 @@ global wstr_pchinitpei
 extern mrc_frag_smbus
 extern mrc_frag_pch
 global fcn_fffc5bf6
+global gPchDmiTcVcPpiGuid
+global ref_fffcc97c
+global ref_fffcca30
+global ref_fffcd560
 
 mrc_entry:
 mov ecx, esp
@@ -3053,12 +3057,7 @@ call mrc_printk
 add esp, 0x10
 mov ebx, dword [0xff7d7538]
 call mrc_frag_pch
-; before the jump to fffa3c99, edx is RCBA
-mov eax, dword [0xf0000060]
-and eax, 0xfc000000
-mov edx, dword [eax + 0xf80f0]
-and edx, 0xfffffffe
-jmp loc_fffa3c99
+jmp loc_fffa3d32
 
 loc_fffa3b14:
 cmp dx, 0x8c4f
@@ -3192,56 +3191,6 @@ cmp ebx, eax
 jl short loc_fffa3bc0  ; jl 0xfffa3bc0
 jmp near loc_fffa3ab5  ; jmp 0xfffa3ab5
 
-loc_fffa3c99:
-mov dword [edx + 0x3310], 0x10 ; RCBA32(0x3310) = 0x10;
-mov eax, ebx
-call mrc_pch_init
-mov eax, 0xc
-call mrc_alloc
-test eax, eax
-mov esi, eax
-je short loc_fffa3d32  ; je 0xfffa3d32
-mov edx, 0xc
-call mrc_zeromem
-mov eax, 0x28
-call mrc_alloc
-test eax, eax
-mov edi, eax
-je short loc_fffa3d32  ; je 0xfffa3d32
-mov edx, 0x28
-call mrc_zeromem
-mov ecx, 0x28
-mov edx, ref_fffcc8dc  ; mov edx, 0xfffcc8dc
-mov eax, edi
-call mrc_memcpy
-mov dword [esi + 8], edi
-mov dword [esi], 0x80000010
-mov dword [esi + 4], gPchDmiTcVcPpiGuid  ; mov dword [esi + 4], 0xfffcd534
-push edi
-push edi
-mov eax, dword [ebx]
-push esi
-push ebx
-call dword [eax + 0x18]  ; ucall
-pop eax
-pop edx
-mov eax, dword [ebx]
-push ref_fffcc97c  ; push 0xfffcc97c
-push ebx
-call dword [eax + 0x18]  ; ucall
-pop ecx
-pop esi
-mov eax, dword [ebx]
-push ref_fffcca30  ; push 0xfffcca30
-push ebx
-call dword [eax + 0x24]  ; ucall
-pop edi
-pop eax
-mov eax, dword [ebx]
-push ref_fffcd560  ; push 0xfffcd560
-push ebx
-call dword [eax + 0x24]  ; ucall
-add esp, 0x10
 
 loc_fffa3d32:
 push ecx
@@ -51699,18 +51648,6 @@ dd 0x7ae3ceb7
 dd 0x48fa2ee2
 dd 0x103549aa
 dd 0xbfca83bc
-
-ref_fffcc8dc:
-dd 0x00000000
-dd 0x00000001
-dd 0x00000002
-dd 0x00000000
-dd 0x00000000
-dd 0x00000000
-dd 0x00000000
-dd 0x00000003
-dd 0x01010001
-dd 0x07010201
 
 ref_fffcc904:
 dd 0x80000020
