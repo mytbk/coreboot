@@ -27,6 +27,8 @@ extern mrc_pch_iobp_read
 extern mrc_pch_iobp_update
 extern mrc_pch_init
 extern dmi_check_link
+extern pei_get_platform_memsize
+extern pei_choose_ranges
 
 ; PEI services
 extern PeiInstallPpi
@@ -397,31 +399,6 @@ lea esp, [ebp - 8]
 or eax, 0xffffffff
 pop ebx
 pop esi
-pop ebp
-ret
-
-fcn_fffa049e:  ; not directly referenced
-push ebp
-mov ebp, esp
-mov eax, dword [ebp + 0x10]
-mov dword [eax], 0
-mov eax, dword [ebp + 0x14]
-mov dword [eax], 0
-mov eax, dword [ebp + 0x18]
-mov dword [eax], 0
-mov eax, dword [ebp + 0x1c]
-mov dword [eax], 0
-xor eax, eax
-pop ebp
-ret
-
-fcn_fffa04c9:  ; not directly referenced
-push ebp
-mov ebp, esp
-mov eax, dword [ebp + 0x10]
-mov dword [eax], 0x1000000
-mov dword [eax + 4], 0
-xor eax, eax
 pop ebp
 ret
 
@@ -2863,8 +2840,8 @@ mov al, dl
 mov cl, 5
 mov dword [ebp - 0x467], 0x400000
 mov byte [ebp - 0x526], 0xe
-mov dword [ebp - 0x616], fcn_fffa049e  ; mov dword [ebp - 0x616], 0xfffa049e
-mov dword [ebp - 0x612], fcn_fffa04c9  ; mov dword [ebp - 0x612], 0xfffa04c9
+mov dword [ebp - 0x616], pei_choose_ranges
+mov dword [ebp - 0x612], pei_get_platform_memsize
 rep stosb  ; rep stosb byte es:[edi], al
 lea edi, [ebp - 0x553]
 mov cl, 0x15
