@@ -135,6 +135,8 @@ global wstr_pchinitpei
 
 ;; raminit_frag
 extern io_fffa3c2e
+extern mrc_frag_smbus
+global fcn_fffc5bf6
 
 mrc_entry:
 mov ecx, esp
@@ -3259,51 +3261,8 @@ push dword [0xff7d7538]
 call fcn_fffb9720  ; call 0xfffb9720
 mov dword [esp], str_init_smbus
 call mrc_printk
-mov eax, 0x10f
-mov esi, dword [0xff7d7538]
-call mrc_alloc
 add esp, 0x10
-test eax, eax
-mov ebx, eax
-je loc_init_usb
-mov edx, eax
-mov eax, esi
-call fcn_fffc5bf6  ; call 0xfffc5bf6
-mov eax, dword [0xf0000060]
-and eax, 0xfc000000
-mov edx, dword [eax + 0xfb020]
-and edx, 0xffe0
-or edx, dword [ebx + 0xc]
-mov dword [eax + 0xfb020], edx
-mov dl, byte [eax + 0xfb004]
-or edx, 1
-mov byte [eax + 0xfb004], dl
-mov dl, byte [eax + 0xfb040]
-or edx, 8
-mov byte [eax + 0xfb040], dl
-mov dl, byte [eax + 0xfb040]
-and edx, 0xfffffff8
-or edx, 1
-mov byte [eax + 0xfb040], dl
-mov edx, 0xff
-xor eax, eax
-call mrc_smbus_outb
-mov eax, dword [0xff7d7538]
-lea ecx, [ebx + 0x10]
-push edi
-add ebx, 0x2c
-push edi
-mov edx, dword [eax]
-push ecx
-push eax
-call dword [edx + 0x18]  ; ucall
-pop eax
-pop edx
-mov eax, dword [esi]
-push ebx
-push esi
-call dword [eax + 0x24]  ; ucall
-add esp, 0x10
+call mrc_frag_smbus
 
 loc_init_usb:
 sub esp, 0xc

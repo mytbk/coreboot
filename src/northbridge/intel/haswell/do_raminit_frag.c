@@ -1,5 +1,9 @@
 #include <southbridge/intel/lynxpoint/pch.h>
 #include <arch/io.h>
+#include <device/pci_ops.h>
+#include "mrc_pei.h"
+#include "mrc_utils.h"
+#include "mrc_smbus.h"
 
 // loc_fffa3c2e
 //
@@ -28,4 +32,25 @@ void io_fffa3c2e(void)
 	outb(t1, 0x70);
 	tmp = inb(0x71) & 0x7f;
 	outb(tmp, 0x71);
+}
+
+static const EFI_PEI_SERVICES ***gpPei = (const EFI_PEI_SERVICES***)0xff7d7538;
+void __attribute((regparm(2))) fcn_fffc5bf6(const EFI_PEI_SERVICES **ps, void *);
+
+void mrc_frag_smbus(void);
+void mrc_frag_smbus(void)
+{
+	const EFI_PEI_SERVICES **pps = *gpPei;
+	void *mem = mrc_alloc(0x10f);
+	if (mem == NULL)
+		return;
+	fcn_fffc5bf6(pps, mem);
+	pci_update_config32(PCI_DEV(0, 0x1f, 3), 0x20, 0xffe0, *(u32*)(mem + 0xc));
+	pci_or_config8(PCI_DEV(0, 0x1f, 3), 4, 1);
+	pci_or_config8(PCI_DEV(0, 0x1f, 3), 0x40, 8);
+	pci_update_config32(PCI_DEV(0, 0x1f, 3), 0x40, 0xfffffff8, 1);
+	mrc_smbus_outb(0, 0xff);
+
+	(*pps)->InstallPpi(pps, mem + 0x10);
+	(*pps)->NotifyPpi(pps, mem + 0x2c);
 }
