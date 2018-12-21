@@ -1,7 +1,11 @@
 #include <southbridge/intel/lynxpoint/pch.h>
 #include "mrc_sku.h"
+#include "mrc_misc.h"
 
-void dmi_check_link(void);
+int dummy_func(void)
+{
+	return 0;
+}
 
 void dmi_check_link(void)
 {

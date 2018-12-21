@@ -15,7 +15,7 @@ typedef struct _EFI_PEI_SVC EFI_PEI_SERVICES;
 
 typedef int EFI_BOOT_MODE;
 typedef void* EFI_PHYSICAL_ADDRESS;
-#define EFI_PEI_REPORT_STATUS_CODE void*
+typedef int (*EFI_PEI_REPORT_STATUS_CODE)(void);
 #define EFI_PEI_RESET_SYSTEM void*
 #define EFI_PEI_PCI_CFG_PPI void*
 #define EFI_PEI_FFS_FIND_NEXT_VOLUME void*
@@ -88,17 +88,9 @@ typedef int (EFIAPI *EFI_PEI_CREATE_HOB)(
 		void                          **Hob
 		);
 
-typedef int (EFIAPI *EFI_PEI_INSTALL_PEI_MEMORY)(
-		const EFI_PEI_SERVICES     **PeiServices,
-		EFI_PHYSICAL_ADDRESS       MemoryBegin,
-		uint64_t                     MemoryLength
-		);
+typedef int (EFIAPI *EFI_PEI_INSTALL_PEI_MEMORY)(void);
 
-typedef void (EFIAPI *EFI_PEI_COPY_MEM)(
-		void                       *Destination,
-		void                       *Source,
-		size_t                      Length
-		);
+typedef void* (EFIAPI *EFI_PEI_COPY_MEM)(void *t, const void *s, size_t n);
 
 typedef struct _EFI_PEI_SVC {
 	uint8_t hdr[24];
@@ -181,5 +173,7 @@ int EFIAPI PeiGetHobList(const EFI_PEI_SERVICES **PeiServices, void **HobList);
 int __attribute((regparm(1))) PeiServiceGetBootMode(int *BootMode);
 int __attribute((regparm(1)))
 PeiServiceNotifyPpi(const EFI_PEI_NOTIFY_DESCRIPTOR *NotifyList);
+
+void init_pei_svc(EFI_PEI_SERVICES *sv);
 
 #endif

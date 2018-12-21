@@ -1,5 +1,6 @@
 #include "mrc_pei.h"
 #include "mrc_utils.h"
+#include "mrc_misc.h"
 #include <string.h>
 #include <console/console.h>
 
@@ -136,4 +137,20 @@ PeiServiceNotifyPpi(const EFI_PEI_NOTIFY_DESCRIPTOR *NotifyList)
 {
 	const EFI_PEI_SERVICES **pps = *gpPei;
 	return (*pps)->NotifyPpi(pps, NotifyList);
+}
+
+extern EFI_PEI_CPU_IO_PPI gCpuIoPpi;
+
+void init_pei_svc(EFI_PEI_SERVICES *sv)
+{
+	sv->InstallPpi = PeiInstallPpi;
+	sv->LocatePpi = PeiLocatePpi;
+	sv->NotifyPpi = PeiNotifyPpi;
+	sv->GetBootMode = PeiGetBootMode;
+	sv->GetHobList = PeiGetHobList;
+	sv->CreateHob = PeiCreateHob;
+	sv->InstallPeiMemory = dummy_func;
+	sv->CopyMem = memcpy;
+	sv->ReportStatusCode = dummy_func;
+	sv->CpuIo = &gCpuIoPpi;
 }
