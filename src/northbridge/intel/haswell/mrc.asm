@@ -152,6 +152,7 @@ extern io_fffa4575
 extern io_fffa45f1
 extern io_fffa476b
 extern io_fffa49a0
+extern io_fffa4c0d
 
 mrc_entry:
 mov ecx, esp
@@ -3780,23 +3781,7 @@ or ah, 0xc
 mov dword [ebx + 0x924], eax
 
 loc_fffa4c0d:
-mov edx, dword [0xf0000060]
-mov eax, dword [0xf0000060]
-and eax, 0xfc000000
-and edx, 0xfc000000
-mov ecx, dword [ebp - 0x660]
-mov eax, dword [eax + 0x891c]
-and eax, 0xc7ffffff
-or eax, 0x28000000
-mov dword [edx + 0x891c], eax
-mov edx, dword [0xf0000060]
-mov eax, dword [0xf0000060]
-and edx, 0xfc000000
-and eax, 0xfc000000
-mov eax, dword [eax + 0x893c]
-and eax, 0xc7ffffff
-or eax, 0x28000000
-mov dword [edx + 0x893c], eax
+call io_fffa4c0d
 mov eax, dword [ebx + 0x258]
 or eax, 0x20000000
 xor edx, edx
@@ -3809,6 +3794,7 @@ mov eax, dword [ebx + 0x22c]
 xor ax, ax
 or eax, 0x2020
 mov dword [ebx + 0x22c], eax
+mov ecx, dword [ebp - 0x660]
 mov eax, dword [ecx + 0xd]
 cmp byte [eax + 3], 0
 je short loc_fffa4ce2  ; je 0xfffa4ce2

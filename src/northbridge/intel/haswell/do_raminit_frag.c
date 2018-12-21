@@ -193,3 +193,10 @@ void __attribute((regparm(1))) io_fffa49a0(uint32_t v)
 	pci_update_config32(PCI_DEV(0, 0, 0), 0x90c, 0xc1ffffff, 0xe000000);
 	pci_update_config32(PCI_DEV(0, 0, 0), 0x92c, 0xc1ffffff, 0xe000000);
 }
+
+void io_fffa4c0d(void);
+void io_fffa4c0d(void)
+{
+	pci_update_config32(PCI_DEV(0, 1, 0), 0x91c, 0xc7ffffff, 0x28000000);
+	pci_update_config32(PCI_DEV(0, 1, 0), 0x93c, 0xc7ffffff, 0x28000000);
+}
