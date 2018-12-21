@@ -137,6 +137,7 @@ global wstr_pchinitpei
 extern mrc_frag_smbus
 extern mrc_frag_pch
 global fcn_fffc5bf6
+global fcn_fffb9720
 global gPchDmiTcVcPpiGuid
 global ref_fffcc97c
 global ref_fffcca30
@@ -3057,7 +3058,8 @@ call mrc_printk
 add esp, 0x10
 mov ebx, dword [0xff7d7538]
 call mrc_frag_pch
-jmp loc_fffa3d32
+call mrc_frag_smbus
+jmp loc_init_usb
 
 loc_fffa3b14:
 cmp dx, 0x8c4f
@@ -3190,18 +3192,6 @@ movzx eax, al
 cmp ebx, eax
 jl short loc_fffa3bc0  ; jl 0xfffa3bc0
 jmp near loc_fffa3ab5  ; jmp 0xfffa3ab5
-
-
-loc_fffa3d32:
-push ecx
-push 0
-push 0
-push dword [0xff7d7538]
-call fcn_fffb9720  ; call 0xfffb9720
-mov dword [esp], str_init_smbus
-call mrc_printk
-add esp, 0x10
-call mrc_frag_smbus
 
 loc_init_usb:
 sub esp, 0xc
@@ -51597,9 +51587,6 @@ db 'System Agent: Unsupported DDR3 frequence %d (Supported are 800, 1067, 1333, 
 
 str_init_pch:
 db 'System Agent: Initializing PCH',0x0a,0x00
-
-str_init_smbus:
-db 'System Agent: Initializing PCH (SMBUS)',0x0a,0x00
 
 str_init_usb:
 db 'System Agent: Initializing PCH (USB)',0x0a,0x00
