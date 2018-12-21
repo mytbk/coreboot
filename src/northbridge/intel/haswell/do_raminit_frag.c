@@ -72,6 +72,8 @@ void mrc_frag_pch(void)
 {
 	const EFI_PEI_SERVICES **pps = *gpPei;
 
+	mrc_printk("System Agent: Initializing PCH\n");
+
 	RCBA16(DISPBDF) = 0x0010;
 	RCBA32_OR(FD2, PCH_ENABLE_DBDF);
 	u16 tmp = pci_read_config16(PCH_LPC_DEV, GEN_PMCON_3);

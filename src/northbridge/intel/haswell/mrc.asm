@@ -3052,11 +3052,6 @@ cmp ebx, eax
 jl short loc_fffa3a6d  ; jl 0xfffa3a6d
 
 loc_fffa3ab5:
-sub esp, 0xc
-push str_init_pch  ; push 0xfffcc5c7
-call mrc_printk
-add esp, 0x10
-mov ebx, dword [0xff7d7538]
 call mrc_frag_pch
 call mrc_frag_smbus
 jmp loc_init_usb
@@ -51584,9 +51579,6 @@ db 'System Agent: S3 resume detected',0x0a,0x00
 
 ref_fffcc574:
 db 'System Agent: Unsupported DDR3 frequence %d (Supported are 800, 1067, 1333, 1600)',0x0a,0x00
-
-str_init_pch:
-db 'System Agent: Initializing PCH',0x0a,0x00
 
 str_init_usb:
 db 'System Agent: Initializing PCH (USB)',0x0a,0x00
