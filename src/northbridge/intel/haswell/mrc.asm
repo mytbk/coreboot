@@ -142,6 +142,9 @@ global gPchDmiTcVcPpiGuid
 global ref_fffcc97c
 global ref_fffcca30
 global ref_fffcd560
+extern io_fffa4188
+extern io_fffa4235
+extern io_fffa42c3
 
 mrc_entry:
 mov ecx, esp
@@ -3422,8 +3425,9 @@ jne short loc_fffa412c  ; jne 0xfffa412c
 
 loc_fffa4126:
 test ebx, ebx
-je short loc_fffa4188  ; je 0xfffa4188
-jmp short loc_fffa4176  ; jmp 0xfffa4176
+jne loc_fffa4176
+call io_fffa4188
+jmp loc_fffa4176
 
 loc_fffa412c:
 xor eax, eax
@@ -3456,64 +3460,13 @@ jmp short loc_fffa4126  ; jmp 0xfffa4126
 loc_fffa4176:
 cmp byte [ebp - 0x658], 0
 jne loc_fffa42c3  ; jne 0xfffa42c3
-jmp near loc_fffa4231  ; jmp 0xfffa4231
-
-loc_fffa4188:
-mov edx, dword [0xf0000060]
-mov eax, dword [0xf0000060]
-and eax, 0xfc000000
-and edx, 0xfc000000
-mov eax, dword [eax + 0x904]
-and eax, 0xffffffe0
-or eax, 2
-mov dword [edx + 0x904], eax
-mov edx, dword [0xf0000060]
-mov eax, dword [0xf0000060]
-and edx, 0xfc000000
-and eax, 0xfc000000
-mov eax, dword [eax + 0x924]
-and eax, 0xffffffe0
-or eax, 2
-mov dword [edx + 0x924], eax
-mov edx, dword [0xf0000060]
-mov eax, dword [0xf0000060]
-and edx, 0xfc000000
-and eax, 0xfc000000
-mov eax, dword [eax + 0x904]
-and eax, 0xfffffc1f
-or eax, 0x60
-mov dword [edx + 0x904], eax
-mov edx, dword [0xf0000060]
-mov eax, dword [0xf0000060]
-and edx, 0xfc000000
-and eax, 0xfc000000
-mov eax, dword [eax + 0x924]
-and eax, 0xfffffc1f
-or eax, 0x60
-mov dword [edx + 0x924], eax
-jmp near loc_fffa4176  ; jmp 0xfffa4176
 
 loc_fffa4231:
 test ebx, ebx
 jne short loc_fffa4292  ; jne 0xfffa4292
 
 loc_fffa4235:
-mov edx, dword [0xf0000060]
-mov eax, dword [0xf0000060]
-and eax, 0xfc000000
-and edx, 0xfc000000
-mov eax, dword [eax + 0x90c]
-and eax, 0xfffff81f
-or eax, 0x120
-mov dword [edx + 0x90c], eax
-mov edx, dword [0xf0000060]
-mov eax, dword [0xf0000060]
-and edx, 0xfc000000
-and eax, 0xfc000000
-mov eax, dword [eax + 0x92c]
-and eax, 0xfffff81f
-or eax, 0x120
-mov dword [edx + 0x92c], eax
+call io_fffa4235
 jmp near loc_fffa43cb  ; jmp 0xfffa43cb
 
 loc_fffa4292:
@@ -3530,36 +3483,7 @@ jmp near loc_fffa43cb  ; jmp 0xfffa43cb
 loc_fffa42c3:
 test ebx, ebx
 jne loc_fffa4378  ; jne 0xfffa4378
-mov eax, dword [0xf0000060]
-mov edx, dword [0xf0000060]
-and edx, 0xfc000000
-and eax, 0xfc000000
-mov edx, dword [edx + 0x904]
-and edx, 0xfe3fffff
-mov dword [eax + 0x904], edx
-mov eax, dword [0xf0000060]
-mov edx, dword [0xf0000060]
-and eax, 0xfc000000
-and edx, 0xfc000000
-mov edx, dword [edx + 0x924]
-and edx, 0xfe3fffff
-mov dword [eax + 0x924], edx
-mov edx, dword [0xf0000060]
-mov eax, dword [0xf0000060]
-and edx, 0xfc000000
-and eax, 0xfc000000
-mov eax, dword [eax + 0x904]
-and eax, 0x9fffffff
-or eax, 0x20000000
-mov dword [edx + 0x904], eax
-mov edx, dword [0xf0000060]
-mov eax, dword [0xf0000060]
-and edx, 0xfc000000
-and eax, 0xfc000000
-mov eax, dword [eax + 0x924]
-and eax, 0x9fffffff
-or eax, 0x20000000
-mov dword [edx + 0x924], eax
+call io_fffa42c3
 jmp near loc_fffa4235  ; jmp 0xfffa4235
 
 loc_fffa4378:
