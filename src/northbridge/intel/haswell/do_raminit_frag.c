@@ -101,3 +101,28 @@ void mrc_frag_pch(void)
 	(*pps)->NotifyPpi(pps, &ref_fffcca30);
 	(*pps)->NotifyPpi(pps, &ref_fffcd560);
 }
+
+void io_fffa4188(void);
+void io_fffa4188(void)
+{
+	pci_update_config32(PCI_DEV(0, 0, 0), 0x904, 0xffffffe0, 2);
+	pci_update_config32(PCI_DEV(0, 0, 0), 0x924, 0xffffffe0, 2);
+	pci_update_config32(PCI_DEV(0, 0, 0), 0x904, 0xfffffc1f, 0x60);
+	pci_update_config32(PCI_DEV(0, 0, 0), 0x924, 0xfffffc1f, 0x60);
+}
+
+void io_fffa4235(void);
+void io_fffa4235(void)
+{
+	pci_update_config32(PCI_DEV(0, 0, 0), 0x90c, 0xfffff81f, 0x120);
+	pci_update_config32(PCI_DEV(0, 0, 0), 0x92c, 0xfffff81f, 0x120);
+}
+
+void io_fffa42c3(void);
+void io_fffa42c3(void)
+{
+	pci_update_config32(PCI_DEV(0, 0, 0), 0x904, 0xfe3fffff, 0);
+	pci_update_config32(PCI_DEV(0, 0, 0), 0x924, 0xfe3fffff, 0);
+	pci_update_config32(PCI_DEV(0, 0, 0), 0x904, 0x9fffffff, 0x20000000);
+	pci_update_config32(PCI_DEV(0, 0, 0), 0x924, 0x9fffffff, 0x20000000);
+}
