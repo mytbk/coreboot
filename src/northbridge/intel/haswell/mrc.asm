@@ -5,6 +5,7 @@ bits 32
 global mrc_entry
 global do_raminit
 
+extern dummy_func
 extern mrc_printk
 extern mrc_setmem
 extern mrc_memcpy
@@ -31,14 +32,9 @@ extern pei_get_platform_memsize
 extern pei_choose_ranges
 
 ; PEI services
-extern PeiInstallPpi
-extern PeiLocatePpi
-extern PeiNotifyPpi
-extern PeiGetBootMode
-extern PeiGetHobList
-extern PeiCreateHob
 extern PeiServiceGetBootMode
 extern PeiServiceNotifyPpi
+extern init_pei_svc
 
 extern PchMeUmaDesc
 
@@ -51,7 +47,6 @@ global gPchMeUmaPpiGuid
 global haswell_family_model
 global haswell_stepping
 
-extern gCpuIoPpi
 extern mrc_init_memory
 
 ;; mrc_init_memory.asm
@@ -424,13 +419,6 @@ lea esp, [ebp - 8]
 or eax, 0xffffffff
 pop ebx
 pop esi
-pop ebp
-ret
-
-dummy_func:
-push ebp
-xor eax, eax
-mov ebp, esp
 pop ebp
 ret
 
@@ -2873,25 +2861,22 @@ mov byte [ebp - 0x62f], 1
 lea eax, [ebp - 0x5d4]
 mov dword [ebp - 0x278], 0xfeadb00b
 mov dword [ebp - 0x200], eax
-mov dword [ebp - 0x25c], PeiInstallPpi
+
+; fill EFI_PEI_SERVICES struct
+lea eax, [ebp - 0x274]
+push eax
+call init_pei_svc
+pop eax
+
 lea eax, [ebp - 0x526]
-mov dword [ebp - 0x254], PeiLocatePpi
 mov dword [ebp - 0x1f4], eax
-mov dword [ebp - 0x250], PeiNotifyPpi
 lea eax, [ebp - 0x5dc]
-mov dword [ebp - 0x24c], PeiGetBootMode
 mov dword [ebp - 0x1e8], eax
-mov dword [ebp - 0x244], PeiGetHobList
 lea eax, [ebp - 0x4c0]
-mov dword [ebp - 0x240], PeiCreateHob
 mov dword [ebp - 0x1dc], eax
-mov dword [ebp - 0x230], dummy_func
 lea eax, [ebp - 0x565]
-mov dword [ebp - 0x224], memcpy  ; mov dword [ebp - 0x224], 0xfffa1178
 mov dword [ebp - 0x1d0], eax
-mov dword [ebp - 0x21c], dummy_func
 lea eax, [ebp - 0x585]
-mov dword [ebp - 0x214], gCpuIoPpi
 mov dword [ebp - 0x204], gEfiPeiStallPpiGuid
 mov dword [ebp - 0x1f8], ref_fffcd4e4  ; mov dword [ebp - 0x1f8], 0xfffcd4e4
 mov dword [ebp - 0x1ec], gEfiPeiReadOnlyVariablePpiGuid
