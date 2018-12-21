@@ -145,6 +145,7 @@ global ref_fffcd560
 extern io_fffa4188
 extern io_fffa4235
 extern io_fffa42c3
+extern io_fffa43e1
 
 mrc_entry:
 mov ecx, esp
@@ -3515,20 +3516,7 @@ jmp near loc_fffa5681  ; jmp 0xfffa5681
 loc_fffa43e1:
 test ebx, ebx
 jne short loc_fffa4437  ; jne 0xfffa4437
-mov eax, dword [0xf0000060]
-mov edx, dword [0xf0000060]
-and edx, 0xfc000000
-and eax, 0xfc000000
-mov edx, dword [edx + 0x90c]
-and edx, 0xfff1ffff
-mov dword [eax + 0x90c], edx
-mov eax, dword [0xf0000060]
-mov edx, dword [0xf0000060]
-and eax, 0xfc000000
-and edx, 0xfc000000
-mov edx, dword [edx + 0x92c]
-and edx, 0xfff1ffff
-mov dword [eax + 0x92c], edx
+call io_fffa43e1
 jmp short loc_fffa44ad  ; jmp 0xfffa44ad
 
 loc_fffa4437:
