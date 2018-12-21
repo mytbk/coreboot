@@ -5,6 +5,7 @@
 #include "mrc_utils.h"
 #include "mrc_smbus.h"
 #include "mrc_pch_init.h"
+#include <console/console.h>
 
 static void io_fffa3c2e(void)
 {
@@ -34,11 +35,16 @@ static void io_fffa3c2e(void)
 
 static const EFI_PEI_SERVICES ***gpPei = (const EFI_PEI_SERVICES***)0xff7d7538;
 void __attribute((regparm(2))) fcn_fffc5bf6(const EFI_PEI_SERVICES **ps, void *);
+void fcn_fffb9720(const EFI_PEI_SERVICES **ps, int, int);
 
 void mrc_frag_smbus(void);
 void mrc_frag_smbus(void)
 {
 	const EFI_PEI_SERVICES **pps = *gpPei;
+
+	fcn_fffb9720(pps, 0, 0);
+	mrc_printk("System Agent: Initializing PCH (SMBUS)\n");
+
 	void *mem = mrc_alloc(0x10f);
 	if (mem == NULL)
 		return;
