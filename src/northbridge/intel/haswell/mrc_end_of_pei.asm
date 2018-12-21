@@ -9,7 +9,6 @@ extern ref_fffcd4a4
 extern fcn_fffa11b3
 extern PeiServiceGetBootMode
 extern gEfiPeiReadOnlyVariablePpiGuid
-extern wstr_pchinitpei
 
 extern mrc_printk
 
