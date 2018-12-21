@@ -148,6 +148,7 @@ extern io_fffa45f1
 extern io_fffa476b
 extern io_fffa49a0
 extern io_fffa4c0d
+extern load_usb
 
 mrc_entry:
 mov ecx, esp
@@ -2385,258 +2386,22 @@ mov dword [ebp - 0x604], eax
 mov eax, ebx
 rep stosd  ; rep stosd dword es:[edi], eax
 mov al, dl
-lea edi, [ebp - 0x403]
-mov cl, 0xc3
-rep stosb  ; rep stosb byte es:[edi], al
-mov byte [ebp - 0x403], 1
-mov eax, dword [ebp - 0x63c]
+
+; clear the whole PEI_USB struct
+; then fill the PEI_USB struct
+push dword [ebp - 0x63c]
+lea eax, [ebp - 0x403]
+push eax
+call load_usb
+add esp, 8
+xor edx, edx
+
 lea edi, [ebp - 0x632]
-mov cl, byte [eax + 0x74]
-mov al, byte [ebp - 0x402]
-and ecx, 1
-and eax, 0xfffffffe
-or eax, ecx
-mov ecx, dword [ebp - 0x63c]
-mov byte [ebp - 0x402], al
-mov al, byte [ecx + 0x76]
-mov byte [ebp - 0x401], al
-mov ax, word [ecx + 0x72]
-mov word [ebp - 0x400], ax
-mov cl, byte [ecx + 0x79]
-mov al, byte [ebp - 0x3fc]
-and ecx, 1
-and eax, 0xfffffffe
-or eax, ecx
-mov ecx, dword [ebp - 0x63c]
-mov byte [ebp - 0x3fc], al
-mov al, byte [ecx + 0x7b]
-mov byte [ebp - 0x3fb], al
-mov ax, word [ecx + 0x77]
-mov word [ebp - 0x3fa], ax
-mov cl, byte [ecx + 0x7e]
-mov al, byte [ebp - 0x3f6]
-and ecx, 1
-and eax, 0xfffffffe
-or eax, ecx
-mov ecx, dword [ebp - 0x63c]
-mov byte [ebp - 0x3f6], al
-mov al, byte [ecx + 0x80]
-mov byte [ebp - 0x3f5], al
-mov ax, word [ecx + 0x7c]
-mov word [ebp - 0x3f4], ax
-mov cl, byte [ecx + 0x83]
-mov al, byte [ebp - 0x3f0]
-and ecx, 1
-and eax, 0xfffffffe
-or eax, ecx
-mov ecx, dword [ebp - 0x63c]
-mov byte [ebp - 0x3f0], al
-mov al, byte [ecx + 0x85]
-mov byte [ebp - 0x3ef], al
-mov ax, word [ecx + 0x81]
-mov word [ebp - 0x3ee], ax
-mov cl, byte [ecx + 0x88]
-mov al, byte [ebp - 0x3ea]
-and ecx, 1
-and eax, 0xfffffffe
-or eax, ecx
-mov byte [ebp - 0x3ea], al
-mov ecx, dword [ebp - 0x63c]
-mov al, byte [ecx + 0x8a]
-mov byte [ebp - 0x3e9], al
-mov ax, word [ecx + 0x86]
-mov word [ebp - 0x3e8], ax
-mov cl, byte [ecx + 0x8d]
-mov al, byte [ebp - 0x3e4]
-and ecx, 1
-and eax, 0xfffffffe
-or eax, ecx
-mov ecx, dword [ebp - 0x63c]
-mov byte [ebp - 0x3e4], al
-mov al, byte [ecx + 0x8f]
-mov byte [ebp - 0x3e3], al
-mov ax, word [ecx + 0x8b]
-mov word [ebp - 0x3e2], ax
-mov cl, byte [ecx + 0x92]
-mov al, byte [ebp - 0x3de]
-and ecx, 1
-and eax, 0xfffffffe
-or eax, ecx
-mov ecx, dword [ebp - 0x63c]
-mov byte [ebp - 0x3de], al
-mov al, byte [ecx + 0x94]
-mov byte [ebp - 0x3dd], al
-mov ax, word [ecx + 0x90]
-mov word [ebp - 0x3dc], ax
-mov cl, byte [ecx + 0x97]
-mov al, byte [ebp - 0x3d8]
-and ecx, 1
-and eax, 0xfffffffe
-or eax, ecx
-mov ecx, dword [ebp - 0x63c]
-mov byte [ebp - 0x3d8], al
-mov al, byte [ecx + 0x99]
-mov byte [ebp - 0x3d7], al
-mov ax, word [ecx + 0x95]
-mov word [ebp - 0x3d6], ax
-mov cl, byte [ecx + 0x9c]
-mov al, byte [ebp - 0x3d2]
-and ecx, 1
-and eax, 0xfffffffe
-or eax, ecx
-mov ecx, dword [ebp - 0x63c]
-mov byte [ebp - 0x3d2], al
-mov al, byte [ecx + 0x9e]
-mov byte [ebp - 0x3d1], al
-mov ax, word [ecx + 0x9a]
-mov word [ebp - 0x3d0], ax
-mov cl, byte [ecx + 0xa1]
-mov al, byte [ebp - 0x3cc]
-and ecx, 1
-and eax, 0xfffffffe
-or eax, ecx
-mov ecx, dword [ebp - 0x63c]
-mov byte [ebp - 0x3cc], al
-mov al, byte [ecx + 0xa3]
-mov byte [ebp - 0x3cb], al
-mov ax, word [ecx + 0x9f]
-mov word [ebp - 0x3ca], ax
-mov cl, byte [ecx + 0xa6]
-mov al, byte [ebp - 0x3c6]
-and ecx, 1
-and eax, 0xfffffffe
-or eax, ecx
-mov ecx, dword [ebp - 0x63c]
-mov byte [ebp - 0x3c6], al
-mov al, byte [ecx + 0xa8]
-mov byte [ebp - 0x3c5], al
-mov ax, word [ecx + 0xa4]
-mov word [ebp - 0x3c4], ax
-mov cl, byte [ecx + 0xab]
-mov al, byte [ebp - 0x3c0]
-and ecx, 1
-and eax, 0xfffffffe
-or eax, ecx
-mov ecx, dword [ebp - 0x63c]
-mov byte [ebp - 0x3c0], al
-mov al, byte [ecx + 0xad]
-mov byte [ebp - 0x3bf], al
-mov ax, word [ecx + 0xa9]
-mov word [ebp - 0x3be], ax
-mov cl, byte [ecx + 0xb0]
-mov al, byte [ebp - 0x3ba]
-and ecx, 1
-and eax, 0xfffffffe
-or eax, ecx
-mov ecx, dword [ebp - 0x63c]
-mov byte [ebp - 0x3ba], al
-mov al, byte [ecx + 0xb2]
-mov byte [ebp - 0x3b9], al
-mov ax, word [ecx + 0xae]
-mov word [ebp - 0x3b8], ax
-mov al, byte [ebp - 0x3b4]
-mov cl, byte [ecx + 0xb5]
-and eax, 0xfffffffe
-and ecx, 1
-or byte [ebp - 0x3ae], 1
-or eax, ecx
-mov ecx, dword [ebp - 0x63c]
-mov byte [ebp - 0x3b4], al
-or byte [ebp - 0x3ad], 1
-mov al, byte [ecx + 0xb7]
-mov byte [ebp - 0x3b3], al
-mov ax, word [ecx + 0xb3]
-mov word [ebp - 0x3b2], ax
-mov al, byte [ebp - 0x3ac]
-and eax, 0xfffffffc
-or eax, 2
-mov byte [ebp - 0x3ac], al
-movzx eax, byte [ecx + 0x75]
-mov dword [ebp - 0x397], eax
-movzx eax, byte [ecx + 0x7a]
-mov dword [ebp - 0x393], eax
-movzx eax, byte [ecx + 0x7f]
-mov dword [ebp - 0x38f], eax
-movzx eax, byte [ecx + 0x84]
-mov dword [ebp - 0x38b], eax
-movzx eax, byte [ecx + 0x89]
-mov dword [ebp - 0x387], eax
-movzx eax, byte [ecx + 0x8e]
-mov dword [ebp - 0x383], eax
-movzx eax, byte [ecx + 0x93]
-mov dword [ebp - 0x37f], eax
-movzx eax, byte [ecx + 0x98]
-mov dword [ebp - 0x37b], eax
-movzx eax, byte [ecx + 0x9d]
-mov dword [ebp - 0x377], eax
-movzx eax, byte [ecx + 0xa2]
-mov dword [ebp - 0x373], eax
-movzx eax, byte [ecx + 0xa7]
-mov dword [ebp - 0x36f], eax
-movzx eax, byte [ecx + 0xac]
-mov dword [ebp - 0x36b], eax
-movzx eax, byte [ecx + 0xb1]
-mov dword [ebp - 0x367], eax
-movzx eax, byte [ecx + 0xb6]
-mov dword [ebp - 0x363], eax
-movzx eax, byte [ecx + 0xc3]
-mov dword [ebp - 0x35f], eax
-movzx eax, byte [ecx + 0xc5]
-mov dword [ebp - 0x35b], eax
-movzx eax, byte [ecx + 0xc7]
-mov dword [ebp - 0x357], eax
-movzx eax, byte [ecx + 0xc9]
-mov dword [ebp - 0x353], eax
-movzx eax, byte [ecx + 0xcb]
-mov dword [ebp - 0x34f], eax
-movzx eax, byte [ecx + 0xcd]
-mov cl, byte [ecx + 0xc2]
-mov dword [ebp - 0x34b], eax
-mov al, byte [ebp - 0x346]
-and ecx, 1
-and eax, 0xfffffffe
-or eax, ecx
-mov byte [ebp - 0x346], al
-mov eax, dword [ebp - 0x63c]
-mov cl, byte [eax + 0xc4]
-mov al, byte [ebp - 0x345]
-and ecx, 1
-and eax, 0xfffffffe
-or eax, ecx
-mov byte [ebp - 0x345], al
-mov eax, dword [ebp - 0x63c]
-mov cl, byte [eax + 0xc6]
-mov al, byte [ebp - 0x344]
-and ecx, 1
-and eax, 0xfffffffe
-or eax, ecx
-mov byte [ebp - 0x344], al
-mov eax, dword [ebp - 0x63c]
-mov cl, byte [eax + 0xc8]
-mov al, byte [ebp - 0x343]
-and ecx, 1
-and eax, 0xfffffffe
-or eax, ecx
-mov byte [ebp - 0x343], al
-mov eax, dword [ebp - 0x63c]
 mov byte [ebp - 0x4c0], 3
 mov byte [ebp - 0x4bf], 0
 mov dword [ebp - 0x4aa], 0
 mov byte [ebp - 0x565], 4
-mov cl, byte [eax + 0xca]
-mov al, byte [ebp - 0x342]
-and ecx, 1
-and eax, 0xfffffffe
-or eax, ecx
-mov byte [ebp - 0x342], al
-mov eax, dword [ebp - 0x63c]
-mov cl, byte [eax + 0xcc]
-mov al, byte [ebp - 0x341]
-and ecx, 1
-and eax, 0xfffffffe
-or eax, ecx
 mov ecx, 3
-mov byte [ebp - 0x341], al
 mov eax, dword [ebp - 0x63c]
 cmp dword [eax + 0x46], 0
 mov al, dl
