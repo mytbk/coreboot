@@ -133,3 +133,10 @@ void io_fffa43e1(void)
 	pci_update_config32(PCI_DEV(0, 0, 0), 0x90c, 0xfff1ffff, 0);
 	pci_update_config32(PCI_DEV(0, 0, 0), 0x92c, 0xfff1ffff, 0);
 }
+
+void io_fffa445e(void);
+void io_fffa445e(void)
+{
+	pci_update_config32(PCI_DEV(0, 0, 0), 0x910, 0xffffc3ff, 0);
+	pci_update_config32(PCI_DEV(0, 0, 0), 0x930, 0xffffc3ff, 0);
+}

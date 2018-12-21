@@ -146,6 +146,7 @@ extern io_fffa4188
 extern io_fffa4235
 extern io_fffa42c3
 extern io_fffa43e1
+extern io_fffa445e
 
 mrc_entry:
 mov ecx, esp
@@ -3529,20 +3530,7 @@ mov dword [ebx + 0x92c], eax
 jmp near loc_fffa43d4  ; jmp 0xfffa43d4
 
 loc_fffa445e:
-mov eax, dword [0xf0000060]
-mov edx, dword [0xf0000060]
-and edx, 0xfc000000
-and eax, 0xfc000000
-mov edx, dword [edx + 0x910]
-and dh, 0xc3
-mov dword [eax + 0x910], edx
-mov eax, dword [0xf0000060]
-mov edx, dword [0xf0000060]
-and eax, 0xfc000000
-and edx, 0xfc000000
-mov edx, dword [edx + 0x930]
-and dh, 0xc3
-mov dword [eax + 0x930], edx
+call io_fffa445e
 jmp near loc_fffa4564  ; jmp 0xfffa4564
 
 loc_fffa44ad:
