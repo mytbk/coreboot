@@ -142,6 +142,17 @@ global gPchDmiTcVcPpiGuid
 global ref_fffcc97c
 global ref_fffcca30
 global ref_fffcd560
+extern io_fffa4188
+extern io_fffa4235
+extern io_fffa42c3
+extern io_fffa43e1
+extern io_fffa445e
+extern io_fffa44ad
+extern io_fffa4575
+extern io_fffa45f1
+extern io_fffa476b
+extern io_fffa49a0
+extern io_fffa4c0d
 
 mrc_entry:
 mov ecx, esp
@@ -3422,8 +3433,9 @@ jne short loc_fffa412c  ; jne 0xfffa412c
 
 loc_fffa4126:
 test ebx, ebx
-je short loc_fffa4188  ; je 0xfffa4188
-jmp short loc_fffa4176  ; jmp 0xfffa4176
+jne loc_fffa4176
+call io_fffa4188
+jmp loc_fffa4176
 
 loc_fffa412c:
 xor eax, eax
@@ -3456,64 +3468,13 @@ jmp short loc_fffa4126  ; jmp 0xfffa4126
 loc_fffa4176:
 cmp byte [ebp - 0x658], 0
 jne loc_fffa42c3  ; jne 0xfffa42c3
-jmp near loc_fffa4231  ; jmp 0xfffa4231
-
-loc_fffa4188:
-mov edx, dword [0xf0000060]
-mov eax, dword [0xf0000060]
-and eax, 0xfc000000
-and edx, 0xfc000000
-mov eax, dword [eax + 0x904]
-and eax, 0xffffffe0
-or eax, 2
-mov dword [edx + 0x904], eax
-mov edx, dword [0xf0000060]
-mov eax, dword [0xf0000060]
-and edx, 0xfc000000
-and eax, 0xfc000000
-mov eax, dword [eax + 0x924]
-and eax, 0xffffffe0
-or eax, 2
-mov dword [edx + 0x924], eax
-mov edx, dword [0xf0000060]
-mov eax, dword [0xf0000060]
-and edx, 0xfc000000
-and eax, 0xfc000000
-mov eax, dword [eax + 0x904]
-and eax, 0xfffffc1f
-or eax, 0x60
-mov dword [edx + 0x904], eax
-mov edx, dword [0xf0000060]
-mov eax, dword [0xf0000060]
-and edx, 0xfc000000
-and eax, 0xfc000000
-mov eax, dword [eax + 0x924]
-and eax, 0xfffffc1f
-or eax, 0x60
-mov dword [edx + 0x924], eax
-jmp near loc_fffa4176  ; jmp 0xfffa4176
 
 loc_fffa4231:
 test ebx, ebx
 jne short loc_fffa4292  ; jne 0xfffa4292
 
 loc_fffa4235:
-mov edx, dword [0xf0000060]
-mov eax, dword [0xf0000060]
-and eax, 0xfc000000
-and edx, 0xfc000000
-mov eax, dword [eax + 0x90c]
-and eax, 0xfffff81f
-or eax, 0x120
-mov dword [edx + 0x90c], eax
-mov edx, dword [0xf0000060]
-mov eax, dword [0xf0000060]
-and edx, 0xfc000000
-and eax, 0xfc000000
-mov eax, dword [eax + 0x92c]
-and eax, 0xfffff81f
-or eax, 0x120
-mov dword [edx + 0x92c], eax
+call io_fffa4235
 jmp near loc_fffa43cb  ; jmp 0xfffa43cb
 
 loc_fffa4292:
@@ -3530,36 +3491,7 @@ jmp near loc_fffa43cb  ; jmp 0xfffa43cb
 loc_fffa42c3:
 test ebx, ebx
 jne loc_fffa4378  ; jne 0xfffa4378
-mov eax, dword [0xf0000060]
-mov edx, dword [0xf0000060]
-and edx, 0xfc000000
-and eax, 0xfc000000
-mov edx, dword [edx + 0x904]
-and edx, 0xfe3fffff
-mov dword [eax + 0x904], edx
-mov eax, dword [0xf0000060]
-mov edx, dword [0xf0000060]
-and eax, 0xfc000000
-and edx, 0xfc000000
-mov edx, dword [edx + 0x924]
-and edx, 0xfe3fffff
-mov dword [eax + 0x924], edx
-mov edx, dword [0xf0000060]
-mov eax, dword [0xf0000060]
-and edx, 0xfc000000
-and eax, 0xfc000000
-mov eax, dword [eax + 0x904]
-and eax, 0x9fffffff
-or eax, 0x20000000
-mov dword [edx + 0x904], eax
-mov edx, dword [0xf0000060]
-mov eax, dword [0xf0000060]
-and edx, 0xfc000000
-and eax, 0xfc000000
-mov eax, dword [eax + 0x924]
-and eax, 0x9fffffff
-or eax, 0x20000000
-mov dword [edx + 0x924], eax
+call io_fffa42c3
 jmp near loc_fffa4235  ; jmp 0xfffa4235
 
 loc_fffa4378:
@@ -3591,20 +3523,7 @@ jmp near loc_fffa5681  ; jmp 0xfffa5681
 loc_fffa43e1:
 test ebx, ebx
 jne short loc_fffa4437  ; jne 0xfffa4437
-mov eax, dword [0xf0000060]
-mov edx, dword [0xf0000060]
-and edx, 0xfc000000
-and eax, 0xfc000000
-mov edx, dword [edx + 0x90c]
-and edx, 0xfff1ffff
-mov dword [eax + 0x90c], edx
-mov eax, dword [0xf0000060]
-mov edx, dword [0xf0000060]
-and eax, 0xfc000000
-and edx, 0xfc000000
-mov edx, dword [edx + 0x92c]
-and edx, 0xfff1ffff
-mov dword [eax + 0x92c], edx
+call io_fffa43e1
 jmp short loc_fffa44ad  ; jmp 0xfffa44ad
 
 loc_fffa4437:
@@ -3617,40 +3536,12 @@ mov dword [ebx + 0x92c], eax
 jmp near loc_fffa43d4  ; jmp 0xfffa43d4
 
 loc_fffa445e:
-mov eax, dword [0xf0000060]
-mov edx, dword [0xf0000060]
-and edx, 0xfc000000
-and eax, 0xfc000000
-mov edx, dword [edx + 0x910]
-and dh, 0xc3
-mov dword [eax + 0x910], edx
-mov eax, dword [0xf0000060]
-mov edx, dword [0xf0000060]
-and eax, 0xfc000000
-and edx, 0xfc000000
-mov edx, dword [edx + 0x930]
-and dh, 0xc3
-mov dword [eax + 0x930], edx
+call io_fffa445e
 jmp near loc_fffa4564  ; jmp 0xfffa4564
 
 loc_fffa44ad:
-mov edx, dword [0xf0000060]
-mov eax, dword [0xf0000060]
-and eax, 0xfc000000
-and edx, 0xfc000000
 xor edi, edi
-mov eax, dword [eax + 0x90c]
-and eax, 0xfe1fffff
-or eax, 0xa00000
-mov dword [edx + 0x90c], eax
-mov edx, dword [0xf0000060]
-mov eax, dword [0xf0000060]
-and edx, 0xfc000000
-and eax, 0xfc000000
-mov eax, dword [eax + 0x92c]
-and eax, 0xfe1fffff
-or eax, 0xa00000
-mov dword [edx + 0x92c], eax
+call io_fffa44ad
 
 loc_fffa4507:
 mov edx, dword [ebp - 0x660]
@@ -3688,20 +3579,7 @@ test ebx, ebx
 jne short loc_fffa45ca  ; jne 0xfffa45ca
 
 loc_fffa4575:
-mov eax, dword [0xf0000060]
-mov edx, dword [0xf0000060]
-and edx, 0xfc000000
-and eax, 0xfc000000
-mov edx, dword [edx + 0x80c]
-and edx, 0xffe3ffff
-mov dword [eax + 0x80c], edx
-mov eax, dword [0xf0000060]
-mov edx, dword [0xf0000060]
-and eax, 0xfc000000
-and edx, 0xfc000000
-mov edx, dword [edx + 0x82c]
-and edx, 0xffe3ffff
-mov dword [eax + 0x82c], edx
+call io_fffa4575
 jmp near loc_fffa476b  ; jmp 0xfffa476b
 
 loc_fffa45ca:
@@ -3716,52 +3594,7 @@ jmp near loc_fffa476b  ; jmp 0xfffa476b
 loc_fffa45f1:
 test ebx, ebx
 jne loc_fffa46f4  ; jne 0xfffa46f4
-mov edx, dword [0xf0000060]
-mov eax, dword [0xf0000060]
-and eax, 0xfc000000
-and edx, 0xfc000000
-mov eax, dword [eax + 0x910]
-and eax, 0x1fffffff
-or eax, 0x80000000
-mov dword [edx + 0x910], eax
-mov edx, dword [0xf0000060]
-mov eax, dword [0xf0000060]
-and edx, 0xfc000000
-and eax, 0xfc000000
-mov eax, dword [eax + 0x930]
-and eax, 0x1fffffff
-or eax, 0x80000000
-mov dword [edx + 0x930], eax
-mov edx, dword [0xf0000060]
-mov eax, dword [0xf0000060]
-and edx, 0xfc000000
-and eax, 0xfc000000
-mov eax, dword [eax + 0x80c]
-and eax, 0xfffffe7f
-or ah, 1
-mov dword [edx + 0x80c], eax
-mov edx, dword [0xf0000060]
-mov eax, dword [0xf0000060]
-and edx, 0xfc000000
-and eax, 0xfc000000
-mov eax, dword [eax + 0x82c]
-and eax, 0xfffffe7f
-or ah, 1
-mov dword [edx + 0x82c], eax
-mov eax, dword [0xf0000060]
-mov edx, dword [0xf0000060]
-and eax, 0xfc000000
-and edx, 0xfc000000
-mov edx, dword [edx + 0x80c]
-and dh, 0xcf
-mov dword [eax + 0x80c], edx
-mov eax, dword [0xf0000060]
-mov edx, dword [0xf0000060]
-and eax, 0xfc000000
-and edx, 0xfc000000
-mov edx, dword [edx + 0x82c]
-and dh, 0xcf
-mov dword [eax + 0x82c], edx
+call io_fffa45f1
 jmp near loc_fffa4575  ; jmp 0xfffa4575
 
 loc_fffa46f4:
@@ -3794,20 +3627,7 @@ cmp byte [ebp - 0x658], 0
 je loc_fffa4840  ; je 0xfffa4840
 test ebx, ebx
 jne short loc_fffa47ce  ; jne 0xfffa47ce
-mov eax, dword [0xf0000060]
-mov edx, dword [0xf0000060]
-and edx, 0xfc000000
-and eax, 0xfc000000
-mov edx, dword [edx + 0x80c]
-or edx, 0x600000
-mov dword [eax + 0x80c], edx
-mov eax, dword [0xf0000060]
-mov edx, dword [0xf0000060]
-and eax, 0xfc000000
-and edx, 0xfc000000
-mov edx, dword [edx + 0x82c]
-or edx, 0x600000
-mov dword [eax + 0x82c], edx
+call io_fffa476b
 jmp short loc_fffa47f0  ; jmp 0xfffa47f0
 
 loc_fffa47ce:
@@ -3935,98 +3755,7 @@ sar eax, 0x1f
 and eax, 0x40
 test ebx, ebx
 jne loc_fffa4baa  ; jne 0xfffa4baa
-mov ecx, dword [0xf0000060]
-mov edx, dword [0xf0000060]
-and edx, 0xfc000000
-and ecx, 0xfc000000
-mov dx, word [edx + 0x8c38]
-and edx, 0xffffffbf
-or edx, eax
-mov word [ecx + 0x8c38], dx
-mov ecx, dword [0xf0000060]
-mov edx, dword [0xf0000060]
-and ecx, 0xfc000000
-and edx, 0xfc000000
-mov dx, word [edx + 0x9c38]
-and edx, 0xffffffbf
-or edx, eax
-mov word [ecx + 0x9c38], dx
-mov ecx, dword [0xf0000060]
-mov edx, dword [0xf0000060]
-and ecx, 0xfc000000
-and edx, 0xfc000000
-mov dx, word [edx + 0xac38]
-and edx, 0xffffffbf
-or edx, eax
-mov word [ecx + 0xac38], dx
-mov edx, dword [0xf0000060]
-mov eax, dword [0xf0000060]
-and edx, 0xfc000000
-and eax, 0xfc000000
-mov ax, word [eax + 0x8260]
-and eax, 0xfffffffc
-or eax, 2
-mov word [edx + 0x8260], ax
-mov edx, dword [0xf0000060]
-mov eax, dword [0xf0000060]
-and edx, 0xfc000000
-and eax, 0xfc000000
-mov ax, word [eax + 0x9260]
-and eax, 0xfffffffc
-or eax, 2
-mov word [edx + 0x9260], ax
-mov edx, dword [0xf0000060]
-mov eax, dword [0xf0000060]
-and edx, 0xfc000000
-and eax, 0xfc000000
-mov ax, word [eax + 0xa260]
-and eax, 0xfffffffc
-or eax, 2
-mov word [edx + 0xa260], ax
-mov eax, dword [0xf0000060]
-mov edx, dword [0xf0000060]
-and eax, 0xfc000000
-and edx, 0xfc000000
-mov edx, dword [edx + 0x900]
-and edx, 0xf3ffffff
-mov dword [eax + 0x900], edx
-mov eax, dword [0xf0000060]
-mov edx, dword [0xf0000060]
-and eax, 0xfc000000
-and edx, 0xfc000000
-mov edx, dword [edx + 0x920]
-and edx, 0xf3ffffff
-mov dword [eax + 0x920], edx
-mov eax, dword [0xf0000060]
-mov edx, dword [0xf0000060]
-and eax, 0xfc000000
-and edx, 0xfc000000
-mov edx, dword [edx + 0x904]
-or dh, 0xc
-mov dword [eax + 0x904], edx
-mov eax, dword [0xf0000060]
-mov edx, dword [0xf0000060]
-and eax, 0xfc000000
-and edx, 0xfc000000
-mov edx, dword [edx + 0x924]
-or dh, 0xc
-mov dword [eax + 0x924], edx
-mov edx, dword [0xf0000060]
-mov eax, dword [0xf0000060]
-and edx, 0xfc000000
-and eax, 0xfc000000
-mov eax, dword [eax + 0x90c]
-and eax, 0xc1ffffff
-or eax, 0xe000000
-mov dword [edx + 0x90c], eax
-mov edx, dword [0xf0000060]
-mov eax, dword [0xf0000060]
-and edx, 0xfc000000
-and eax, 0xfc000000
-mov eax, dword [eax + 0x92c]
-and eax, 0xc1ffffff
-or eax, 0xe000000
-mov dword [edx + 0x92c], eax
+call io_fffa49a0
 jmp short loc_fffa4c0d  ; jmp 0xfffa4c0d
 
 loc_fffa4baa:
@@ -4052,23 +3781,7 @@ or ah, 0xc
 mov dword [ebx + 0x924], eax
 
 loc_fffa4c0d:
-mov edx, dword [0xf0000060]
-mov eax, dword [0xf0000060]
-and eax, 0xfc000000
-and edx, 0xfc000000
-mov ecx, dword [ebp - 0x660]
-mov eax, dword [eax + 0x891c]
-and eax, 0xc7ffffff
-or eax, 0x28000000
-mov dword [edx + 0x891c], eax
-mov edx, dword [0xf0000060]
-mov eax, dword [0xf0000060]
-and edx, 0xfc000000
-and eax, 0xfc000000
-mov eax, dword [eax + 0x893c]
-and eax, 0xc7ffffff
-or eax, 0x28000000
-mov dword [edx + 0x893c], eax
+call io_fffa4c0d
 mov eax, dword [ebx + 0x258]
 or eax, 0x20000000
 xor edx, edx
@@ -4081,6 +3794,7 @@ mov eax, dword [ebx + 0x22c]
 xor ax, ax
 or eax, 0x2020
 mov dword [ebx + 0x22c], eax
+mov ecx, dword [ebp - 0x660]
 mov eax, dword [ecx + 0xd]
 cmp byte [eax + 3], 0
 je short loc_fffa4ce2  ; je 0xfffa4ce2
