@@ -46,7 +46,6 @@ global gWdtPpiGuid
 global mEfiMemoryRestoreDataGuid
 global gEfiPeiReadOnlyVariablePpiGuid
 global gPchMeUmaPpiGuid
-global mEfiMemoryRestoreDataGuid
 global haswell_family_model
 global haswell_stepping
 
@@ -2939,8 +2938,8 @@ cmp dword [edx], 0xf
 mov dword [ebp - 0x1bc], gWdtPpiGuid
 mov dword [ebp - 0x1b0], gPchDmiTcVcPpiGuid
 mov dword [ebp - 0x1a4], gPeiSmbusPolicyPpiGuid
-mov dword [ebp - 0x198], ref_fffcc88c  ; mov dword [ebp - 0x198], 0xfffcc88c
-mov dword [ebp - 0x18c], ref_fffcc89c  ; mov dword [ebp - 0x18c], 0xfffcc89c
+mov dword [ebp - 0x198], gPeiPlatformMemoryRangePpiGuid
+mov dword [ebp - 0x18c], gPeiPlatformMemorySizePpiGuid
 mov dword [ebp - 0x180], gPeiBaseMemoryTestPpiGuid
 mov dword [ebp - 0x174], ref_fffcc8bc  ; mov dword [ebp - 0x174], 0xfffcc8bc
 mov dword [ebp - 0x168], gPeiSeCPlatformPolicyPpiGuid
@@ -46812,7 +46811,7 @@ push eax
 mov eax, dword [ebp - 0x14]
 push 0
 push ref_fffcd56c  ; push 0xfffcd56c
-push ref_fffcc756  ; push 0xfffcc756
+push wstr_pchinitpei
 push ebx
 call dword [eax]  ; ucall
 add esp, 0x20
@@ -51833,7 +51832,7 @@ db 'System Agent: failed to locate restore data hob!',0x0a,0x00
 str_sa_done:
 db 'System Agent: Done.',0x0a,0x00
 
-ref_fffcc756:
+wstr_pchinitpei:
 db 0x50
 db 0x00
 dd 0x00680063
@@ -51894,13 +51893,13 @@ dd 0xffffff64
 dd 0xffffcae0
 dd 0xffffffb0
 
-ref_fffcc88c:
+gPeiPlatformMemoryRangePpiGuid:
 dd 0x30eb2979
 dd 0x4d60b0f7
 dd 0x2c1adcb2
 dd 0xf4b1ce96
 
-ref_fffcc89c:
+gPeiPlatformMemorySizePpiGuid:
 dd 0x9a7ef41e
 dd 0x4bd1c140
 dd 0x111e84b8
@@ -51938,21 +51937,21 @@ dd 0x07010201
 
 ref_fffcc904:
 dd 0x80000020
-dd ref_fffcc91c
+dd gEfiPeiMemoryDiscoveredPpiGuid
 dd fcn_fffa036f
 
 ref_fffcc910:
 dd 0x80000010
-dd ref_fffcc92c
+dd gVlvPeiInitPpiGuid
 dd 0x00000000
 
-ref_fffcc91c:
+gEfiPeiMemoryDiscoveredPpiGuid:
 dd 0xf894643d
 dd 0x42d1c449
 dd 0xbd85a88e
 dd 0xde5bc6d8
 
-ref_fffcc92c:
+gVlvPeiInitPpiGuid:
 dd 0x09ea8911
 dd 0x4230be0d
 dd 0xc6ed03a0
@@ -52747,20 +52746,14 @@ dd 0x445a9041
 dd 0x9db2b680
 dd 0x45889e50
 
-gEfiPeiMemoryDiscoveredPpiGuid:
-dd 0xf894643d
-dd 0x42d1c449
-dd 0xbd85a88e
-dd 0xde5bc6d8
-
 ref_fffcd554:
 dd 0x80000020
-dd ref_fffcd57c
+dd gEfiEndOfPeiSignalPpiGuid
 dd fcn_fffa1227
 
 ref_fffcd560:
 dd 0x80000020
-dd ref_fffcd57c
+dd gEfiEndOfPeiSignalPpiGuid
 dd fcn_fffc7c34
 
 ref_fffcd56c:
@@ -52769,7 +52762,7 @@ dd 0x48ffcae6
 dd 0x42295a8c
 dd 0x89f3e621
 
-ref_fffcd57c:
+gEfiEndOfPeiSignalPpiGuid:
 dd 0x605ea650
 dd 0x42e1c65c
 dd 0xa59180ba
