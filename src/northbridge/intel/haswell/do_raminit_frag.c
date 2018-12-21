@@ -6,6 +6,8 @@
 #include "mrc_smbus.h"
 #include "mrc_pch_init.h"
 #include <console/console.h>
+#include "pei_data.h"
+#include "pei_usb.h"
 
 static void io_fffa3c2e(void)
 {
@@ -199,4 +201,31 @@ void io_fffa4c0d(void)
 {
 	pci_update_config32(PCI_DEV(0, 1, 0), 0x91c, 0xc7ffffff, 0x28000000);
 	pci_update_config32(PCI_DEV(0, 1, 0), 0x93c, 0xc7ffffff, 0x28000000);
+}
+
+void load_usb(PEI_USB *pusb, struct pei_data *pd);
+void load_usb(PEI_USB *pusb, struct pei_data *pd)
+{
+	memset(pusb, 0, sizeof(pusb));
+
+	pusb->v0 = 1;
+
+	for (int i = 0; i < 14; i++) {
+		pusb->ehci_settings[i].enable = pd->usb2_ports[i].enable;
+		pusb->ehci_settings[i].location = pd->usb2_ports[i].location;
+		pusb->ehci_settings[i].length = pd->usb2_ports[i].length;
+	}
+
+	for (int i = 0; i < 14; i++)
+		pusb->ehci_oc[i] = pd->usb2_ports[i].over_current_pin;
+
+	for (int i = 0; i < 6; i++)
+		pusb->xhci_oc[i] = pd->usb3_ports[i].over_current_pin;
+
+	for (int i = 0; i < 6; i++)
+		pusb->xhci_en[i] = pd->usb3_ports[i].enable;
+
+	pusb->xhci_resume_info[0] = 1;
+	pusb->xhci_resume_info[1] = 1;
+	pusb->xhci_resume_info[2] = 2;
 }
