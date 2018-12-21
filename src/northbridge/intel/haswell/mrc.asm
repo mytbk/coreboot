@@ -147,6 +147,10 @@ extern io_fffa4235
 extern io_fffa42c3
 extern io_fffa43e1
 extern io_fffa445e
+extern io_fffa44ad
+extern io_fffa4575
+extern io_fffa45f1
+extern io_fffa476b
 
 mrc_entry:
 mov ecx, esp
@@ -3534,23 +3538,8 @@ call io_fffa445e
 jmp near loc_fffa4564  ; jmp 0xfffa4564
 
 loc_fffa44ad:
-mov edx, dword [0xf0000060]
-mov eax, dword [0xf0000060]
-and eax, 0xfc000000
-and edx, 0xfc000000
 xor edi, edi
-mov eax, dword [eax + 0x90c]
-and eax, 0xfe1fffff
-or eax, 0xa00000
-mov dword [edx + 0x90c], eax
-mov edx, dword [0xf0000060]
-mov eax, dword [0xf0000060]
-and edx, 0xfc000000
-and eax, 0xfc000000
-mov eax, dword [eax + 0x92c]
-and eax, 0xfe1fffff
-or eax, 0xa00000
-mov dword [edx + 0x92c], eax
+call io_fffa44ad
 
 loc_fffa4507:
 mov edx, dword [ebp - 0x660]
@@ -3588,20 +3577,7 @@ test ebx, ebx
 jne short loc_fffa45ca  ; jne 0xfffa45ca
 
 loc_fffa4575:
-mov eax, dword [0xf0000060]
-mov edx, dword [0xf0000060]
-and edx, 0xfc000000
-and eax, 0xfc000000
-mov edx, dword [edx + 0x80c]
-and edx, 0xffe3ffff
-mov dword [eax + 0x80c], edx
-mov eax, dword [0xf0000060]
-mov edx, dword [0xf0000060]
-and eax, 0xfc000000
-and edx, 0xfc000000
-mov edx, dword [edx + 0x82c]
-and edx, 0xffe3ffff
-mov dword [eax + 0x82c], edx
+call io_fffa4575
 jmp near loc_fffa476b  ; jmp 0xfffa476b
 
 loc_fffa45ca:
@@ -3616,52 +3592,7 @@ jmp near loc_fffa476b  ; jmp 0xfffa476b
 loc_fffa45f1:
 test ebx, ebx
 jne loc_fffa46f4  ; jne 0xfffa46f4
-mov edx, dword [0xf0000060]
-mov eax, dword [0xf0000060]
-and eax, 0xfc000000
-and edx, 0xfc000000
-mov eax, dword [eax + 0x910]
-and eax, 0x1fffffff
-or eax, 0x80000000
-mov dword [edx + 0x910], eax
-mov edx, dword [0xf0000060]
-mov eax, dword [0xf0000060]
-and edx, 0xfc000000
-and eax, 0xfc000000
-mov eax, dword [eax + 0x930]
-and eax, 0x1fffffff
-or eax, 0x80000000
-mov dword [edx + 0x930], eax
-mov edx, dword [0xf0000060]
-mov eax, dword [0xf0000060]
-and edx, 0xfc000000
-and eax, 0xfc000000
-mov eax, dword [eax + 0x80c]
-and eax, 0xfffffe7f
-or ah, 1
-mov dword [edx + 0x80c], eax
-mov edx, dword [0xf0000060]
-mov eax, dword [0xf0000060]
-and edx, 0xfc000000
-and eax, 0xfc000000
-mov eax, dword [eax + 0x82c]
-and eax, 0xfffffe7f
-or ah, 1
-mov dword [edx + 0x82c], eax
-mov eax, dword [0xf0000060]
-mov edx, dword [0xf0000060]
-and eax, 0xfc000000
-and edx, 0xfc000000
-mov edx, dword [edx + 0x80c]
-and dh, 0xcf
-mov dword [eax + 0x80c], edx
-mov eax, dword [0xf0000060]
-mov edx, dword [0xf0000060]
-and eax, 0xfc000000
-and edx, 0xfc000000
-mov edx, dword [edx + 0x82c]
-and dh, 0xcf
-mov dword [eax + 0x82c], edx
+call io_fffa45f1
 jmp near loc_fffa4575  ; jmp 0xfffa4575
 
 loc_fffa46f4:
@@ -3694,20 +3625,7 @@ cmp byte [ebp - 0x658], 0
 je loc_fffa4840  ; je 0xfffa4840
 test ebx, ebx
 jne short loc_fffa47ce  ; jne 0xfffa47ce
-mov eax, dword [0xf0000060]
-mov edx, dword [0xf0000060]
-and edx, 0xfc000000
-and eax, 0xfc000000
-mov edx, dword [edx + 0x80c]
-or edx, 0x600000
-mov dword [eax + 0x80c], edx
-mov eax, dword [0xf0000060]
-mov edx, dword [0xf0000060]
-and eax, 0xfc000000
-and edx, 0xfc000000
-mov edx, dword [edx + 0x82c]
-or edx, 0x600000
-mov dword [eax + 0x82c], edx
+call io_fffa476b
 jmp short loc_fffa47f0  ; jmp 0xfffa47f0
 
 loc_fffa47ce:
