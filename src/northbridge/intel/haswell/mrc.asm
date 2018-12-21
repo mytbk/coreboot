@@ -134,8 +134,8 @@ extern ref_fffcd560
 global wstr_pchinitpei
 
 ;; raminit_frag
-extern io_fffa3c2e
 extern mrc_frag_smbus
+extern mrc_frag_pch
 global fcn_fffc5bf6
 
 mrc_entry:
@@ -3050,24 +3050,14 @@ loc_fffa3ab5:
 sub esp, 0xc
 push str_init_pch  ; push 0xfffcc5c7
 call mrc_printk
-mov eax, dword [0xf0000060]
+add esp, 0x10
 mov ebx, dword [0xff7d7538]
+call mrc_frag_pch
+; before the jump to fffa3c99, edx is RCBA
+mov eax, dword [0xf0000060]
 and eax, 0xfc000000
 mov edx, dword [eax + 0xf80f0]
 and edx, 0xfffffffe
-mov word [edx + 0x3424], 0x10 ; RCBA16(DISPBDF) = 0x0010;
-mov eax, dword [edx + 0x3428]
-or eax, 1
-mov dword [edx + 0x3428], eax ; RCBA32_OR(FD2, PCH_ENABLE_DBDF);
-mov eax, dword [0xf0000060]
-add esp, 0x10
-and eax, 0xfc000000
-mov ax, word [eax + 0xf80a4] ; pci_read_config16(PCH_LPC_DEV, GEN_PMCON_3);
-test al, 4
-je loc_fffa3c99
-mov esi, edx ; save edx
-call io_fffa3c2e
-mov edx, esi
 jmp loc_fffa3c99
 
 loc_fffa3b14:

@@ -5,10 +5,7 @@
 #include "mrc_utils.h"
 #include "mrc_smbus.h"
 
-// loc_fffa3c2e
-//
-void io_fffa3c2e(void);
-void io_fffa3c2e(void)
+static void io_fffa3c2e(void)
 {
 	u32 reg3410;
 	u8 t1, t2, tmp;
@@ -53,4 +50,15 @@ void mrc_frag_smbus(void)
 
 	(*pps)->InstallPpi(pps, mem + 0x10);
 	(*pps)->NotifyPpi(pps, mem + 0x2c);
+}
+
+void mrc_frag_pch(void);
+void mrc_frag_pch(void)
+{
+	RCBA16(DISPBDF) = 0x0010;
+	RCBA32_OR(FD2, PCH_ENABLE_DBDF);
+	u16 tmp = pci_read_config16(PCH_LPC_DEV, GEN_PMCON_3);
+	if (tmp & 4) {
+		io_fffa3c2e();
+	}
 }
