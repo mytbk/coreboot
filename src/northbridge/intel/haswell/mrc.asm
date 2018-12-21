@@ -133,6 +133,8 @@ extern ref_fffcd554
 extern ref_fffcd560
 global wstr_pchinitpei
 
+;; raminit_frag
+extern io_fffa3c2e
 
 mrc_entry:
 mov ecx, esp
@@ -3196,42 +3198,9 @@ jl short loc_fffa3bc0  ; jl 0xfffa3bc0
 jmp near loc_fffa3ab5  ; jmp 0xfffa3ab5
 
 loc_fffa3c2e:
-mov eax, dword [edx + 0x3410]
-or eax, 0x10
-mov dword [edx + 0x3410], eax
-mov eax, dword [edx + 0x3410]
-in al, 0x70
-mov esi, eax
-mov eax, dword [edx + 0x3410]
-and eax, 0xffffffef
-and esi, 0xffffff80
-mov dword [edx + 0x3410], eax
-mov ecx, esi
-mov eax, dword [edx + 0x3410]
-or ecx, 0xa
-mov al, cl
-out 0x70, al
-in al, 0x71
-and eax, 0xffffff8f
-or eax, 0x60
-out 0x71, al
-or esi, 0xb
-mov eax, esi
-out 0x70, al
-in al, 0x71
-or eax, 0xffffff80
-out 0x71, al
-mov al, cl
-out 0x70, al
-in al, 0x71
-and eax, 0xffffff8f
-or eax, 0x20
-out 0x71, al
-mov eax, esi
-out 0x70, al
-in al, 0x71
-and eax, 0x7f
-out 0x71, al
+push edx
+call io_fffa3c2e
+pop edx
 
 loc_fffa3c99:
 mov dword [edx + 0x3310], 0x10 ; RCBA32(0x3310) = 0x10;
