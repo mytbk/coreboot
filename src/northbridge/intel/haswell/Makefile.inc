@@ -51,6 +51,7 @@ romstage-y += stall.c
 romstage-y += mrc_main.c
 romstage-y += mrc_pch_init.c
 romstage-y += mrc_misc.c
+romstage-y += pei_mem.c
 
 postcar-y += ram_calc.c
 
