@@ -3062,8 +3062,11 @@ add esp, 0x10
 and eax, 0xfc000000
 mov ax, word [eax + 0xf80a4] ; pci_read_config16(PCH_LPC_DEV, GEN_PMCON_3);
 test al, 4
-je loc_fffa3c99  ; je 0xfffa3c99
-jmp near loc_fffa3c2e  ; jmp 0xfffa3c2e
+je loc_fffa3c99
+mov esi, edx ; save edx
+call io_fffa3c2e
+mov edx, esi
+jmp loc_fffa3c99
 
 loc_fffa3b14:
 cmp dx, 0x8c4f
@@ -3196,11 +3199,6 @@ movzx eax, al
 cmp ebx, eax
 jl short loc_fffa3bc0  ; jl 0xfffa3bc0
 jmp near loc_fffa3ab5  ; jmp 0xfffa3ab5
-
-loc_fffa3c2e:
-push edx
-call io_fffa3c2e
-pop edx
 
 loc_fffa3c99:
 mov dword [edx + 0x3310], 0x10 ; RCBA32(0x3310) = 0x10;
