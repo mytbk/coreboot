@@ -56,3 +56,43 @@ void frag_fffc1cd2(void)
 	}
 	wrmsr(0x2e6, (msr_t){0, 0});
 }
+
+struct cpu_model_id
+{
+	int stepping;
+	int model;
+};
+
+int haswell_family_model(void);
+int haswell_stepping(void);
+
+#define HASWELL_FAMILY_MOBILE 0x306c0
+#define HASWELL_FAMILY_ULT 0x40650
+#define HASWELL_FAMILY_GT3E 0x40660
+
+void set_cpuid(struct cpu_model_id *mycpu);
+void set_cpuid(struct cpu_model_id *mycpu)
+{
+	int model = haswell_family_model();
+	int stepping = haswell_stepping();
+	if (model == HASWELL_FAMILY_ULT || model == HASWELL_FAMILY_GT3E) {
+		mycpu->model = model;
+		if (stepping == 0) {
+			mycpu->stepping = 0;
+			return;
+		} else {
+			mycpu->stepping = (stepping == 1)?1:0;
+			return;
+		}
+	}
+	if (model == HASWELL_FAMILY_MOBILE) {
+		mycpu->model = HASWELL_FAMILY_MOBILE;
+		if (stepping == 2 || stepping == 3) {
+			mycpu->stepping = stepping;
+			return;
+		} else {
+			mycpu->stepping = (stepping != 1)?3:1;
+			return;
+		}
+	}
+}
