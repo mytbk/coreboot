@@ -74,6 +74,7 @@ extern fcn_fffc83be
 extern frag_fffc1d20
 extern frag_fffc1fc3
 extern create_raminit_hob
+extern frag_fffc1cd2
 
 initialize_txt:
 mov edx, cr4
@@ -168,49 +169,9 @@ xor ebx, ebx
 
 loc_fffc1ca2:
 test al, 1
-je short loc_fffc1d20  ; je 0xfffc1d20
-mov edx, dword [ebp - 0x50bc]
-sub esp, 0xc
-mov ebx, 0x2ee
-mov eax, dword [edx]
-lea edx, [ebp - 0x5088]
-push edx
-push 0
-push 0
-push gEfiPeiStallPpiGuid
-push dword [ebp - 0x50bc]
-call dword [eax + 0x20] ; LocatePpi
-add esp, 0x20
+je short loc_fffc1d20
 
-loc_fffc1cd2:
-mov ecx, dword [ebp - 0x50bc]
-mov eax, dword [ecx]
-mov eax, dword [eax + 0x60]
-push 0
-push 0xfed40000
-push eax
-push ecx
-call dword [eax + 0x30] ; GetHobList
-add esp, 0x10
-cmp al, 0xff
-je short loc_fffc1d15  ; je 0xfffc1d15
-test al, al
-js loc_fffc2369  ; js 0xfffc2369
-push esi
-mov eax, dword [ebp - 0x5088]
-push 0x3e8
-push eax
-push dword [ebp - 0x50bc]
-call dword [eax + 4]  ; ucall
-add esp, 0x10
-dec bx
-jne short loc_fffc1cd2  ; jne 0xfffc1cd2
-
-loc_fffc1d15:
-mov ecx, 0x2e6
-xor eax, eax
-xor edx, edx
-wrmsr
+call frag_fffc1cd2
 
 loc_fffc1d20:
 cmp dword [ebp - 0x509c], 0x11
@@ -710,11 +671,6 @@ mov edx, 0x55
 call fcn_fffc83be  ; call 0xfffc83be
 xor eax, eax
 jmp short loc_fffc23a2  ; jmp 0xfffc23a2
-
-loc_fffc2369:
-test al, 1
-jne loc_fffc1d15  ; jne 0xfffc1d15
-jmp near loc_fffc1d20  ; jmp 0xfffc1d20
 
 loc_fffc2376:
 mov edx, 0xfd4
