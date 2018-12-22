@@ -72,6 +72,20 @@ extern fcn_fffc6986
 extern fcn_fffc7720
 extern fcn_fffc83be
 
+extern frag_fffc1d20
+
+initialize_txt:
+mov edx, cr4
+mov eax, edx
+or eax, 0x4000 ; cr4 bit 14: Safer Mode Extensions Enable
+mov cr4, eax
+xor eax, eax
+mov ebx, eax
+getsec
+mov cr4, edx
+ret
+
+
 ; mrc_init_memory(eax is **PeiServices)
 mrc_init_memory:
 push ebp
@@ -165,14 +179,7 @@ mov esi, ecx
 xor eax, eax
 and esi, 0x40
 je short loc_fffc1ca2  ; je 0xfffc1ca2
-mov edx, cr4
-mov eax, edx
-or eax, 0x4000 ; cr4 bit 14: Safer Mode Extensions Enable
-mov cr4, eax
-xor eax, eax
-mov ebx, eax
-getsec
-mov cr4, edx
+call initialize_txt ; this will set ebx to 0
 
 loc_fffc1ca2:
 test al, 1
@@ -224,16 +231,7 @@ loc_fffc1d20:
 cmp dword [ebp - 0x509c], 0x11
 mov dword [ebp - 0x50c4], 2
 je short loc_fffc1d5a  ; je 0xfffc1d5a
-mov edx, 0xcf8
-mov eax, 0x8000f8a0
-out dx, eax
-mov dl, 0xfc
-in eax, dx
-shr eax, 0x10
-and eax, 0xa0
-cmp eax, 0xa0
-sete al
-movzx eax, al
+call frag_fffc1d20
 mov dword [ebp - 0x50c4], eax
 
 loc_fffc1d5a:
@@ -302,18 +300,18 @@ call haswell_family_model
 mov esi, eax
 call haswell_stepping
 cmp esi, 0x40650
-jne short loc_fffc1e38  ; jne 0xfffc1e38
+jne short loc_fffc1e38
 mov dword [ebp - 0x4035], 0x40650
-jmp short loc_fffc1e8b  ; jmp 0xfffc1e8b
+jmp short loc_fffc1e8b
 
 loc_fffc1e38:
 cmp esi, 0x306c0
-jne short loc_fffc1e79  ; jne 0xfffc1e79
+jne short loc_fffc1e79
 cmp eax, 2
 mov dword [ebp - 0x4035], 0x306c0
-je short loc_fffc1e61  ; je 0xfffc1e61
+je short loc_fffc1e61
 cmp eax, 3
-je short loc_fffc1e6d  ; je 0xfffc1e6d
+je short loc_fffc1e6d
 dec eax
 setne al
 movzx eax, al
