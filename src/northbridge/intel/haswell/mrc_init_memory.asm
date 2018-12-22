@@ -75,6 +75,7 @@ extern frag_fffc1d20
 extern frag_fffc1fc3
 extern create_raminit_hob
 extern frag_fffc1cd2
+extern set_cpuid
 
 initialize_txt:
 mov edx, cr4
@@ -228,7 +229,7 @@ mov eax, dword [ebp - 0x50c4]
 add esp, 0x20
 dec eax
 cmp eax, 1
-jbe short loc_fffc1e18  ; jbe 0xfffc1e18
+jbe short loc_fffc1e18
 push ecx
 lea eax, [ebp - 0x50aa]
 push eax
@@ -242,54 +243,10 @@ cmp byte [ebp - 0x50aa], 1
 cmove ebx, eax
 
 loc_fffc1e18:
-call haswell_family_model
-mov esi, eax
-call haswell_stepping
-cmp esi, 0x40650
-jne short loc_fffc1e38
-mov dword [ebp - 0x4035], 0x40650
-jmp short loc_fffc1e8b
-
-loc_fffc1e38:
-cmp esi, 0x306c0
-jne short loc_fffc1e79
-cmp eax, 2
-mov dword [ebp - 0x4035], 0x306c0
-je short loc_fffc1e61
-cmp eax, 3
-je short loc_fffc1e6d
-dec eax
-setne al
-movzx eax, al
-lea eax, [eax + eax + 1]
-jmp short loc_fffc1e96  ; jmp 0xfffc1e96
-
-loc_fffc1e61:
-mov dword [ebp - 0x4039], 2
-jmp short loc_fffc1ea8  ; jmp 0xfffc1ea8
-
-loc_fffc1e6d:
-mov dword [ebp - 0x4039], 3
-jmp short loc_fffc1ea8  ; jmp 0xfffc1ea8
-
-loc_fffc1e79:
-cmp esi, 0x40660
-jne short loc_fffc1ea8  ; jne 0xfffc1ea8
-mov dword [ebp - 0x4035], 0x40660
-
-loc_fffc1e8b:
-test eax, eax
-je short loc_fffc1e9e  ; je 0xfffc1e9e
-dec eax
-sete al
-movzx eax, al
-
-loc_fffc1e96:
-mov dword [ebp - 0x4039], eax
-jmp short loc_fffc1ea8  ; jmp 0xfffc1ea8
-
-loc_fffc1e9e:
-mov dword [ebp - 0x4039], 0
+lea eax, [ebp - 0x4039]
+push eax
+call set_cpuid
+pop eax
 
 loc_fffc1ea8:
 mov eax, dword [ebp - 0x50c4]
