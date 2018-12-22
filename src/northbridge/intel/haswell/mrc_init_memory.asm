@@ -7,7 +7,6 @@ extern haswell_stepping
 extern gEfiPeiReadOnlyVariablePpiGuid
 extern gEfiPeiStallPpiGuid
 extern gPchMeUmaPpiGuid
-extern mEfiMemoryRestoreDataGuid
 extern ref_fffcd4a4
 extern ref_fffcd4e4
 
@@ -73,6 +72,8 @@ extern fcn_fffc7720
 extern fcn_fffc83be
 
 extern frag_fffc1d20
+extern frag_fffc1fc3
+extern create_raminit_hob
 
 initialize_txt:
 mov edx, cr4
@@ -114,25 +115,8 @@ call dword [eax + 0x28] ; GetBootMode
 add esp, 0x10
 cmp dword [ebp - 0x509c], 0x11
 je short loc_fffc1bfd
-mov ecx, dword [ebp - 0x50bc]
-lea edx, [ebp - 0x50a0]
-mov eax, dword [ecx]
-push edx
-push 0x503b
-push 4
-push ecx
-call dword [eax + 0x34] ; CreateHob
-add esp, 0x10
-test eax, eax
-js short loc_fffc1c07
-mov eax, dword [ebp - 0x50a0]
-mov esi, mEfiMemoryRestoreDataGuid
-mov ecx, 4
-mov edx, 0x5022
-lea edi, [eax + 8]
-add eax, 0x18
-rep movsd  ; rep movsd dword es:[edi], dword ptr [esi]
-call mrc_zeromem
+call create_raminit_hob
+mov dword [ebp - 0x50a0], eax
 jmp short loc_fffc1c07
 
 loc_fffc1bfd: ; boot mode is 3
@@ -180,6 +164,7 @@ xor eax, eax
 and esi, 0x40
 je short loc_fffc1ca2  ; je 0xfffc1ca2
 call initialize_txt ; this will set ebx to 0
+xor ebx, ebx
 
 loc_fffc1ca2:
 test al, 1
@@ -423,21 +408,11 @@ loc_fffc1fc3:
 mov ecx, dword [ebp - 0x4015]
 test ecx, ecx
 jne short loc_fffc2000  ; jne 0xfffc2000
-mov esi, 0x8000f8a0
-mov edx, 0xcf8
-mov eax, esi
-out dx, eax
-mov ebx, 0xcfc
-mov edx, ebx
-in eax, dx
-mov dword [ebp - 0x50c0], eax
-mov dl, 0xf8
-mov eax, esi
-out dx, eax
-and dword [ebp - 0x50c0], 0xff7f0000
-mov edx, ebx
-mov eax, dword [ebp - 0x50c0]
-out dx, eax
+
+; ecx needs to be saved
+mov esi, ecx
+call frag_fffc1fc3
+mov ecx, esi
 
 loc_fffc2000:
 lea eax, [ebp - 0x397c]
@@ -446,14 +421,14 @@ mov ebx, 1
 call fcn_fffa9196  ; call 0xfffa9196
 mov dl, 1
 mov word [ebp - 0x50c0], 0
-jmp near loc_fffc2116  ; jmp 0xfffc2116
+jmp near loc_fffc2116
 
 loc_fffc2026:
 movzx esi, word [ebp - 0x50c0]
 imul esi, esi, 0xc
 movzx eax, ax
 movzx edx, word [esi + ref_fffcbf2c]  ; movzx edx, word [esi - 0x340d4]
-cmp word [esi + ref_fffcbf2c], 0xffffffffffffffff  ; cmp word [esi - 0x340d4], 0xffffffffffffffff
+cmp word [esi + ref_fffcbf2c], -1
 lea ecx, [esi + ref_fffcbf28]  ; lea ecx, [esi - 0x340d8]
 cmove edx, eax
 lea eax, [ebp - 0x503a]
@@ -617,18 +592,20 @@ add esp, 0x20
 lea eax, [ebp - 0x503a]
 mov edx, 0xddfe
 call fcn_fffc83be  ; call 0xfffc83be
-mov edx, dword [ebp - 0x50bc]
-push eax
-push eax
-mov eax, dword [edx]
-push 0
-push 0
-push 0
-push 0x51009
-push 2
-push edx
-call dword [eax + 0x58]  ; ucall
-add esp, 0x20
+
+; ReportStatusCode is not used in mrc
+; mov edx, dword [ebp - 0x50bc]
+; push eax
+; push eax
+; mov eax, dword [edx]
+; push 0
+; push 0
+; push 0
+; push 0x51009
+; push 2
+; push edx
+; call dword [eax + 0x58]  ; ucall
+; add esp, 0x20
 
 loc_fffc2251:
 in al, 0x80
