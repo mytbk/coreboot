@@ -2,6 +2,10 @@
 
 bits 32
 
+HASWELL_FAMILY_MOBILE equ 0x306c0
+HASWELL_FAMILY_ULT equ 0x40650
+HASWELL_FAMILY_GT3E equ 0x40660
+
 global mrc_entry
 global do_raminit
 
@@ -439,7 +443,7 @@ mov ebx, eax
 call haswell_stepping
 dec eax
 sete dl
-cmp ebx, 0x306c0
+cmp ebx, HASWELL_FAMILY_MOBILE
 sete al
 and dl, al
 mov ax, word [ebp - 0x1a]
@@ -1225,7 +1229,7 @@ push gEfiPeiStallPpiGuid
 push ecx
 call dword [eax + 0x20]  ; ucall
 add esp, 0x20
-cmp dword [ebp - 0x70], 0x40650
+cmp dword [ebp - 0x70], HASWELL_FAMILY_ULT
 je short loc_fffa0f2f  ; je 0xfffa0f2f
 
 loc_fffa0ed3:
@@ -1914,14 +1918,14 @@ mov byte [ebx + 0x9f], al
 mov al, byte [esi + 0x74]
 mov byte [ebx + 0xa0], al
 mov eax, dword [ebx + 0x2d]
-cmp eax, 0x40650
+cmp eax, HASWELL_FAMILY_ULT
 jne short loc_fffa226b  ; jne 0xfffa226b
 mov dl, byte [esi + 0x75]
 mov byte [ebx + 0xa1], dl
 
 loc_fffa226b:
 mov dl, byte [esi + 0x76]
-cmp eax, 0x40650
+cmp eax, HASWELL_FAMILY_ULT
 mov byte [ebx + 0xa2], dl
 mov dl, byte [esi + 0x77]
 mov byte [ebx + 0xa3], dl
@@ -2043,7 +2047,7 @@ jmp near loc_fffa2673  ; jmp 0xfffa2673
 loc_fffa251b:
 mov ecx, dword [ebx + 0x2d]
 mov byte [ebx + 0x9d], 0
-cmp ecx, 0x40650
+cmp ecx, HASWELL_FAMILY_ULT
 mov byte [ebx + 0x9e], 0
 mov byte [ebx + 0x9f], 0
 mov byte [ebx + 0xa0], 1
@@ -2091,7 +2095,7 @@ mov byte [eax + 0xd5], 0
 add eax, 2
 cmp edx, 2
 jne loc_fffa25ac  ; jne 0xfffa25ac
-cmp ecx, 0x40650
+cmp ecx, HASWELL_FAMILY_ULT
 mov byte [ebx + 0xd8], 1
 mov word [ebx + 0xd9], 0x200
 mov byte [ebx + 0xdb], 0
@@ -2148,7 +2152,7 @@ mov dword [ebx + 0x41], 0
 mov byte [ebx + 0x6de], al
 mov byte [ebx + 0x40], 0
 mov al, byte [esi + 0x11]
-cmp dword [ebx + 0x2d], 0x40650
+cmp dword [ebx + 0x2d], HASWELL_FAMILY_ULT
 mov byte [ebx + 0x56], al
 mov al, byte [esi + 0x2c]
 mov byte [ebx + 0x58], al
@@ -3005,7 +3009,7 @@ xor edx, edx
 mov esi, dword [eax + 4]
 mov eax, dword [eax + 0x18] ; gdxcbar
 or eax, 1
-cmp ecx, 0x40660
+cmp ecx, HASWELL_FAMILY_GT3E
 mov dword [esi + 0x5420], eax
 mov dword [esi + 0x5424], edx
 jne short loc_fffa3eec  ; jne 0xfffa3eec
@@ -3091,7 +3095,7 @@ mov esi, eax
 call haswell_stepping
 dec eax
 sete dl
-cmp esi, 0x306c0
+cmp esi, HASWELL_FAMILY_MOBILE
 sete al
 test dl, al
 mov eax, dword [ebx + 1]
@@ -3109,9 +3113,9 @@ mov eax, dword [eax + 8]
 mov dword [eax + 0x720], 0x1060100
 
 loc_fffa4025:
-cmp dword [ebp - 0x648], 0x40660
+cmp dword [ebp - 0x648], HASWELL_FAMILY_GT3E
 sete dl
-cmp dword [ebp - 0x648], 0x306c0
+cmp dword [ebp - 0x648], HASWELL_FAMILY_MOBILE
 sete al
 or dl, al
 je loc_fffa4d64  ; je 0xfffa4d64
@@ -3176,7 +3180,7 @@ mov dword [esi], ecx
 jne short loc_fffa40d3  ; jne 0xfffa40d3
 dec eax
 sete dl
-cmp edi, 0x306c0
+cmp edi, HASWELL_FAMILY_MOBILE
 sete al
 and dl, al
 mov byte [ebp - 0x658], dl
@@ -3652,7 +3656,7 @@ push gPchDmiTcVcPpiGuid  ; push 0xfffcd534
 push ecx
 call dword [eax + 0x20]  ; ucall
 add esp, 0x20
-cmp ebx, 0x40650
+cmp ebx, HASWELL_FAMILY_ULT
 jne loc_fffa5349  ; jne 0xfffa5349
 jmp near loc_fffa533a  ; jmp 0xfffa533a
 
@@ -4333,10 +4337,10 @@ mov eax, 0x80000008
 out dx, eax
 mov edx, ecx
 in eax, dx
-cmp dword [ebp - 0x6c], 0x306c0
+cmp dword [ebp - 0x6c], HASWELL_FAMILY_MOBILE
 mov byte [ebx + 0x297a], al
 sete byte [ebp - 0xa7]
-cmp dword [ebp - 0x6c], 0x40660
+cmp dword [ebp - 0x6c], HASWELL_FAMILY_GT3E
 sete byte [ebp - 0xa8]
 mov cl, byte [ebp - 0xa8]
 or cl, byte [ebp - 0xa7]
@@ -4389,7 +4393,7 @@ div ecx
 cmp dword [ebx + 0x1749], 2
 sete byte [ebp - 0xd5]
 movzx esi, byte [ebp - 0xd5]
-cmp dword [ebp - 0x6c], 0x40650
+cmp dword [ebp - 0x6c], HASWELL_FAMILY_ULT
 mov dword [ebp - 0x74], esi
 mov word [ebx + 0x1766], ax
 je loc_fffa5a27  ; je 0xfffa5a27
@@ -4573,7 +4577,7 @@ xor eax, eax
 test cl, cl
 cmovns eax, ecx
 and esi, 0xff
-cmp dword [ebp - 0x6c], 0x40650
+cmp dword [ebp - 0x6c], HASWELL_FAMILY_ULT
 jne short loc_fffa5b21  ; jne 0xfffa5b21
 cmp al, 2
 mov dl, 2
@@ -4652,7 +4656,7 @@ add edx, dword [ebx + 0x103f]
 mov dword [edx], eax
 movzx edx, byte [esi + 0x114f]
 and edx, 0xf
-cmp dword [ebp - 0x6c], 0x40650
+cmp dword [ebp - 0x6c], HASWELL_FAMILY_ULT
 mov eax, edx
 jne short loc_fffa5c49  ; jne 0xfffa5c49
 cmp dword [ebp - 0x74], 0
@@ -4823,7 +4827,7 @@ je short loc_fffa5ea7  ; je 0xfffa5ea7
 or edi, 0x10000000
 cmp dword [ebp - 0xd4], 0
 setne dl
-cmp dword [ebp - 0x6c], 0x40650
+cmp dword [ebp - 0x6c], HASWELL_FAMILY_ULT
 sete al
 test dl, al
 je short loc_fffa5ea1  ; je 0xfffa5ea1
@@ -4850,7 +4854,7 @@ or ecx, eax
 mov eax, dword [ebx + 0x103f]
 or ecx, 0x7efc010
 xor esi, esi
-cmp dword [ebp - 0x6c], 0x40650
+cmp dword [ebp - 0x6c], HASWELL_FAMILY_ULT
 mov dword [eax + 0x3660], ecx
 jne short loc_fffa5f0d  ; jne 0xfffa5f0d
 cmp dword [ebp - 0x74], 1
@@ -4932,7 +4936,7 @@ imul eax, eax, 0xc0
 cdq
 idiv esi
 sub eax, 0x14
-cmp dword [ebp - 0x6c], 0x40650
+cmp dword [ebp - 0x6c], HASWELL_FAMILY_ULT
 jne short loc_fffa604b  ; jne 0xfffa604b
 movzx ecx, ax
 mov edx, dword [ebx + 0x103f]
@@ -5008,7 +5012,7 @@ xor edx, edx
 jmp short loc_fffa60b3  ; jmp 0xfffa60b3
 
 loc_fffa6126:  ; not directly referenced
-cmp dword [ebp - 0x6c], 0x40650
+cmp dword [ebp - 0x6c], HASWELL_FAMILY_ULT
 jne short loc_fffa613f  ; jne 0xfffa613f
 mov edx, dword [ebx + 0x103f]
 mov dword [edx + 0xf68], 0x2051c
@@ -5071,7 +5075,7 @@ mov dword [edi], ecx
 mov edi, dword [ebx + 0x103f]
 and ecx, 0xffe1bfff
 or ecx, 0x120000
-cmp dword [ebp - 0x6c], 0x40650
+cmp dword [ebp - 0x6c], HASWELL_FAMILY_ULT
 lea edi, [eax + edi + 0x14]
 mov dword [edi], ecx
 mov ecx, dword [ebx + 0x103f]
@@ -5130,7 +5134,7 @@ cmovne eax, edx
 mov byte [ebp - 0x35], al
 
 loc_fffa6341:  ; not directly referenced
-cmp dword [ebp - 0x6c], 0x40650
+cmp dword [ebp - 0x6c], HASWELL_FAMILY_ULT
 jne short loc_fffa6352  ; jne 0xfffa6352
 mov byte [ebp - 0x40], 0x28
 mov byte [ebp - 0x36], 0x28
@@ -5426,7 +5430,7 @@ cmp dword [ebp - 0xd4], 2
 seta al
 test byte [ebp - 0xa7], al
 jne short loc_fffa67ad  ; jne 0xfffa67ad
-cmp dword [ebp - 0x6c], 0x40650
+cmp dword [ebp - 0x6c], HASWELL_FAMILY_ULT
 sete al
 or eax, dword [ebp - 0xa8]
 cmp dword [ebp - 0xd4], 0
@@ -6344,7 +6348,7 @@ mov eax, 0x15f90
 add edi, edi
 cdq
 idiv edi
-cmp esi, 0x40650
+cmp esi, HASWELL_FAMILY_ULT
 jne short loc_fffa739d  ; jne 0xfffa739d
 jmp short loc_fffa7377  ; jmp 0xfffa7377
 
@@ -6407,14 +6411,14 @@ add dword [ebp - 0x6c], 0x400
 cmp dword [ebp - 0x74], 2
 jne loc_fffa713e  ; jne 0xfffa713e
 mov edx, dword [ebx + 0x1005]
-cmp edx, 0x306c0
+cmp edx, HASWELL_FAMILY_MOBILE
 jne short loc_fffa740a  ; jne 0xfffa740a
 cmp dword [ebx + 0x1001], 1
 mov eax, 0x100030
 je short loc_fffa7437  ; je 0xfffa7437
 
 loc_fffa740a:  ; not directly referenced
-cmp edx, 0x40650
+cmp edx, HASWELL_FAMILY_ULT
 mov eax, 0x100000
 jne short loc_fffa7437  ; jne 0xfffa7437
 cmp dword [ebx + 0x1749], 2
@@ -6657,7 +6661,7 @@ shl esi, 0x14
 or eax, esi
 
 loc_fffa776a:  ; not directly referenced
-cmp dword [ebx + 0x1005], 0x40650
+cmp dword [ebx + 0x1005], HASWELL_FAMILY_ULT
 jne short loc_fffa7786  ; jne 0xfffa7786
 lea ecx, [eax + eax]
 and eax, 0xffefffff
@@ -6705,7 +6709,7 @@ jne short loc_fffa7821  ; jne 0xfffa7821
 jmp near loc_fffa59f1  ; jmp 0xfffa59f1
 
 loc_fffa7810:  ; not directly referenced
-cmp esi, 0x40650
+cmp esi, HASWELL_FAMILY_ULT
 jne loc_fffa739d  ; jne 0xfffa739d
 jmp near loc_fffa737e  ; jmp 0xfffa737e
 
@@ -6972,7 +6976,7 @@ mov ebx, esi
 shl ebx, 0x19
 sar ebx, 0x1f
 add ebx, 2
-cmp dword [eax + 0x1005], 0x40650
+cmp dword [eax + 0x1005], HASWELL_FAMILY_ULT
 mov dword [ebp - 0x14], ebx
 mov ebx, 1
 cmovne ebx, dword [ebp - 0x14]
@@ -7336,13 +7340,13 @@ mov dword [ebp - 0x70], eax
 jne loc_fffa7fef  ; jne 0xfffa7fef
 cmp dword [ebp - 0x7c], 2
 setbe dl
-cmp dword [ebp - 0x74], 0x306c0
+cmp dword [ebp - 0x74], HASWELL_FAMILY_MOBILE
 sete al
 test dl, al
 jne short loc_fffa7f88  ; jne 0xfffa7f88
-cmp dword [ebp - 0x74], 0x40660
+cmp dword [ebp - 0x74], HASWELL_FAMILY_GT3E
 sete al
-cmp dword [ebp - 0x74], 0x40650
+cmp dword [ebp - 0x74], HASWELL_FAMILY_ULT
 sete dl
 or eax, edx
 cmp dword [ebp - 0x7c], 0
@@ -7513,9 +7517,9 @@ mov eax, edi
 call fcn_fffb348c  ; call 0xfffb348c
 
 loc_fffa816a:  ; not directly referenced
-cmp dword [ebp - 0x74], 0x306c0
+cmp dword [ebp - 0x74], HASWELL_FAMILY_MOBILE
 sete byte [ebp - 0x9c]
-cmp dword [ebp - 0x74], 0x40660
+cmp dword [ebp - 0x74], HASWELL_FAMILY_GT3E
 sete al
 or al, byte [ebp - 0x9c]
 jne short loc_fffa81a2  ; jne 0xfffa81a2
@@ -7735,7 +7739,7 @@ xor eax, eax
 jmp short loc_fffa84b0  ; jmp 0xfffa84b0
 
 loc_fffa843a:  ; not directly referenced
-cmp dword [ebp - 0x74], 0x40650
+cmp dword [ebp - 0x74], HASWELL_FAMILY_ULT
 jne short loc_fffa8455  ; jne 0xfffa8455
 movzx esi, al
 add esi, 0x50
@@ -7782,7 +7786,7 @@ jb short loc_fffa843a  ; jb 0xfffa843a
 jmp near loc_fffa8419  ; jmp 0xfffa8419
 
 loc_fffa84bd:  ; not directly referenced
-cmp dword [ebp - 0x74], 0x40650
+cmp dword [ebp - 0x74], HASWELL_FAMILY_ULT
 jne loc_fffa878d  ; jne 0xfffa878d
 mov dword [ebp - 0x74], 0
 
@@ -9074,9 +9078,9 @@ mov dword [ebp - 0x248], ebx
 movzx edi, byte [esi + 0x176b]
 call mrc_setmem
 mov eax, dword [esi + 0x1005]
-cmp eax, 0x40650
+cmp eax, HASWELL_FAMILY_ULT
 je short loc_fffa95ba  ; je 0xfffa95ba
-cmp eax, 0x40660
+cmp eax, HASWELL_FAMILY_GT3E
 jne short loc_fffa9594  ; jne 0xfffa9594
 mov dword [ebp - 0x250], 0x14
 mov ebx, 0x19
@@ -10565,14 +10569,14 @@ mov eax, ebx
 call fcn_fffb210b  ; call 0xfffb210b
 mov eax, dword [ebx + 0x1005]
 add esp, 0x10
-cmp eax, 0x306c0
+cmp eax, HASWELL_FAMILY_MOBILE
 jne short loc_fffaaad2  ; jne 0xfffaaad2
 cmp dword [ebx + 0x1001], 2
 ja short loc_fffaaaf2  ; ja 0xfffaaaf2
 jmp short loc_fffaab05  ; jmp 0xfffaab05
 
 loc_fffaaad2:  ; not directly referenced
-cmp eax, 0x40660
+cmp eax, HASWELL_FAMILY_GT3E
 jne short loc_fffaaae4  ; jne 0xfffaaae4
 
 loc_fffaaad9:  ; not directly referenced
@@ -10581,7 +10585,7 @@ jne short loc_fffaaaf2  ; jne 0xfffaaaf2
 jmp short loc_fffaab05  ; jmp 0xfffaab05
 
 loc_fffaaae4:  ; not directly referenced
-cmp eax, 0x40650
+cmp eax, HASWELL_FAMILY_ULT
 je short loc_fffaaad9  ; je 0xfffaaad9
 cmp eax, 0x306d0
 jne short loc_fffaab05  ; jne 0xfffaab05
@@ -10832,7 +10836,7 @@ jne short loc_fffaae17  ; jne 0xfffaae17
 jmp near loc_fffab1a2  ; jmp 0xfffab1a2
 
 loc_fffaae17:  ; not directly referenced
-cmp dword [ebx + 0x1005], 0x306c0
+cmp dword [ebx + 0x1005], HASWELL_FAMILY_MOBILE
 jne short loc_fffaae30  ; jne 0xfffaae30
 cmp dword [ebx + 0x1001], 1
 jbe loc_fffab1ac  ; jbe 0xfffab1ac
@@ -10906,14 +10910,14 @@ or edx, 2
 mov eax, ecx
 mov ecx, dword [ebx + 0x1005]
 or eax, 0x10000000
-cmp ecx, 0x306c0
+cmp ecx, HASWELL_FAMILY_MOBILE
 jne short loc_fffaaf38  ; jne 0xfffaaf38
 cmp dword [ebx + 0x1001], 2
 jbe short loc_fffaaf59  ; jbe 0xfffaaf59
 jmp short loc_fffaaf6a  ; jmp 0xfffaaf6a
 
 loc_fffaaf38:  ; not directly referenced
-cmp ecx, 0x40660
+cmp ecx, HASWELL_FAMILY_GT3E
 jne short loc_fffaaf49  ; jne 0xfffaaf49
 
 loc_fffaaf40:  ; not directly referenced
@@ -10921,7 +10925,7 @@ cmp dword [ebx + 0x1001], 0
 jmp short loc_fffaaf57  ; jmp 0xfffaaf57
 
 loc_fffaaf49:  ; not directly referenced
-cmp ecx, 0x40650
+cmp ecx, HASWELL_FAMILY_ULT
 je short loc_fffaaf40  ; je 0xfffaaf40
 cmp ecx, 0x306d0
 
@@ -18308,7 +18312,7 @@ fcn_fffb1cd8:  ; not directly referenced
 push ebp
 mov ebp, esp
 push ebx
-cmp dword [eax + 0x1005], 0x306c0
+cmp dword [eax + 0x1005], HASWELL_FAMILY_MOBILE
 mov ebx, eax
 mov al, byte [edx + 2]
 jne short loc_fffb1d03  ; jne 0xfffb1d03
@@ -18926,14 +18930,14 @@ mov ecx, dword [ebp - 0x58]
 lea edx, [edx + ecx + 0x1fc]
 mov dword [edx], eax
 mov eax, dword [ebx + 0x1005]
-cmp eax, 0x306c0
+cmp eax, HASWELL_FAMILY_MOBILE
 jne short loc_fffb23fe  ; jne 0xfffb23fe
 cmp dword [ebx + 0x1001], 2
 jbe short loc_fffb2419  ; jbe 0xfffb2419
 jmp short loc_fffb2436  ; jmp 0xfffb2436
 
 loc_fffb23fe:  ; not directly referenced
-cmp eax, 0x40660
+cmp eax, HASWELL_FAMILY_GT3E
 jne short loc_fffb2410  ; jne 0xfffb2410
 
 loc_fffb2405:  ; not directly referenced
@@ -18942,7 +18946,7 @@ je short loc_fffb2419  ; je 0xfffb2419
 jmp short loc_fffb2436  ; jmp 0xfffb2436
 
 loc_fffb2410:  ; not directly referenced
-cmp eax, 0x40650
+cmp eax, HASWELL_FAMILY_ULT
 je short loc_fffb2405  ; je 0xfffb2405
 jmp short loc_fffb2436  ; jmp 0xfffb2436
 
@@ -19326,14 +19330,14 @@ and ecx, 0xfffffc00
 mov edx, ecx
 mov ecx, dword [edi + 0x1005]
 or edx, 2
-cmp ecx, 0x306c0
+cmp ecx, HASWELL_FAMILY_MOBILE
 jne short loc_fffb288b  ; jne 0xfffb288b
 cmp dword [edi + 0x1001], 2
 jbe short loc_fffb28a8  ; jbe 0xfffb28a8
 jmp short loc_fffb28c8  ; jmp 0xfffb28c8
 
 loc_fffb288b:  ; not directly referenced
-cmp ecx, 0x40660
+cmp ecx, HASWELL_FAMILY_GT3E
 jne short loc_fffb289e  ; jne 0xfffb289e
 
 loc_fffb2893:  ; not directly referenced
@@ -19342,7 +19346,7 @@ je short loc_fffb28a8  ; je 0xfffb28a8
 jmp short loc_fffb28c8  ; jmp 0xfffb28c8
 
 loc_fffb289e:  ; not directly referenced
-cmp ecx, 0x40650
+cmp ecx, HASWELL_FAMILY_ULT
 je short loc_fffb2893  ; je 0xfffb2893
 jmp short loc_fffb28c8  ; jmp 0xfffb28c8
 
@@ -19386,7 +19390,7 @@ and eax, 1
 and ebx, 0x7f
 shl eax, 7
 or ebx, eax
-cmp dword [edi + 0x1005], 0x306c0
+cmp dword [edi + 0x1005], HASWELL_FAMILY_MOBILE
 mov eax, dword [ebp - 0x78]
 jne short loc_fffb2943  ; jne 0xfffb2943
 cmp dword [edi + 0x1001], 1
@@ -19867,7 +19871,7 @@ jne short loc_fffb2df8  ; jne 0xfffb2df8
 xor al, al
 
 loc_fffb2e14:  ; not directly referenced
-cmp dword [ebx + 0x1005], 0x40650
+cmp dword [ebx + 0x1005], HASWELL_FAMILY_ULT
 jne short loc_fffb2e61  ; jne 0xfffb2e61
 cmp dword [ebx + 0x1749], 1
 jne short loc_fffb2e61  ; jne 0xfffb2e61
@@ -23407,7 +23411,7 @@ mov byte [ebp - 0x64], 2
 mov byte [ebp - 0x63], 1
 mov byte [ebp - 0x62], 0
 mov byte [ebp - 0x61], 0
-cmp dword [eax + 0x1005], 0x40650
+cmp dword [eax + 0x1005], HASWELL_FAMILY_ULT
 jne loc_fffb5759  ; jne 0xfffb5759
 mov cl, 1
 mov edx, 4
@@ -23536,7 +23540,7 @@ push ebx
 lea esp, [esp - 0x5c]
 mov ebx, dword [ebp + 8]
 rep movsb  ; rep movsb byte es:[edi], byte ptr [esi]
-cmp dword [ebx + 0x1005], 0x40650
+cmp dword [ebx + 0x1005], HASWELL_FAMILY_ULT
 mov byte [ebp - 0x67], 5
 mov byte [ebp - 0x66], 2
 mov byte [ebp - 0x65], 1
@@ -23768,7 +23772,7 @@ mov word [ebp - 0x5a], 0
 mov word [ebp - 0x58], 0
 mov eax, dword [eax + 0x3a04]
 and eax, 0x3f
-cmp dword [edi + 0x1005], 0x40650
+cmp dword [edi + 0x1005], HASWELL_FAMILY_ULT
 mov byte [ebp - 0x7e], al
 mov eax, dword [edi + 0x1749]
 jne short loc_fffb5b19  ; jne 0xfffb5b19
@@ -23825,7 +23829,7 @@ and ecx, 1
 and dl, 0x10
 lea ebx, [eax - 0x20]
 cmove ebx, eax
-cmp dword [edi + 0x1005], 0x40650
+cmp dword [edi + 0x1005], HASWELL_FAMILY_ULT
 mov al, 0x32
 cmovne esi, eax
 xor ecx, 1
@@ -23953,7 +23957,7 @@ mov byte [ebp - 0xbd69], 1
 mov byte [ebp - 0xbd68], 1
 mov byte [ebp - 0xbd67], 1
 mov byte [ebp - 0xbd66], 0
-cmp dword [eax + 0x1005], 0x40650
+cmp dword [eax + 0x1005], HASWELL_FAMILY_ULT
 mov esi, dword [eax + 0x1749]
 lea eax, [ebp - 0xbbf4]
 sete bl
@@ -24798,7 +24802,7 @@ cmovne eax, edx
 mov edi, eax
 
 loc_fffb68d4:  ; not directly referenced
-cmp dword [esi + 0x1005], 0x40650
+cmp dword [esi + 0x1005], HASWELL_FAMILY_ULT
 mov eax, 0x4b
 mov edx, 0x78
 cmove eax, edx
@@ -24865,7 +24869,7 @@ cmovne eax, ebx
 mov edi, eax
 
 loc_fffb6987:  ; not directly referenced
-cmp dword [esi + 0x1005], 0x40650
+cmp dword [esi + 0x1005], HASWELL_FAMILY_ULT
 mov eax, 0x32
 movsx edx, dl
 mov ebx, 0x64
@@ -25016,7 +25020,7 @@ cmovle edx, eax
 xor eax, eax
 test dl, dl
 cmovns eax, edx
-cmp dword [esi + 0x1005], 0x40650
+cmp dword [esi + 0x1005], HASWELL_FAMILY_ULT
 jne short loc_fffb6b37  ; jne 0xfffb6b37
 cmp al, 2
 mov dl, 2
@@ -26292,12 +26296,12 @@ mov byte [ebp - 0x34], bl
 mov bl, al
 shr bl, 2
 and ebx, 1
-cmp dword [ebp - 0x28], 0x40650
+cmp dword [ebp - 0x28], HASWELL_FAMILY_ULT
 je short loc_fffb79f7  ; je 0xfffb79f7
-cmp dword [ebp - 0x28], 0x40660
+cmp dword [ebp - 0x28], HASWELL_FAMILY_GT3E
 mov eax, 0x5dc
 sete byte [ebp - 0x32]
-cmp dword [ebp - 0x28], 0x306c0
+cmp dword [ebp - 0x28], HASWELL_FAMILY_MOBILE
 mov cl, byte [ebp - 0x32]
 sete byte [ebp - 0x33]
 or cl, byte [ebp - 0x33]
@@ -26324,7 +26328,7 @@ cmp al, 1
 sbb eax, eax
 and eax, 0x96
 add eax, 0x546
-cmp dword [ebp - 0x28], 0x40650
+cmp dword [ebp - 0x28], HASWELL_FAMILY_ULT
 jne short loc_fffb7a47  ; jne 0xfffb7a47
 test edi, 2
 mov ecx, 0x4b0
@@ -28345,9 +28349,9 @@ jmp near loc_fffb928b  ; jmp 0xfffb928b
 
 loc_fffb917c:  ; not directly referenced
 mov eax, dword [eax + 0x1005]
-cmp eax, 0x40660
+cmp eax, HASWELL_FAMILY_GT3E
 sete cl
-cmp eax, 0x306c0
+cmp eax, HASWELL_FAMILY_MOBILE
 sete al
 xor edx, edx
 or cl, al
@@ -28361,7 +28365,7 @@ jmp near loc_fffb92ca  ; jmp 0xfffb92ca
 loc_fffb91b3:  ; not directly referenced
 mov eax, dword [eax + 0x1005]
 xor edx, edx
-cmp eax, 0x40650
+cmp eax, HASWELL_FAMILY_ULT
 jne short loc_fffb91da  ; jne 0xfffb91da
 cmp ebx, 1
 ja loc_fffb92ca  ; ja 0xfffb92ca
@@ -28371,9 +28375,9 @@ lea edx, [ebx + edx*2]
 lea edx, [edx + edx + ref_fffcbd24]  ; lea edx, [edx + edx - 0x342dc]
 
 loc_fffb91da:  ; not directly referenced
-cmp eax, 0x40660
+cmp eax, HASWELL_FAMILY_GT3E
 sete cl
-cmp eax, 0x306c0
+cmp eax, HASWELL_FAMILY_MOBILE
 sete al
 or cl, al
 je loc_fffb92ca  ; je 0xfffb92ca
@@ -28385,9 +28389,9 @@ jmp near loc_fffb92ca  ; jmp 0xfffb92ca
 
 loc_fffb9209:  ; not directly referenced
 mov eax, dword [eax + 0x1005]
-cmp eax, 0x40660
+cmp eax, HASWELL_FAMILY_GT3E
 sete cl
-cmp eax, 0x306c0
+cmp eax, HASWELL_FAMILY_MOBILE
 sete al
 xor edx, edx
 or cl, al
@@ -28401,7 +28405,7 @@ jmp near loc_fffb92ca  ; jmp 0xfffb92ca
 loc_fffb9240:  ; not directly referenced
 mov eax, dword [eax + 0x1005]
 xor edx, edx
-cmp eax, 0x40650
+cmp eax, HASWELL_FAMILY_ULT
 jne short loc_fffb9263  ; jne 0xfffb9263
 cmp ebx, 1
 ja short loc_fffb92ca  ; ja 0xfffb92ca
@@ -28411,9 +28415,9 @@ lea edx, [ebx + edx*2]
 lea edx, [edx + edx + ref_fffcbcec]  ; lea edx, [edx + edx - 0x34314]
 
 loc_fffb9263:  ; not directly referenced
-cmp eax, 0x40660
+cmp eax, HASWELL_FAMILY_GT3E
 sete cl
-cmp eax, 0x306c0
+cmp eax, HASWELL_FAMILY_MOBILE
 sete al
 or cl, al
 je short loc_fffb92ca  ; je 0xfffb92ca
@@ -30127,7 +30131,7 @@ or si, 0x80
 test eax, eax
 mov dword [ebp - 0x280], eax
 je loc_fffbb7e5  ; je 0xfffbb7e5
-cmp dword [ebx + 0x1005], 0x40650
+cmp dword [ebx + 0x1005], HASWELL_FAMILY_ULT
 jne short loc_fffba6d7  ; jne 0xfffba6d7
 sub esp, 0xc
 mov edx, ebx
@@ -30173,9 +30177,9 @@ neg eax
 mov esi, edx
 mov edx, dword [ebx + 0x1005]
 and eax, 0x10001
-cmp edx, 0x40660
+cmp edx, HASWELL_FAMILY_GT3E
 sete cl
-cmp edx, 0x306c0
+cmp edx, HASWELL_FAMILY_MOBILE
 sete dl
 or cl, dl
 je short loc_fffba76f  ; je 0xfffba76f
@@ -30525,7 +30529,7 @@ sub ecx, 0xffffffffffffff80
 mov dword [ebp + edx*4 - 0xa8], ecx
 
 loc_fffbace2:  ; not directly referenced
-cmp dword [ebx + 0x1005], 0x40650
+cmp dword [ebx + 0x1005], HASWELL_FAMILY_ULT
 jne short loc_fffbacf9  ; jne 0xfffbacf9
 lea edx, [edi + eax]
 add dword [ebp + edx*4 - 0xa8], 0x40
@@ -33652,11 +33656,11 @@ cmp al, 3
 je short loc_fffbd279  ; je 0xfffbd279
 dec al
 jne short loc_fffbd28c  ; jne 0xfffbd28c
-cmp edx, 0x40650
+cmp edx, HASWELL_FAMILY_ULT
 je short loc_fffbd256  ; je 0xfffbd256
-cmp edx, 0x40660
+cmp edx, HASWELL_FAMILY_GT3E
 sete bl
-cmp edx, 0x306c0
+cmp edx, HASWELL_FAMILY_MOBILE
 sete al
 or bl, al
 je short loc_fffbd28c  ; je 0xfffbd28c
@@ -33666,7 +33670,7 @@ mov word [ecx + 0xd9], 0x400
 jmp short loc_fffbd272  ; jmp 0xfffbd272
 
 loc_fffbd261:  ; not directly referenced
-cmp edx, 0x40650
+cmp edx, HASWELL_FAMILY_ULT
 jne short loc_fffbd28c  ; jne 0xfffbd28c
 mov word [ecx + 0xd9], 0x800
 
@@ -33675,7 +33679,7 @@ mov eax, 1
 jmp short loc_fffbd297  ; jmp 0xfffbd297
 
 loc_fffbd279:  ; not directly referenced
-cmp edx, 0x40650
+cmp edx, HASWELL_FAMILY_ULT
 jne short loc_fffbd28c  ; jne 0xfffbd28c
 mov word [ecx + 0xd9], 0x1000
 jmp short loc_fffbd272  ; jmp 0xfffbd272
@@ -33794,7 +33798,7 @@ mov dword [edx + 0xc5], 1
 mov cl, byte [ebx + 3]
 and ecx, 0xf
 add ebx, 0xb0
-cmp edi, 0x40650
+cmp edi, HASWELL_FAMILY_ULT
 mov dword [edx + 0xc9], ecx
 jne loc_fffbd48d  ; jne 0xfffbd48d
 test al, 1
@@ -33802,7 +33806,7 @@ je short loc_fffbd3f2  ; je 0xfffbd3f2
 jmp near loc_fffbd48d  ; jmp 0xfffbd48d
 
 loc_fffbd3b3:  ; not directly referenced
-cmp edi, 0x40650
+cmp edi, HASWELL_FAMILY_ULT
 jne short loc_fffbd3dc  ; jne 0xfffbd3dc
 mov dword [edx + 0xc5], 2
 mov al, byte [ebx + 3]
@@ -34336,7 +34340,7 @@ loc_fffbd95f:  ; not directly referenced
 mov eax, dword [ebx + 0x103b]
 mov edi, dword [eax + 0xf80f0]
 and edi, 0xfffffffe
-cmp dword [ebx + 0x1005], 0x40650
+cmp dword [ebx + 0x1005], HASWELL_FAMILY_ULT
 jne short loc_fffbd98f  ; jne 0xfffbd98f
 mov ecx, dword [edi + 0x333c]
 or ecx, 0x4000000
@@ -34349,7 +34353,7 @@ mov esi, 0x102
 mov dword [eax + 0x5030], 0x102
 mov eax, dword [ebx + 0x103f]
 mov dword [eax + 0x4d90], 0xf
-cmp dword [ebx + 0x1005], 0x40650
+cmp dword [ebx + 0x1005], HASWELL_FAMILY_ULT
 jne short loc_fffbd9d2  ; jne 0xfffbd9d2
 and dword [ebp - 0x3c], 0xfbffffff
 mov ecx, dword [ebp - 0x3c]
@@ -34366,7 +34370,7 @@ loc_fffbd9e7:  ; not directly referenced
 mov edx, 0xbb8
 mov eax, ebx
 call fcn_fffb2d76  ; call 0xfffb2d76
-cmp dword [ebx + 0x1005], 0x40650
+cmp dword [ebx + 0x1005], HASWELL_FAMILY_ULT
 jne short loc_fffbda0f  ; jne 0xfffbda0f
 mov eax, dword [ebp - 0x3c]
 or eax, 0x4000000
@@ -37336,7 +37340,7 @@ mov al, byte [ebx + 5]
 mov byte [ebx + 1], al
 
 loc_fffc04a6:  ; not directly referenced
-cmp dword [esi + 0x1005], 0x40650
+cmp dword [esi + 0x1005], HASWELL_FAMILY_ULT
 jne short loc_fffc04c1  ; jne 0xfffc04c1
 mov byte [ebx], 0
 mov byte [ebx + 1], 0
@@ -37567,7 +37571,7 @@ mov edx, dword [ebp - 0x64]
 mov edi, dword [ebp - 0x64]
 mov byte [ebp - 0x60], 0
 mov byte [ebp - 0x6c], 0
-cmp dword [eax + 0x1005], 0x40650
+cmp dword [eax + 0x1005], HASWELL_FAMILY_ULT
 mov eax, 0x32
 movsx ebx, byte [edx + 8]
 cmovne ecx, eax
@@ -41199,7 +41203,7 @@ mov eax, dword [ebp + 0x10]
 mov dword [ebp - 0x30], eax
 mov eax, dword [ebp + 0x14]
 mov dword [ebp - 0x34], eax
-cmp dword [ebx + 0x1005], 0x306c0
+cmp dword [ebx + 0x1005], HASWELL_FAMILY_MOBILE
 mov eax, dword [ebp + 0x18]
 mov esi, dword [ebp + 0x1c]
 mov dword [ebp - 0x24], eax
@@ -41849,7 +41853,7 @@ mov ecx, edi
 call fcn_fffb90cf  ; call 0xfffb90cf
 test eax, eax
 je loc_fffc451e  ; je 0xfffc451e
-cmp dword [ebx + 0x1005], 0x40650
+cmp dword [ebx + 0x1005], HASWELL_FAMILY_ULT
 jne short loc_fffc4496  ; jne 0xfffc4496
 cmp dword [ebx + 0x1749], 1
 je short loc_fffc449c  ; je 0xfffc449c
@@ -45808,7 +45812,7 @@ cmova eax, ebx
 add eax, ecx
 mov dword [esi + 0x16f4], ecx
 sub eax, edx
-cmp dword [esi + 0x1005], 0x306c0
+cmp dword [esi + 0x1005], HASWELL_FAMILY_MOBILE
 mov dword [esi + 0x16f8], eax
 mov dword [esi + 0x16fc], eax
 jne short loc_fffc7938  ; jne 0xfffc7938
