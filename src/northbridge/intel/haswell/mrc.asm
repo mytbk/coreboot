@@ -156,6 +156,7 @@ extern load_usb
 extern fill_pei_ram_data
 extern mrc_set_bars
 extern frag_fffa3eec
+extern frag_fffa3f8c
 global ref_fffcc8bc
 
 ;; mrc_wdt
@@ -2903,30 +2904,11 @@ mov ebx, dword [ebp - 0x628]
 push ebx
 call frag_fffa3eec
 mov dword [ebp - 0x620], eax
-pop ebx
 
-loc_fffa3f8c:
-mov ecx, dword [ebp - 0x640]
-sub esp, 0xc
-lea edx, [ebp - 0x5e8]
-mov eax, dword [ecx]
-push edx
-push 0
-push 0
-push ref_fffcc8bc  ; push 0xfffcc8bc
-push ecx
-call dword [eax + 0x20]  ; ucall
-mov eax, dword [ebp - 0x620]
-add esp, 0x20
-mov byte [eax + 0x20], 2
-mov edx, dword [ebp - 0x5e8]
-mov ecx, dword [edx + 1]
-test byte [ecx], 0x10
-je short loc_fffa3fd4  ; je 0xfffa3fd4
-mov edx, dword [edx + 9]
-mov edx, dword [edx]
-mov dl, byte [edx + 0x301]
-mov byte [eax + 0x21], dl
+push eax
+call frag_fffa3f8c
+mov dword [ebp - 0x5e8], eax
+add esp, 8
 
 loc_fffa3fd4:
 mov ebx, dword [ebp - 0x628]
