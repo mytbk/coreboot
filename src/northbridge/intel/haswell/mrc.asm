@@ -34,7 +34,6 @@ extern mrc_pch_init
 extern dmi_check_link
 extern pei_get_platform_memsize
 extern pei_choose_ranges
-extern get_c3res
 
 ; PEI services
 extern PeiServiceGetBootMode
@@ -154,6 +153,12 @@ extern io_fffa476b
 extern io_fffa49a0
 extern io_fffa4c0d
 extern load_usb
+
+;; mrc_wdt
+
+extern mrc_wdt_ppi
+
+;;
 
 mrc_entry:
 mov ecx, esp
@@ -2568,7 +2573,7 @@ mov eax, dword [ecx + 0xc]
 mov dword [ebp - 0x486], eax
 mov eax, dword [ecx + 0x10]
 mov dword [ebp - 0x482], eax
-mov esi, ref_fffc9e70  ; mov esi, 0xfffc9e70
+mov esi, mrc_wdt_ppi
 movzx eax, word [ecx + 0x14]
 mov dword [ebp - 0x47a], 0xfed84000
 mov dword [ebp - 0x47e], eax
@@ -43560,111 +43565,6 @@ mov ebp, esp
 pop ebp
 ret
 
-fcn_fffc5b14:  ; not directly referenced
-push ebp
-mov ebp, esp
-call get_c3res
-mov edx, eax
-in eax, dx
-shr eax, 0xe
-and eax, 1
-pop ebp
-ret
-
-fcn_fffc5b27:  ; not directly referenced
-push ebp
-mov ebp, esp
-call get_c3res
-mov edx, eax
-in eax, dx
-test eax, 0x3f0000
-setne al
-pop ebp
-ret
-
-fcn_fffc5b3c:  ; not directly referenced
-push ebp
-mov byte [0xff7d7540], 1
-mov ebp, esp
-push ebx
-call get_c3res
-mov edx, eax
-in eax, dx
-mov ebx, eax
-and ebx, 0xffbf7fff
-call get_c3res
-movzx edx, ax
-mov eax, ebx
-out dx, eax
-pop ebx
-pop ebp
-ret
-
-fcn_fffc5b65:  ; not directly referenced
-push ebp
-mov ebp, esp
-call get_c3res
-mov edx, eax
-in eax, dx
-shr eax, 0x17
-and eax, 1
-pop ebp
-ret
-
-fcn_fffc5b78:  ; not directly referenced
-push ebp
-mov ebp, esp
-push ebx
-call get_c3res
-mov edx, eax
-in eax, dx
-mov ebx, eax
-and ebx, 0xffbf3fff
-call get_c3res
-movzx edx, ax
-mov eax, ebx
-out dx, eax
-pop ebx
-pop ebp
-ret
-
-fcn_fffc5b9a:  ; not directly referenced
-push ebp
-mov eax, 0x80000002
-mov ebp, esp
-push esi
-push ebx
-mov esi, dword [ebp + 8]
-dec esi
-cmp esi, 0x3fe
-ja short loc_fffc5bf2  ; ja 0xfffc5bf2
-call get_c3res
-mov edx, eax
-in eax, dx
-mov ebx, eax
-or eax, 0x40e000
-or bh, 0xe0
-cmp byte [0xff7d7540], 0
-cmove ebx, eax
-and ebx, 0xfffffc00
-call get_c3res
-or ebx, esi
-movzx edx, ax
-mov eax, ebx
-out dx, eax
-call get_c3res
-or ebx, 0x80000000
-movzx edx, ax
-mov eax, ebx
-out dx, eax
-xor eax, eax
-
-loc_fffc5bf2:  ; not directly referenced
-pop ebx
-pop esi
-pop ebp
-ret
-
 fcn_fffc5bf6:
 push ebp
 mov ebp, esp
@@ -48725,14 +48625,6 @@ dd 0x00000000
 dd 0x00000003
 dd 0x01010001
 dd 0x07010201
-
-ref_fffc9e70:
-dd fcn_fffc5b9a
-dd fcn_fffc5b65
-dd fcn_fffc5b78
-dd fcn_fffc5b3c
-dd fcn_fffc5b27
-dd fcn_fffc5b14
 
 ref_fffc9ef8:
 dd 0x05010400
