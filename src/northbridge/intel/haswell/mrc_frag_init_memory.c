@@ -96,3 +96,19 @@ void set_cpuid(struct cpu_model_id *mycpu)
 		}
 	}
 }
+
+int test_memory(void);
+int test_memory(void)
+{
+	for (size_t i = 0; i < 0x1000; i++) {
+		*(uint8_t*)i = (uint8_t)i;
+	}
+
+	for (int j = 0; j < 20; j++) {
+		for (size_t i = 0; i < 0x1000; i++) {
+			if (*(uint8_t*)i != (uint8_t)i)
+				return -1;
+		}
+	}
+	return 0;
+}

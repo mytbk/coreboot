@@ -76,6 +76,7 @@ extern frag_fffc1fc3
 extern create_raminit_hob
 extern frag_fffc1cd2
 extern set_cpuid
+extern test_memory
 
 initialize_txt:
 mov edx, cr4
@@ -578,31 +579,10 @@ or dl, bl
 jne short loc_fffc22ea  ; jne 0xfffc22ea
 jmp short loc_fffc2311  ; jmp 0xfffc2311
 
-loc_fffc22e7:
-mov byte [eax], al
-inc eax
-
 loc_fffc22ea:
-cmp eax, 0x1000
-jne short loc_fffc22e7  ; jne 0xfffc22e7
-mov edx, 0x14
-jmp short loc_fffc230d  ; jmp 0xfffc230d
-
-loc_fffc22f8:
-cmp byte [eax], cl
-jne loc_fffc238d  ; jne 0xfffc238d
-inc eax
-
-loc_fffc2301:
-cmp eax, 0x1000
-mov cl, al
-jne short loc_fffc22f8  ; jne 0xfffc22f8
-dec edx
-je short loc_fffc2311  ; je 0xfffc2311
-
-loc_fffc230d:
-xor eax, eax
-jmp short loc_fffc2301  ; jmp 0xfffc2301
+call test_memory
+or eax, eax
+jne loc_fffc238d
 
 loc_fffc2311:
 mov ecx, dword [ebp - 0x50bc]
