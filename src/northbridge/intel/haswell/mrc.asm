@@ -158,6 +158,8 @@ extern mrc_set_bars
 extern frag_fffa3eec
 extern frag_fffa3f8c
 global ref_fffcc8bc
+extern frag_fffa54e7
+global ref_fffcc910
 
 ;; mrc_wdt
 
@@ -3946,64 +3948,18 @@ call PeiServiceNotifyPpi
 lea eax, [ebp - 0x5e8]
 call PeiServiceGetBootMode  ; call 0xfffbf908
 test eax, eax
-jne short loc_fffa54e7  ; jne 0xfffa54e7
+jne short loc_fffa54e7
 cmp dword [ebp - 0x5e8], 0x11
-jne short loc_fffa54e7  ; jne 0xfffa54e7
+jne short loc_fffa54e7
 mov eax, ref_fffcd554  ; mov eax, 0xfffcd554
 call PeiServiceNotifyPpi
 
 loc_fffa54e7:
-mov ecx, dword [ebp - 0x640]
-push eax
-push eax
-mov eax, dword [ecx]
-push ref_fffcc910  ; push 0xfffcc910
-push ecx
-call dword [eax + 0x18]  ; ucall
-mov dword [esp], str_init_me_uma  ; mov dword [esp], 0xfffcc65f
-call mrc_printk
-mov eax, dword [0xff7d7538]
-pop edx
-pop ecx
-mov edx, dword [eax]
-push PchMeUmaDesc
-push eax
-call dword [edx + 0x18]  ; ucall
-mov dword [esp], str_init_memory  ; mov dword [esp], 0xfffcc688
-call mrc_printk
-mov eax, dword [0xff7d7538]
-call mrc_init_memory
-mov edx, 0xfffe
-mov eax, mEfiMemoryRestoreDataGuid  ; mov eax, 0xfffcd4c4
-call locate_hob
-add esp, 0x10
-test eax, eax
-jne short loc_fffa5573  ; jne 0xfffa5573
-cmp dword [ebp - 0x20c], 0x11
-je short loc_fffa555d  ; je 0xfffa555d
-sub esp, 0xc
-push str_locate_restore_hob_failed
-call mrc_printk
-add esp, 0x10
 
-loc_fffa555d:
-mov eax, dword [ebp - 0x63c]
-mov dword [eax + 0x66], 0
-mov dword [eax + 0x62], 0
-jmp short loc_fffa5585  ; jmp 0xfffa5585
-
-loc_fffa5573:
-mov ecx, dword [ebp - 0x63c]
-mov edx, dword [eax + 0x18]
-add eax, 0x1c
-mov dword [ecx + 0x66], edx
-mov dword [ecx + 0x62], eax
-
-loc_fffa5585:
-sub esp, 0xc
-push str_sa_done
-call mrc_printk
-add esp, 0x10
+push dword [ebp - 0x63c]
+push dword [ebp - 0x20c]
+call frag_fffa54e7
+add esp, 8
 xor eax, eax
 jmp near loc_fffa56a4  ; jmp 0xfffa56a4
 
