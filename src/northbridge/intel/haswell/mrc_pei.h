@@ -175,5 +175,7 @@ int __attribute((regparm(1)))
 PeiServiceNotifyPpi(const EFI_PEI_NOTIFY_DESCRIPTOR *NotifyList);
 
 void init_pei_svc(EFI_PEI_SERVICES *sv);
+EFI_HOB_DATA * __attribute((regparm(2)))
+locate_hob(EFI_GUID *guid, uint16_t v);
 
 #endif
