@@ -283,3 +283,42 @@ void mrc_set_bars(pei_ram_data *r)
 		write32((void*)r->mchbar + 0x540c, 0);
 	}
 }
+
+extern EFI_GUID ref_fffcd4a4;
+extern EFI_GUID ref_fffcc8bc;
+void* frag_fffa3eec(void *raminit_ppi);
+void* frag_fffa3eec(void *raminit_ppi)
+{
+	const EFI_PEI_SERVICES **pps = *gpPei;
+	EFI_HOB_DATA *hob;
+
+	(*pps)->CreateHob(pps, 4, 0x6d, (void**)&hob);
+	memcpy((void*)hob + 8, &ref_fffcd4a4, 16);
+	mrc_zeromem((void*)hob + 0x18, 8);
+	mrc_zeromem((void*)hob + 0x20, 8);
+	mrc_zeromem((void*)hob + 0x29, 0x1e);
+	*(uint8_t*)((void*)hob + 0x28) = 0;
+	*(uint8_t*)((void*)hob + 0x6c) = 0;
+
+	if (*(uint8_t*)raminit_ppi > 1) {
+		void *p1 = *(void**)(raminit_ppi + 0xd);
+		*(uint16_t*)((void*)hob + 0x47) = *(uint16_t*)(p1 + 0x4a);
+		*(uint8_t*)((void*)hob + 0x49) = *(uint8_t*)(p1 + 0x49);
+	} else {
+		*(uint16_t*)((void*)hob + 0x47) = 0;
+		*(uint8_t*)((void*)hob + 0x49) = 0;
+	}
+	return hob;
+#if 0
+	void *ppi;
+	(*pps)->LocatePpi(pps, &ref_fffcc8bc, 0, NULL, &ppi);
+
+	*(uint8_t*)((void*)hob + 0x20) = 2;
+	void *p2 = *((void**)(ppi + 1));
+	if (*(uint8_t*)p2 != 0x10) {
+		void *p3 = *((void**)(ppi + 9));
+		void *p4 = *((void**)p3);
+		*(uint8_t*)((void*)hob + 0x21) = *(uint8_t*)(p4 + 0x301);
+	}
+#endif
+}

@@ -155,6 +155,8 @@ extern io_fffa4c0d
 extern load_usb
 extern fill_pei_ram_data
 extern mrc_set_bars
+extern frag_fffa3eec
+global ref_fffcc8bc
 
 ;; mrc_wdt
 
@@ -2897,46 +2899,11 @@ add esp, 0xc
 loc_fffa3eec:
 mov edx, dword [ebp - 0x640]
 mov ebx, dword [ebp - 0x628]
-mov esi, ref_fffcd4a4  ; mov esi, 0xfffcd4a4
-mov eax, dword [edx]
-lea edx, [ebp - 0x620]
-push edx
-push 0x6d
-push 4
-push dword [ebp - 0x640]
-call dword [eax + 0x34]  ; ucall
-mov eax, dword [ebp - 0x620]
-mov ecx, 4
-mov edx, 8
-lea edi, [eax + 8]
-add eax, 0x18
-rep movsd  ; rep movsd dword es:[edi], dword ptr [esi]
-call mrc_zeromem
-mov eax, dword [ebp - 0x620]
-mov edx, 8
-add eax, 0x20
-call mrc_zeromem
-mov eax, dword [ebp - 0x620]
-mov edx, 0x1e
-add eax, 0x29
-call mrc_zeromem
-mov eax, dword [ebp - 0x620]
-add esp, 0x10
-mov byte [eax + 0x28], 0
-mov byte [eax + 0x6c], 0
-cmp byte [ebx], 1
-jbe short loc_fffa3f82  ; jbe 0xfffa3f82
-mov edx, dword [ebx + 0xd]
-mov dx, word [edx + 0x4a]
-mov word [eax + 0x47], dx
-mov edx, dword [ebx + 0xd]
-mov dl, byte [edx + 0x49]
-mov byte [eax + 0x49], dl
-jmp short loc_fffa3f8c  ; jmp 0xfffa3f8c
 
-loc_fffa3f82:
-mov word [eax + 0x47], 0
-mov byte [eax + 0x49], 0
+push ebx
+call frag_fffa3eec
+mov dword [ebp - 0x620], eax
+pop ebx
 
 loc_fffa3f8c:
 mov ecx, dword [ebp - 0x640]
