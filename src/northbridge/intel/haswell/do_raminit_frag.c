@@ -264,12 +264,6 @@ int haswell_stepping(void);
 void mrc_set_bars(pei_ram_data *r);
 void mrc_set_bars(pei_ram_data *r)
 {
-	printk(BIOS_DEBUG, "mchbar is 0x%08x\n", r->mchbar);
-	printk(BIOS_DEBUG, "dmibar is 0x%08x\n", r->dmibar);
-	printk(BIOS_DEBUG, "epbar is 0x%08x\n", r->epbar);
-	printk(BIOS_DEBUG, "gdxcbar is 0x%08x\n", r->gdxcbar);
-	printk(BIOS_DEBUG, "edrambar is 0x%08x\n", r->edrambar);
-
 	int model = haswell_family_model();
 
 	pci_write_config32(PCI_DEV(0, 0, 0), 0x48, r->mchbar | 1);

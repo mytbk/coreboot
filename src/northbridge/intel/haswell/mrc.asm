@@ -2873,10 +2873,8 @@ jl short loc_fffa3bc0  ; jl 0xfffa3bc0
 jmp near loc_fffa3ab5  ; jmp 0xfffa3ab5
 
 loc_init_usb:
-sub esp, 0xc
 push str_init_usb
 call mrc_printk
-pop ebx
 push dword [0xff7d7538]
 call mrc_init_usb
 mov dword [esp], str_init_sa
@@ -2887,24 +2885,14 @@ call haswell_family_model
 mov ecx, dword [ebp - 0x640]
 mov dword [ebp - 0x648], eax
 
-;lea edx, [ebp - 0x526]
-;mov dword [ebp - 0x628], edx
-;mov ebx, dword [ebp - 0x628]
-
-lea edx, [ebp - 0x628]
-mov eax, dword [ecx]
-mov dword [esp], edx
-push 0
-push 0
-push ref_fffcd4e4  ; push 0xfffcd4e4
-push ecx
-call dword [eax + 0x20] ; LocatePpi
+; [ebp - 0x628] = ram init ppi
+lea edx, [ebp - 0x526]
+mov dword [ebp - 0x628], edx
 mov ebx, dword [ebp - 0x628]
-add esp, 0x20
 
 push dword [ebx + 1]
 call mrc_set_bars
-add esp, 0x4
+add esp, 0xc
 
 loc_fffa3eec:
 mov edx, dword [ebp - 0x640]
