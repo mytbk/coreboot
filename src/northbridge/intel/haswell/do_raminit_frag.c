@@ -309,16 +309,22 @@ void* frag_fffa3eec(void *raminit_ppi)
 		*(uint8_t*)((void*)hob + 0x49) = 0;
 	}
 	return hob;
-#if 0
+}
+
+void* frag_fffa3f8c(void *hob);
+void* frag_fffa3f8c(void *hob)
+{
+	const EFI_PEI_SERVICES **pps = *gpPei;
 	void *ppi;
+
 	(*pps)->LocatePpi(pps, &ref_fffcc8bc, 0, NULL, &ppi);
 
-	*(uint8_t*)((void*)hob + 0x20) = 2;
+	*(uint8_t*)(hob + 0x20) = 2;
 	void *p2 = *((void**)(ppi + 1));
-	if (*(uint8_t*)p2 != 0x10) {
+	if ((*(uint8_t*)p2 & 0x10) != 0) {
 		void *p3 = *((void**)(ppi + 9));
 		void *p4 = *((void**)p3);
 		*(uint8_t*)((void*)hob + 0x21) = *(uint8_t*)(p4 + 0x301);
 	}
-#endif
+	return ppi;
 }
