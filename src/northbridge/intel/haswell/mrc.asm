@@ -153,6 +153,7 @@ extern io_fffa476b
 extern io_fffa49a0
 extern io_fffa4c0d
 extern load_usb
+extern fill_pei_ram_data
 
 ;; mrc_wdt
 
@@ -2526,10 +2527,14 @@ mov byte [ebp - 0x2c6], 3
 mov byte [ebp - 0x2b8], 0xff
 rep stosd  ; rep stosd dword es:[edi], eax
 mov al, dl
-lea edi, [ebp - 0x492]
-mov cl, 0x2f
 mov byte [ebp - 0x2b7], 0xff
-rep stosb  ; rep stosb byte es:[edi], al
+
+push dword [ebp - 0x63c]
+lea edi, [ebp - 0x492]
+push edi
+call fill_pei_ram_data
+add esp, 8
+
 mov ecx, dword [ebp - 0x63c]
 mov byte [ebp - 0x2b6], 0xff
 mov byte [ebp - 0x2b5], 0xff
@@ -2538,12 +2543,7 @@ mov byte [ebp - 0x2b3], 0xff
 mov byte [ebp - 0x2b2], 0xff
 mov byte [ebp - 0x2b1], 0xff
 mov byte [ebp - 0x2b0], 0xff
-mov al, byte [ecx + 0x3a]
 mov byte [ebp - 0x2af], 0xff
-mov byte [ebp - 0x492], al
-mov al, byte [ecx + 0x3b]
-mov byte [ebp - 0x491], al
-mov al, byte [ecx + 0x3c]
 mov byte [ebp - 0x2ae], 0xff
 mov byte [ebp - 0x2ad], 0xff
 mov byte [ebp - 0x2ac], 0xff
@@ -2561,34 +2561,14 @@ mov byte [ebp - 0x27b], 1
 mov byte [ebp - 0x462], 1
 mov byte [ebp - 0x461], 1
 mov byte [ebp - 0x460], 1
-mov byte [ebp - 0x490], al
-mov al, byte [ecx + 0x3d]
 lea edi, [ebp - 0x575]
-mov byte [ebp - 0x48f], al
-mov eax, dword [ecx + 4]
-mov dword [ebp - 0x48e], eax
-mov eax, dword [ecx + 8]
-mov dword [ebp - 0x48a], eax
-mov eax, dword [ecx + 0xc]
-mov dword [ebp - 0x486], eax
-mov eax, dword [ecx + 0x10]
-mov dword [ebp - 0x482], eax
 mov esi, mrc_wdt_ppi
-movzx eax, word [ecx + 0x14]
-mov dword [ebp - 0x47a], 0xfed84000
-mov dword [ebp - 0x47e], eax
-mov eax, dword [ecx + 0x36]
-mov dword [ebp - 0x476], eax
-mov eax, dword [ecx + 0x32]
-mov byte [ebp - 0x472], al
 mov ecx, 4
 mov eax, ebx
-mov byte [ebp - 0x471], 1
 rep stosd  ; rep stosd dword es:[edi], eax
 mov al, dl
 lea edi, [ebp - 0x526]
 mov cl, 0x1e
-mov dword [ebp - 0x470], 0xfed80000
 rep stosb  ; rep stosb byte es:[edi], al
 mov ecx, dword [ebp - 0x63c]
 lea eax, [ebp - 0x492]
@@ -2609,7 +2589,6 @@ mov dword [ebp - 0x511], eax
 lea edi, [ebp - 0x600]
 mov al, dl
 mov cl, 5
-mov dword [ebp - 0x467], 0x400000
 mov byte [ebp - 0x526], 0xe
 mov dword [ebp - 0x616], pei_choose_ranges
 mov dword [ebp - 0x612], pei_get_platform_memsize

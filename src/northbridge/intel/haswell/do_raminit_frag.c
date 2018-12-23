@@ -8,6 +8,7 @@
 #include <console/console.h>
 #include "pei_data.h"
 #include "pei_usb.h"
+#include "pei_ram.h"
 
 static void io_fffa3c2e(void)
 {
@@ -228,4 +229,27 @@ void load_usb(PEI_USB *pusb, struct pei_data *pd)
 	pusb->xhci_resume_info[0] = 1;
 	pusb->xhci_resume_info[1] = 1;
 	pusb->xhci_resume_info[2] = 2;
+}
+
+void fill_pei_ram_data(pei_ram_data *r, struct pei_data *pd);
+void fill_pei_ram_data(pei_ram_data *r, struct pei_data *pd)
+{
+	int i;
+	for (i = 0; i < 4; i++) {
+		r->spd_addresses[i] = pd->spd_addresses[i];
+	}
+	r->mchbar = pd->mchbar;
+	r->dmibar = pd->dmibar;
+	r->epbar = pd->epbar;
+	r->pciexbar = pd->pciexbar;
+	r->smbusbar = pd->smbusbar;
+	r->gdxcbar = 0xfed84000;
+	r->tseg_size = pd->tseg_size;
+	r->system_type = pd->system_type;
+	r->v1 = 1;
+	r->edrambar = 0xfed80000;
+	r->ied_region_size = 0x400000;
+	for (i = 0; i < 5; i++) {
+		r->padding[i] = 0;
+	}
 }
