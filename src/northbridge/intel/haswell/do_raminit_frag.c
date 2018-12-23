@@ -253,3 +253,39 @@ void fill_pei_ram_data(pei_ram_data *r, struct pei_data *pd)
 		r->padding[i] = 0;
 	}
 }
+
+int haswell_family_model(void);
+int haswell_stepping(void);
+
+#define HASWELL_FAMILY_MOBILE 0x306c0
+#define HASWELL_FAMILY_ULT 0x40650
+#define HASWELL_FAMILY_GT3E 0x40660
+
+void mrc_set_bars(pei_ram_data *r);
+void mrc_set_bars(pei_ram_data *r)
+{
+	printk(BIOS_DEBUG, "mchbar is 0x%08x\n", r->mchbar);
+	printk(BIOS_DEBUG, "dmibar is 0x%08x\n", r->dmibar);
+	printk(BIOS_DEBUG, "epbar is 0x%08x\n", r->epbar);
+	printk(BIOS_DEBUG, "gdxcbar is 0x%08x\n", r->gdxcbar);
+	printk(BIOS_DEBUG, "edrambar is 0x%08x\n", r->edrambar);
+
+	int model = haswell_family_model();
+
+	pci_write_config32(PCI_DEV(0, 0, 0), 0x48, r->mchbar | 1);
+	pci_write_config32(PCI_DEV(0, 0, 0), 0x4c, 0);
+
+	pci_write_config32(PCI_DEV(0, 0, 0), 0x68, r->dmibar | 1);
+	pci_write_config32(PCI_DEV(0, 0, 0), 0x6c, 0);
+
+	pci_write_config32(PCI_DEV(0, 0, 0), 0x40, r->epbar | 1);
+	pci_write_config32(PCI_DEV(0, 0, 0), 0x44, 0);
+
+	write32((void*)r->mchbar + 0x5420, r->gdxcbar | 1);
+	write32((void*)r->mchbar + 0x5424, 0);
+
+	if (model == HASWELL_FAMILY_GT3E) {
+		write32((void*)r->mchbar + 0x5408, r->edrambar | 1);
+		write32((void*)r->mchbar + 0x540c, 0);
+	}
+}

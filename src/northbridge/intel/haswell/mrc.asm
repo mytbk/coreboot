@@ -154,6 +154,7 @@ extern io_fffa49a0
 extern io_fffa4c0d
 extern load_usb
 extern fill_pei_ram_data
+extern mrc_set_bars
 
 ;; mrc_wdt
 
@@ -2884,8 +2885,13 @@ mov edx, dword [0xff7d7538]
 mov dword [ebp - 0x640], edx
 call haswell_family_model
 mov ecx, dword [ebp - 0x640]
-lea edx, [ebp - 0x628]
 mov dword [ebp - 0x648], eax
+
+;lea edx, [ebp - 0x526]
+;mov dword [ebp - 0x628], edx
+;mov ebx, dword [ebp - 0x628]
+
+lea edx, [ebp - 0x628]
 mov eax, dword [ecx]
 mov dword [esp], edx
 push 0
@@ -2895,48 +2901,10 @@ push ecx
 call dword [eax + 0x20] ; LocatePpi
 mov ebx, dword [ebp - 0x628]
 add esp, 0x20
-call haswell_family_model
-mov ecx, eax
-mov esi, dword [0xf0000060]
-and esi, 0xfc000000
-xor edx, edx
-mov eax, dword [ebx + 1]
-mov eax, dword [eax + 4]
-or eax, 1
-mov dword [esi + 0x48], eax ; pci_write_config32(PCI_DEV(0, 0, 0), 0x48, mchbar | 1)
-mov dword [esi + 0x4c], edx
-mov eax, dword [ebx + 1]
-mov esi, dword [0xf0000060]
-and esi, 0xfc000000
-xor edx, edx
-mov eax, dword [eax + 8] ; dmibar
-or eax, 1
-mov dword [esi + 0x68], eax
-mov dword [esi + 0x6c], edx
-mov eax, dword [ebx + 1]
-mov esi, dword [0xf0000060]
-and esi, 0xfc000000
-xor edx, edx
-mov eax, dword [eax + 0xc] ; epbar
-or eax, 1
-mov dword [esi + 0x40], eax
-mov dword [esi + 0x44], edx
-mov eax, dword [ebx + 1]
-xor edx, edx
-mov esi, dword [eax + 4]
-mov eax, dword [eax + 0x18] ; gdxcbar
-or eax, 1
-cmp ecx, HASWELL_FAMILY_GT3E
-mov dword [esi + 0x5420], eax
-mov dword [esi + 0x5424], edx
-jne short loc_fffa3eec  ; jne 0xfffa3eec
-mov eax, dword [ebx + 1]
-xor edx, edx
-mov ecx, dword [eax + 4]
-mov eax, dword [eax + 0x22] ; edrambar
-or eax, 1
-mov dword [ecx + 0x5408], eax
-mov dword [ecx + 0x540c], edx
+
+push dword [ebx + 1]
+call mrc_set_bars
+add esp, 0x4
 
 loc_fffa3eec:
 mov edx, dword [ebp - 0x640]
