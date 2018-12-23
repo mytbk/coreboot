@@ -59,7 +59,7 @@ global ref_fffcd4a4
 global ref_fffcd4e4
 
 global fcn_fffa10df
-global fcn_fffa11b3
+extern locate_hob
 global fcn_fffa1d20
 global fcn_fffa56ac
 global fcn_fffa782c
@@ -1436,73 +1436,6 @@ lea esp, [esp + 0x10]
 mov al, dl
 pop ebx
 pop esi
-pop ebp
-ret
-
-fcn_fffa11b3:
-push ebp
-mov ebp, esp
-push edi
-mov edi, edx
-push esi
-lea ecx, [ebp - 0x1c]
-push ebx
-mov ebx, eax
-lea esp, [esp - 0x24]
-mov eax, dword [0xff7d7538]
-mov edx, dword [eax]
-push ecx
-push eax
-call dword [edx + 0x30]  ; ucall
-add esp, 0x10
-jmp short loc_fffa1216  ; jmp 0xfffa1216
-
-loc_fffa11d5:
-cmp di, 0xfffffffffffffffe
-je short loc_fffa11e1  ; je 0xfffa11e1
-cmp word [ecx + 4], di
-jne short loc_fffa1211  ; jne 0xfffa1211
-
-loc_fffa11e1:
-mov edx, dword [ebx + 4]
-cmp dword [ecx + 0x10], edx
-mov eax, dword [ecx + 0xc]
-jne short loc_fffa1206  ; jne 0xfffa1206
-cmp eax, dword [ebx]
-jne short loc_fffa1206  ; jne 0xfffa1206
-mov esi, dword [ecx + 0x14]
-mov eax, dword [ecx + 0x18]
-xor esi, dword [ebx + 8]
-xor eax, dword [ebx + 0xc]
-or esi, eax
-sete al
-movzx eax, al
-jmp short loc_fffa1208  ; jmp 0xfffa1208
-
-loc_fffa1206:
-xor eax, eax
-
-loc_fffa1208:
-test eax, eax
-je short loc_fffa1211  ; je 0xfffa1211
-lea eax, [ecx + 4]
-jmp short loc_fffa121f  ; jmp 0xfffa121f
-
-loc_fffa1211:
-mov eax, dword [ecx]
-mov dword [ebp - 0x1c], eax
-
-loc_fffa1216:
-mov ecx, dword [ebp - 0x1c]
-test ecx, ecx
-jne short loc_fffa11d5  ; jne 0xfffa11d5
-xor eax, eax
-
-loc_fffa121f:
-lea esp, [ebp - 0xc]
-pop ebx
-pop esi
-pop edi
 pop ebp
 ret
 
@@ -4137,7 +4070,7 @@ mov eax, dword [0xff7d7538]
 call mrc_init_memory
 mov edx, 0xfffe
 mov eax, mEfiMemoryRestoreDataGuid  ; mov eax, 0xfffcd4c4
-call fcn_fffa11b3  ; call 0xfffa11b3
+call locate_hob
 add esp, 0x10
 test eax, eax
 jne short loc_fffa5573  ; jne 0xfffa5573

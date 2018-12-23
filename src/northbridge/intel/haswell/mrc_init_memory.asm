@@ -11,7 +11,7 @@ extern ref_fffcd4a4
 extern ref_fffcd4e4
 
 extern fcn_fffa10df
-extern fcn_fffa11b3
+extern locate_hob
 extern fcn_fffa1d20
 extern fcn_fffa56ac
 extern fcn_fffa782c
@@ -294,7 +294,7 @@ mov edi, 2
 loc_fffc1f53:
 mov edx, 4
 mov eax, ref_fffcd4a4  ; mov eax, 0xfffcd4a4
-call fcn_fffa11b3  ; call 0xfffa11b3
+call locate_hob
 test eax, eax
 je short loc_fffc1f77  ; je 0xfffc1f77
 mov dl, byte [eax + 0x21]
