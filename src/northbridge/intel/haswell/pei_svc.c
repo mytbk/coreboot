@@ -156,8 +156,6 @@ void init_pei_svc(EFI_PEI_SERVICES *sv)
 }
 
 EFI_HOB_DATA * __attribute((regparm(2)))
-locate_hob(EFI_GUID *guid, uint16_t v);
-EFI_HOB_DATA * __attribute((regparm(2)))
 locate_hob(EFI_GUID *guid, uint16_t v)
 {
 	EFI_HOB *hoblist;

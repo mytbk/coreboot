@@ -328,3 +328,33 @@ void* frag_fffa3f8c(void *hob)
 	}
 	return ppi;
 }
+
+extern EFI_PEI_PPI_DESCRIPTOR ref_fffcc910;
+extern EFI_PEI_PPI_DESCRIPTOR PchMeUmaDesc;
+extern void __attribute((regparm(1))) mrc_init_memory(const EFI_PEI_SERVICES **pps);
+extern EFI_GUID mEfiMemoryRestoreDataGuid;
+
+void frag_fffa54e7(int bootmode, struct pei_data *pd);
+void frag_fffa54e7(int bootmode, struct pei_data *pd)
+{
+	const EFI_PEI_SERVICES **pps = *gpPei;
+
+	(*pps)->InstallPpi(pps, &ref_fffcc910);
+	mrc_printk("System Agent: Initializing PCH (Me UMA)\n");
+	(*pps)->InstallPpi(pps, &PchMeUmaDesc);
+	mrc_printk("System Agent: Initializing Memory\n");
+	mrc_init_memory(pps);
+
+	void *hob = locate_hob(&mEfiMemoryRestoreDataGuid, 0xfffe);
+	if (hob == NULL) {
+		if (bootmode != 0x11)
+			mrc_printk("System Agent: failed to locate restore data hob!\n");
+
+		pd->mrc_output_len = 0;
+		pd->mrc_output = NULL;
+	} else {
+		pd->mrc_output_len = *(uint32_t*)(hob + 0x18);
+		pd->mrc_output = (unsigned char*)(hob + 0x1c);
+	}
+	mrc_printk("System Agent: Done.\n");
+}
