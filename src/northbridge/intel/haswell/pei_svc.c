@@ -154,3 +154,24 @@ void init_pei_svc(EFI_PEI_SERVICES *sv)
 	sv->ReportStatusCode = dummy_func;
 	sv->CpuIo = &gCpuIoPpi;
 }
+
+EFI_HOB_DATA * __attribute((regparm(2)))
+locate_hob(EFI_GUID *guid, uint16_t v);
+EFI_HOB_DATA * __attribute((regparm(2)))
+locate_hob(EFI_GUID *guid, uint16_t v)
+{
+	EFI_HOB *hoblist;
+	const EFI_PEI_SERVICES **pps = *gpPei;
+
+	(*pps)->GetHobList(pps, (void**)&hoblist);
+
+	for (EFI_HOB *hb = hoblist; hb != NULL; hb = hb->next) {
+		if (v != 0xfffe) {
+			hb->hobdata.htype = v;
+			continue;
+		}
+		if (memcmp(&hb->hobdata.data[1], guid, 16) == 0)
+			return &hb->hobdata;
+	}
+	return NULL;
+}

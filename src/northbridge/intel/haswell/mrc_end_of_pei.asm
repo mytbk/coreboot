@@ -6,7 +6,7 @@ global ref_fffcd560
 extern haswell_stepping
 extern haswell_family_model
 extern ref_fffcd4a4
-extern fcn_fffa11b3
+extern locate_hob
 extern PeiServiceGetBootMode
 extern gEfiPeiReadOnlyVariablePpiGuid
 
@@ -33,7 +33,7 @@ call haswell_stepping
 call haswell_family_model
 mov edx, 4
 mov eax, ref_fffcd4a4  ; mov eax, 0xfffcd4a4
-call fcn_fffa11b3  ; call 0xfffa11b3
+call locate_hob
 test eax, eax
 je short loc_fffa124f  ; je 0xfffa124f
 mov byte [eax + 0x49], 0
