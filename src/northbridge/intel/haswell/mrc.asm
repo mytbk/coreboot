@@ -2576,49 +2576,7 @@ or eax, 5
 mov byte [ebp - 0x3ac], al
 
 loc_fffa39a6:
-mov edx, dword [ebp - 0x63c]
-mov eax, dword [edx + 0x6a]
-cmp eax, 0x42b
-je short loc_fffa39dc  ; je 0xfffa39dc
-ja short loc_fffa39c1  ; ja 0xfffa39c1
-cmp eax, 0x320
-jne short loc_fffa39fd  ; jne 0xfffa39fd
-jmp short loc_fffa39d1  ; jmp 0xfffa39d1
 
-loc_fffa39c1:
-cmp eax, 0x535
-je short loc_fffa39e7  ; je 0xfffa39e7
-cmp eax, 0x640
-jne short loc_fffa39fd  ; jne 0xfffa39fd
-jmp short loc_fffa39f2  ; jmp 0xfffa39f2
-
-loc_fffa39d1:
-mov word [ebp - 0x33f], 0x320
-jmp short loc_fffa3a17  ; jmp 0xfffa3a17
-
-loc_fffa39dc:
-mov word [ebp - 0x33f], 0x42b
-jmp short loc_fffa3a17  ; jmp 0xfffa3a17
-
-loc_fffa39e7:
-mov word [ebp - 0x33f], 0x535
-jmp short loc_fffa3a17  ; jmp 0xfffa3a17
-
-loc_fffa39f2:
-mov word [ebp - 0x33f], 0x640
-jmp short loc_fffa3a17  ; jmp 0xfffa3a17
-
-loc_fffa39fd:
-push edx
-push edx
-push eax
-push ref_fffcc574  ; push 0xfffcc574
-call mrc_printk
-add esp, 0x10
-mov eax, 0xfffffffe
-jmp near loc_fffa56a4  ; jmp 0xfffa56a4
-
-loc_fffa3a17:
 lea eax, [ebp - 0x403]
 push eax
 call frag_fffa3a17
@@ -50381,9 +50339,6 @@ db 'System Agent: Starting up...',0x0a,0x00
 
 ref_fffcc552:
 db 'System Agent: S3 resume detected',0x0a,0x00
-
-ref_fffcc574:
-db 'System Agent: Unsupported DDR3 frequence %d (Supported are 800, 1067, 1333, 1600)',0x0a,0x00
 
 str_init_usb:
 db 'System Agent: Initializing PCH (USB)',0x0a,0x00
