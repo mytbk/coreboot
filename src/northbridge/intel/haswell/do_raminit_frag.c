@@ -9,6 +9,7 @@
 #include "pei_data.h"
 #include "pei_usb.h"
 #include "pei_ram.h"
+#include "mrc_sku.h"
 
 static void io_fffa3c2e(void)
 {
@@ -371,5 +372,83 @@ void frag_fffa3fd4(pei_raminit_ppi *ram_ppi)
 		uint32_t dmibar = ram_ppi->ram_data->dmibar;
 		write32((void*)(dmibar + 0x71c), ram_ppi->v);
 		write32((void*)(dmibar + 0x720), 0x1060100);
+	}
+}
+
+void frag_fffa3ba4(PEI_USB *pusb);
+void frag_fffa3ba4(PEI_USB *pusb)
+{
+	int nb_ehci = nb_usb2_ports();
+
+	for (int i = 0; i < nb_ehci; i++) {
+		PEI_EHCI *setting = &pusb->ehci_settings[i];
+		uint8_t loc = setting->location;
+		if (loc == 5) {
+			setting->f4 = 5;
+			setting->f5 = 2;
+		} else if (loc == 2) {
+			setting->f4 = 4;
+			setting->f5 = 2 - (setting->length < 0x50);
+		} else if (setting->length <= 0x6f) {
+			setting->f4 = 5;
+			setting->f5 = 2;
+		} else {
+			setting->f4 = 6;
+			if (setting->length <= 0xff) {
+				setting->f5 = 2;
+			} else {
+				setting->f5 = 3;
+			}
+		}
+	}
+}
+
+void frag_fffa3aa7(PEI_USB *pusb);
+void frag_fffa3aa7(PEI_USB *pusb)
+{
+	int nb_ehci = nb_usb2_ports();
+
+	for (int i = 0; i < nb_ehci; i++) {
+		PEI_EHCI *setting = &pusb->ehci_settings[i];
+		uint8_t loc = setting->location;
+		if (loc == 0) {
+			setting->f4 = 4;
+			if (setting->length <= 0x7f) {
+				setting->f5 = 2;
+			}
+			setting->f5 = 4 - (setting->length < 0x130);
+		} else {
+			setting->f4 = 3;
+			setting->f5 = 2;
+		}
+	}
+}
+
+void frag_fffa3c1b(PEI_USB *pusb);
+void frag_fffa3c1b(PEI_USB *pusb)
+{
+	int nb_ehci = nb_usb2_ports();
+
+	for (int i = 0; i < nb_ehci; i++) {
+		PEI_EHCI *setting = &pusb->ehci_settings[i];
+		uint8_t loc = setting->location;
+		if (loc == 0 || loc == 3) {
+			if (setting->length > 0x6f) {
+				setting->f4 = 6;
+				if (setting->length > 0xff)
+					setting->f5 = 3;
+				else
+					setting->f5 = 2;
+			} else {
+				setting->f4 = 5;
+				setting->f5 = 2;
+			}
+		} else if (loc == 2) {
+			setting->f4 = 0x50;
+			setting->f5 = 2 - (setting->length < 0x50);
+		} else {
+			setting->f4 = 5;
+			setting->f5 = 2;
+		}
 	}
 }
