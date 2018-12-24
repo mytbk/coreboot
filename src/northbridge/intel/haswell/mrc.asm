@@ -163,9 +163,7 @@ global ref_fffcc8bc
 extern frag_fffa54e7
 global ref_fffcc910
 extern frag_fffa3fd4
-extern frag_fffa3aa7
-extern frag_fffa3ba4
-extern frag_fffa3c1b
+extern frag_fffa3a17
 
 ;; mrc_wdt
 
@@ -2685,65 +2683,14 @@ mov eax, 0xfffffffe
 jmp near loc_fffa56a4  ; jmp 0xfffa56a4
 
 loc_fffa3a17:
-call mrc_sku_type
-mov edx, dword [0xf0000060]
-and edx, 0xfc000000
-cmp eax, 1
-mov dx, word [edx + 0xf8002]
-jne loc_fffa3bb5  ; if low power or unknown pch, then goto loc_fffa3bb5
-; if it's desktop PCH then goto loc_fffa3aa7
-push edx
-push edx
-call is_desktop_pch
-pop edx
-pop edx
-test eax, eax
-jne loc_fffa3aa7
-
-push edx
-push edx
-call is_mobile_pch
-pop edx
-pop edx
-test eax, eax
-jne loc_fffa3ba4
-
-add dx, 0x63bf
-cmp dx, 6
-jbe loc_fffa3ba4  ; all LP PCH
-jmp near loc_fffa3ab5  ; jmp 0xfffa3ab5
-
-loc_fffa3aa7:
 lea eax, [ebp - 0x403]
 push eax
-call frag_fffa3aa7
+call frag_fffa3a17
 add esp, 4
 
-loc_fffa3ab5:
 call mrc_frag_pch
 call mrc_frag_smbus
-jmp loc_init_usb
 
-loc_fffa3ba4:
-lea eax, [ebp - 0x403]
-push eax
-call frag_fffa3ba4
-add esp, 4
-
-jmp near loc_fffa3ab5  ; jmp 0xfffa3ab5
-
-loc_fffa3bb5:
-cmp eax, 2
-jne loc_fffa3ab5  ; jne 0xfffa3ab5
-
-lea eax, [ebp - 0x403]
-push eax
-call frag_fffa3c1b
-add esp, 4
-
-jmp near loc_fffa3ab5  ; jmp 0xfffa3ab5
-
-loc_init_usb:
 push str_init_usb
 call mrc_printk
 push dword [0xff7d7538]
