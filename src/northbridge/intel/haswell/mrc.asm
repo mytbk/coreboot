@@ -20,6 +20,8 @@ extern mrc_highest_bit
 extern mrc_main
 extern mrc_alloc
 extern mrc_sku_type
+extern is_desktop_pch
+extern is_mobile_pch
 extern mrc_pch_revision
 extern mrc_smbus_inb
 extern mrc_smbus_outb
@@ -2685,24 +2687,30 @@ mov edx, dword [0xf0000060]
 and edx, 0xfc000000
 cmp eax, 1
 mov dx, word [edx + 0xf8002]
-jne loc_fffa3bb5  ; jne 0xfffa3bb5
-mov eax, edx
-and eax, 0xfffffffd
-cmp ax, 0x8c44
-je short loc_fffa3aa7  ; je 0xfffa3aa7
-cmp ax, 0x8c4c
-je short loc_fffa3aa7  ; je 0xfffa3aa7
-cmp dx, 0x8c5c
-sete cl
-cmp dx, 0x8c50
-sete al
-or cl, al
-jne short loc_fffa3aa7  ; jne 0xfffa3aa7
-mov eax, edx
-and eax, 0xfffffff7
-cmp ax, 0x8c42
-je short loc_fffa3aa7  ; je 0xfffa3aa7
-jmp near loc_fffa3b14  ; jmp 0xfffa3b14
+jne loc_fffa3bb5  ; if low power or unknown pch, then goto loc_fffa3bb5
+; if it's desktop PCH then goto loc_fffa3aa7
+push edx
+push edx
+call is_desktop_pch
+pop edx
+pop edx
+test eax, eax
+jne loc_fffa3aa7
+
+push edx
+push edx
+call is_mobile_pch
+pop edx
+pop edx
+test eax, eax
+jne loc_fffa3ba2
+
+add dx, 0x63bf
+xor ebx, ebx
+cmp dx, 6
+jbe loc_fffa3ba4  ; all LP PCH
+jmp near loc_fffa3ab5  ; jmp 0xfffa3ab5
+
 
 loc_fffa3a6d:
 imul eax, ebx, 6
@@ -2745,25 +2753,6 @@ loc_fffa3ab5:
 call mrc_frag_pch
 call mrc_frag_smbus
 jmp loc_init_usb
-
-loc_fffa3b14:
-cmp dx, 0x8c4f
-sete cl
-cmp dx, 0x8c49
-sete al
-or cl, al
-jne short loc_fffa3ba2  ; jne 0xfffa3ba2
-cmp dx, 0x8c41
-sete cl
-cmp dx, 0x8c4b
-sete al
-or cl, al
-jne short loc_fffa3ba2  ; jne 0xfffa3ba2
-add dx, 0x63bf
-xor ebx, ebx
-cmp dx, 6
-jbe short loc_fffa3ba4  ; jbe 0xfffa3ba4
-jmp near loc_fffa3ab5  ; jmp 0xfffa3ab5
 
 loc_fffa3b4e:
 imul eax, ebx, 6
