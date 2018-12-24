@@ -493,3 +493,20 @@ void frag_fffa40d3(uint32_t dmibar)
 		}
 	}
 }
+
+void frag_fffa4507(void *ppi);
+void frag_fffa4507(void *ppi)
+{
+	uint32_t a;
+	for (int i = 0; i < 2; i++) {
+		if (*(uint8_t*)ppi > 2) {
+			void *p1 = *(void**)(ppi + 0xd);
+			a = *(uint8_t*)(p1 + i + 0x54);
+			a <<= 6;
+		} else {
+			a = 0x200;
+		}
+		pci_update_config32(PCI_DEV(0, 0, 0), 0x910 + (i << 5),
+				0xfffffc3f, a);
+	}
+}

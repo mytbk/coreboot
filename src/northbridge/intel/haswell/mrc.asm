@@ -165,6 +165,7 @@ global ref_fffcc910
 extern frag_fffa3fd4
 extern frag_fffa3a17
 extern frag_fffa40d3
+extern frag_fffa4507
 
 ;; mrc_wdt
 
@@ -2887,40 +2888,14 @@ and eax, 0xfff1ffff
 mov dword [ebx + 0x92c], eax
 jmp near loc_fffa43d4  ; jmp 0xfffa43d4
 
-loc_fffa445e:
-call io_fffa445e
-jmp near loc_fffa4564  ; jmp 0xfffa4564
-
 loc_fffa44ad:
-xor edi, edi
 call io_fffa44ad
 
-loc_fffa4507:
-mov edx, dword [ebp - 0x660]
-mov eax, 0x200
-cmp byte [edx], 2
-jbe short loc_fffa4522  ; jbe 0xfffa4522
-mov eax, dword [edx + 0xd]
-movzx eax, byte [eax + edi + 0x54]
-shl eax, 6
+push dword [ebp - 0x660]
+call frag_fffa4507
+add esp, 4
 
-loc_fffa4522:
-mov edx, dword [0xf0000060]
-mov ecx, edi
-shl ecx, 5
-and edx, 0xfc000000
-inc edi
-lea esi, [ecx + edx + 0x910]
-mov edx, dword [0xf0000060]
-and edx, 0xfc000000
-lea edx, [ecx + edx + 0x910]
-mov edx, dword [edx]
-and edx, 0xfffffc3f
-or edx, eax
-cmp edi, 2
-mov dword [esi], edx
-jne short loc_fffa4507  ; jne 0xfffa4507
-jmp near loc_fffa445e  ; jmp 0xfffa445e
+call io_fffa445e
 
 loc_fffa4564:
 cmp byte [ebp - 0x658], 0
