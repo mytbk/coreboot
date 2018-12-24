@@ -358,3 +358,18 @@ void frag_fffa54e7(int bootmode, struct pei_data *pd)
 	}
 	mrc_printk("System Agent: Done.\n");
 }
+
+void frag_fffa3fd4(pei_raminit_ppi *ram_ppi);
+void frag_fffa3fd4(pei_raminit_ppi *ram_ppi)
+{
+	int model = haswell_family_model();
+	int stepping = haswell_stepping();
+
+	if (model == HASWELL_FAMILY_MOBILE && stepping == 1) {
+		write32((void*)(ram_ppi->ram_data->mchbar + 0x5434), 0x1060100);
+	} else {
+		uint32_t dmibar = ram_ppi->ram_data->dmibar;
+		write32((void*)(dmibar + 0x71c), ram_ppi->v);
+		write32((void*)(dmibar + 0x720), 0x1060100);
+	}
+}
