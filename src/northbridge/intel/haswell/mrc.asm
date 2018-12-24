@@ -152,7 +152,7 @@ extern io_fffa44ad
 extern io_fffa4575
 extern io_fffa45f1
 extern io_fffa476b
-extern frag_fffa49a0
+extern frag_fffa4962
 extern load_usb
 extern fill_pei_ram_data
 extern fill_ram_param
@@ -2948,29 +2948,11 @@ mov dword [edx + 0xc24], eax
 jmp near loc_fffa5628  ; jmp 0xfffa5628
 
 loc_fffa4962:
-test ebx, ebx
-je short loc_fffa4979  ; je 0xfffa4979
-mov eax, dword [ebx + 0xc28]
-and eax, 0xffffffe0
-or eax, edx
-mov dword [ebx + 0xc28], eax
-jmp short loc_fffa49a0
-
-loc_fffa4979:
-mov ecx, dword [0xf0000060]
-mov eax, dword [0xf0000060]
-and eax, 0xfc000000
-and ecx, 0xfc000000
-mov eax, dword [eax + 0xc28]
-and eax, 0xffffffe0
-or eax, edx
-mov dword [ecx + 0xc28], eax
-
-loc_fffa49a0:
 push dword [ebp - 0x658]
+push edx
 push ebx
-call frag_fffa49a0
-add esp, 8
+call frag_fffa4962
+add esp, 12
 
 mov ecx, dword [ebp - 0x660]
 mov eax, dword [ecx + 0xd]
