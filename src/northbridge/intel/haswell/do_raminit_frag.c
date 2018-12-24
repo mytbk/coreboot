@@ -510,3 +510,51 @@ void frag_fffa4507(void *ppi)
 				0xfffffc3f, a);
 	}
 }
+
+void fill_ram_param(pei_ram_param *param, struct pei_data *pd);
+void fill_ram_param(pei_ram_param *param, struct pei_data *pd)
+{
+	memset(param, 0, sizeof(pei_ram_param));
+	param->v00 = 1;
+	param->v03[0] = 1;
+	param->v03[14] = 1;
+	param->v03[0x21] = 1;
+	param->v2c[0] = 1;
+	param->v2c[2] = 1;
+	param->v2c[3] = 1;
+	param->v2c[4] = 4;
+	param->v2c[5] = 12;
+	for (int i = 0; i < 4; i++)
+		param->v2c[i + 7] = 1;
+	for (int i = 0; i < 3; i++)
+		param->v2c[i + 12] = 1;
+	param->v2c[16] = 1;
+	param->v2c[18] = 1;
+	for (int i = 0; i < 5; i++)
+		param->v2c[20] = 1;
+	for (int i = 0; i < 3; i++)
+		param->v2c[i + 27] = 1;
+	param->v2c[42] = 1;
+	param->dq_pins_interleaved = pd->dq_pins_interleaved;
+	param->ddr_refresh_2x = param->ddr_refresh_2x_76 = pd->ddr_refresh_2x;
+	param->v5a[0] = param->v5a[2] = 1;
+	param->v5a[3] = 6;
+	param->v5a[4] = 0x40;
+	param->v5a[5] = param->v5a[6] = 1;
+	param->v5a[8] = 7;
+	param->v64 = 0x05f5e100;
+	param->v6a[0] = 1;
+	param->v6e = 0x30ce;
+	param->v70[0] = param->v70[4] = 1;
+	param->v77[0] = param->v77[3] = 1;
+	for (int i = 0; i < 16; i++)
+		param->v77[i + 0x11] = 0xff;
+	param->v77[53] = 1;
+	param->vad = 0x200;
+	param->vb0[0] = 0x30;
+	param->vb0[1] = 1;
+	param->vb0[2] = 0x40;
+	param->vb0[18] = 1;
+	param->vb0[19] = 1;
+	param->vb0[21] = 1;
+}

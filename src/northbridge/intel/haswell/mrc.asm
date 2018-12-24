@@ -156,6 +156,7 @@ extern io_fffa49a0
 extern io_fffa4c0d
 extern load_usb
 extern fill_pei_ram_data
+extern fill_ram_param
 extern mrc_set_bars
 extern frag_fffa3eec
 extern frag_fffa3f8c
@@ -2402,10 +2403,7 @@ lea edi, [ebp - 0x592]
 mov cl, 0xd
 rep stosb  ; rep stosb byte es:[edi], al
 mov eax, ebx
-lea edi, [ebp - 0x340]
-mov cl, 0x32
 mov dword [ebp - 0x55f], 0xe8000000
-rep stosd  ; rep stosd dword es:[edi], eax
 mov ecx, dword [ebp - 0x63c]
 mov dword [ebp - 0x55b], 0x800
 mov dword [ebp - 0x557], 0xe8100000
@@ -2419,90 +2417,26 @@ mov byte [ebp - 0x58b], 2
 mov byte [ebp - 0x316], al
 mov eax, dword [ecx + 0x4e]
 mov byte [ebp - 0x315], al
-mov byte [ebp - 0x340], 1
-mov byte [ebp - 0x33d], 1
-mov byte [ebp - 0x32f], 1
-mov byte [ebp - 0x31c], 1
-mov byte [ebp - 0x314], 1
-mov byte [ebp - 0x312], 1
-mov byte [ebp - 0x311], 1
-mov byte [ebp - 0x310], 4
-mov byte [ebp - 0x30f], 0xc
-mov byte [ebp - 0x30d], 1
-mov byte [ebp - 0x30c], 1
-mov byte [ebp - 0x30b], 1
-mov byte [ebp - 0x30a], 1
-mov byte [ebp - 0x308], 1
-mov eax, dword [ecx + 0x56]
-mov byte [ebp - 0x2e9], al
-mov eax, dword [ecx + 0x52]
-mov byte [ebp - 0x2d4], al
-mov byte [ebp - 0x2ca], al
 lea edi, [ebp - 0x463]
 mov eax, ebx
 mov ecx, 0x18
-mov byte [ebp - 0x307], 1
-mov byte [ebp - 0x306], 1
-mov byte [ebp - 0x304], 1
-mov byte [ebp - 0x302], 1
-mov byte [ebp - 0x300], 1
-mov byte [ebp - 0x2ff], 1
-mov byte [ebp - 0x2fe], 1
-mov byte [ebp - 0x2fd], 1
-mov byte [ebp - 0x2fc], 1
-mov byte [ebp - 0x2f9], 1
-mov byte [ebp - 0x2f8], 1
-mov byte [ebp - 0x2f7], 1
-mov byte [ebp - 0x2ea], 1
-mov byte [ebp - 0x2e6], 1
-mov byte [ebp - 0x2e4], 1
-mov byte [ebp - 0x2e3], 6
-mov byte [ebp - 0x2e2], 0x40
-mov byte [ebp - 0x2e1], 1
-mov byte [ebp - 0x2e0], 1
-mov byte [ebp - 0x2de], 7
-mov dword [ebp - 0x2dc], 0x5f5e100
-mov byte [ebp - 0x2d6], 1
-mov byte [ebp - 0x2d3], 1
-mov word [ebp - 0x2d2], 0x30ce
-mov byte [ebp - 0x2d0], 1
-mov byte [ebp - 0x2cc], 1
-mov byte [ebp - 0x2c9], 1
-mov byte [ebp - 0x2c6], 3
-mov byte [ebp - 0x2b8], 0xff
 rep stosd  ; rep stosd dword es:[edi], eax
 mov al, dl
-mov byte [ebp - 0x2b7], 0xff
+
+push dword [ebp - 0x63c]
+lea edi, [ebp - 0x340]
+push edi
+call fill_ram_param
 
 push dword [ebp - 0x63c]
 lea edi, [ebp - 0x492]
 push edi
 call fill_pei_ram_data
-add esp, 8
+add esp, 16
+
+xor edx, edx
 
 mov ecx, dword [ebp - 0x63c]
-mov byte [ebp - 0x2b6], 0xff
-mov byte [ebp - 0x2b5], 0xff
-mov byte [ebp - 0x2b4], 0xff
-mov byte [ebp - 0x2b3], 0xff
-mov byte [ebp - 0x2b2], 0xff
-mov byte [ebp - 0x2b1], 0xff
-mov byte [ebp - 0x2b0], 0xff
-mov byte [ebp - 0x2af], 0xff
-mov byte [ebp - 0x2ae], 0xff
-mov byte [ebp - 0x2ad], 0xff
-mov byte [ebp - 0x2ac], 0xff
-mov byte [ebp - 0x2ab], 0xff
-mov byte [ebp - 0x2aa], 0xff
-mov byte [ebp - 0x2a9], 0xff
-mov byte [ebp - 0x294], 1
-mov word [ebp - 0x293], 0x200
-mov byte [ebp - 0x290], 0x30
-mov byte [ebp - 0x28f], 1
-mov byte [ebp - 0x28e], 0x40
-mov byte [ebp - 0x27e], 1
-mov byte [ebp - 0x27d], 1
-mov byte [ebp - 0x27b], 1
 mov byte [ebp - 0x462], 1
 mov byte [ebp - 0x461], 1
 mov byte [ebp - 0x460], 1
