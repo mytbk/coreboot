@@ -152,8 +152,7 @@ extern io_fffa44ad
 extern io_fffa4575
 extern io_fffa45f1
 extern io_fffa476b
-extern io_fffa49a0
-extern io_fffa4c0d
+extern frag_fffa49a0
 extern load_usb
 extern fill_pei_ram_data
 extern fill_ram_param
@@ -2955,7 +2954,7 @@ mov eax, dword [ebx + 0xc28]
 and eax, 0xffffffe0
 or eax, edx
 mov dword [ebx + 0xc28], eax
-jmp short loc_fffa49a0  ; jmp 0xfffa49a0
+jmp short loc_fffa49a0
 
 loc_fffa4979:
 mov ecx, dword [0xf0000060]
@@ -2968,51 +2967,11 @@ or eax, edx
 mov dword [ecx + 0xc28], eax
 
 loc_fffa49a0:
-mov al, byte [ebp - 0x658]
-shl eax, 0x1f
-sar eax, 0x1f
-and eax, 0x40
-test ebx, ebx
-jne loc_fffa4baa  ; jne 0xfffa4baa
-call io_fffa49a0
-jmp short loc_fffa4c0d  ; jmp 0xfffa4c0d
+push dword [ebp - 0x658]
+push ebx
+call frag_fffa49a0
+add esp, 8
 
-loc_fffa4baa:
-mov edx, dword [ebx + 0xc38]
-and edx, 0xffffffbf
-or edx, eax
-mov dword [ebx + 0xc38], edx
-mov eax, dword [ebx + 0x260]
-and eax, 0xfffffffc
-or eax, 2
-mov dword [ebx + 0x260], eax
-mov eax, dword [ebx + 0x900]
-and eax, 0xf3ffffff
-mov dword [ebx + 0x900], eax
-mov eax, dword [ebx + 0x920]
-and eax, 0xf3ffffff
-mov dword [ebx + 0x920], eax
-mov eax, dword [ebx + 0x904]
-or ah, 0xc
-mov dword [ebx + 0x904], eax
-mov eax, dword [ebx + 0x924]
-or ah, 0xc
-mov dword [ebx + 0x924], eax
-
-loc_fffa4c0d:
-call io_fffa4c0d
-mov eax, dword [ebx + 0x258]
-or eax, 0x20000000
-xor edx, edx
-mov dword [ebx + 0x258], eax
-mov eax, dword [ebx + 0x208]
-and eax, 0xfffff800
-or eax, 0x6b5
-mov dword [ebx + 0x208], eax
-mov eax, dword [ebx + 0x22c]
-xor ax, ax
-or eax, 0x2020
-mov dword [ebx + 0x22c], eax
 mov ecx, dword [ebp - 0x660]
 mov eax, dword [ecx + 0xd]
 cmp byte [eax + 3], 0

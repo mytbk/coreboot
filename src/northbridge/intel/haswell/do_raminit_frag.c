@@ -177,34 +177,6 @@ void io_fffa476b(void)
 	pci_or_config32(PCI_DEV(0, 0, 0), 0x82c, 0x600000);
 }
 
-void __attribute((regparm(1))) io_fffa49a0(uint32_t v);
-void __attribute((regparm(1))) io_fffa49a0(uint32_t v)
-{
-	pci_update_config16(PCI_DEV(0, 1, 0), 0xc38, 0xffbf, v);
-	pci_update_config16(PCI_DEV(0, 1, 1), 0xc38, 0xffbf, v);
-	pci_update_config16(PCI_DEV(0, 1, 2), 0xc38, 0xffbf, v);
-
-	pci_update_config16(PCI_DEV(0, 1, 0), 0x260, 0xfffc, 2);
-	pci_update_config16(PCI_DEV(0, 1, 1), 0x260, 0xfffc, 2);
-	pci_update_config16(PCI_DEV(0, 1, 2), 0x260, 0xfffc, 2);
-
-	pci_update_config32(PCI_DEV(0, 0, 0), 0x900, 0xf3ffffff, 0);
-	pci_update_config32(PCI_DEV(0, 0, 0), 0x920, 0xf3ffffff, 0);
-
-	pci_or_config32(PCI_DEV(0, 0, 0), 0x904, 0x0c00);
-	pci_or_config32(PCI_DEV(0, 0, 0), 0x924, 0x0c00);
-
-	pci_update_config32(PCI_DEV(0, 0, 0), 0x90c, 0xc1ffffff, 0xe000000);
-	pci_update_config32(PCI_DEV(0, 0, 0), 0x92c, 0xc1ffffff, 0xe000000);
-}
-
-void io_fffa4c0d(void);
-void io_fffa4c0d(void)
-{
-	pci_update_config32(PCI_DEV(0, 1, 0), 0x91c, 0xc7ffffff, 0x28000000);
-	pci_update_config32(PCI_DEV(0, 1, 0), 0x93c, 0xc7ffffff, 0x28000000);
-}
-
 void load_usb(PEI_USB *pusb, struct pei_data *pd);
 void load_usb(PEI_USB *pusb, struct pei_data *pd)
 {
@@ -570,4 +542,51 @@ void fill_ram_param(pei_ram_param *param, struct pei_data *pd)
 			printk(BIOS_ERR, "System Agent: Unsupported DDR3 frequence %d (Supported are 800, 1067, 1333, 1600)", freq);
 			die("System halted.");
 	}
+}
+
+static inline void
+bar_update32(void *bar, uint32_t offset, uint32_t andv, uint32_t orv)
+{
+	u32 tmp = read32(bar + offset);
+	tmp &= andv;
+	tmp |= orv;
+	write32(bar + offset, tmp);
+}
+
+void frag_fffa49a0(void *dmibar, uint8_t t);
+void frag_fffa49a0(void *dmibar, uint8_t t)
+{
+	printk(BIOS_DEBUG, "frag_fffa49a0: bar is 0x%08x\n", (uint32_t)dmibar);
+
+	u32 v = (t & 1)? 0x40: 0;
+	if (dmibar) {
+		pci_update_config16(PCI_DEV(0, 1, 0), 0xc38, 0xffbf, v);
+		pci_update_config16(PCI_DEV(0, 1, 1), 0xc38, 0xffbf, v);
+		pci_update_config16(PCI_DEV(0, 1, 2), 0xc38, 0xffbf, v);
+
+		pci_update_config16(PCI_DEV(0, 1, 0), 0x260, 0xfffc, 2);
+		pci_update_config16(PCI_DEV(0, 1, 1), 0x260, 0xfffc, 2);
+		pci_update_config16(PCI_DEV(0, 1, 2), 0x260, 0xfffc, 2);
+
+		pci_update_config32(PCI_DEV(0, 0, 0), 0x900, 0xf3ffffff, 0);
+		pci_update_config32(PCI_DEV(0, 0, 0), 0x920, 0xf3ffffff, 0);
+
+		pci_or_config32(PCI_DEV(0, 0, 0), 0x904, 0x0c00);
+		pci_or_config32(PCI_DEV(0, 0, 0), 0x924, 0x0c00);
+
+		pci_update_config32(PCI_DEV(0, 0, 0), 0x90c, 0xc1ffffff, 0xe000000);
+		pci_update_config32(PCI_DEV(0, 0, 0), 0x92c, 0xc1ffffff, 0xe000000);
+	} else {
+		bar_update32(dmibar, 0xc38, 0xffffffbf, v);
+		bar_update32(dmibar, 0x260, 0xfffffffc, 2);
+		bar_update32(dmibar, 0x900, 0xf3ffffff, 0);
+		bar_update32(dmibar, 0x920, 0xf3ffffff, 0);
+		bar_update32(dmibar, 0x904, ~0, 0xc);
+		bar_update32(dmibar, 0x924, ~0, 0xc);
+	}
+	pci_update_config32(PCI_DEV(0, 1, 0), 0x91c, 0xc7ffffff, 0x28000000);
+	pci_update_config32(PCI_DEV(0, 1, 0), 0x93c, 0xc7ffffff, 0x28000000);
+	bar_update32(dmibar, 0x258, ~0, 0x20000000);
+	bar_update32(dmibar, 0x208, 0xfffff800, 0x6b5);
+	bar_update32(dmibar, 0x22c, 0xffff0000, 0x2020);
 }
