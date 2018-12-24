@@ -1,3 +1,5 @@
+#include <stdint.h>
+
 struct _pei_ram_data
 {
 	uint8_t spd_addresses[4];
@@ -20,25 +22,31 @@ typedef struct _pei_ram_data pei_ram_data;
 /* FIXME: not completed yet, do not use! */
 struct _pei_ram_param
 {
-	uint8_t v0; // 0x00
+	uint8_t v00; // 0x00
 	uint16_t max_ddr3_freq; // 0x01
-	uint8_t v1; // 0x03
-	uint8_t padding0[13]; // 0x04
-	uint8_t v2; // 0x11
-	uint8_t padding1[18]; // 0x12
-	uint8_t v3; // 0x24
-	uint8_t padding2[5]; // 0x25
+	uint8_t v03[0x27]; // 0x03
 	uint8_t chan0_disabled; // 0x2a
 	uint8_t chan1_disabled; // 0x2b
-	uint8_t param0[43]; // 0x2c
-	uint32_t dq_pins_interleaved; // 0x57
-	uint8_t param1[10]; // 0x5b
-	uint32_t param2; // 0x65
-	uint16_t padding3; // 0x69
-	uint8_t v4; // 0x6b
-	uint8_t padding4; // 0x6c
-	uint8_t ddr_refresh_2x; // 0x6d
-	uint8_t v5; // 0x6f
-	uint16_t param3; // 0x70
+	uint8_t v2c[0x2b]; // 0x2c
+	uint8_t dq_pins_interleaved; // 0x57
+	uint8_t v58[0x14]; // 0x58
+	uint8_t ddr_refresh_2x; // 0x6c
+	uint8_t v6d[9]; // 0x6d
+	uint8_t ddr_refresh_2x_76; // 0x76
+	uint8_t v77[0x51];
+} __packed;
 
-};
+typedef struct _pei_ram_param pei_ram_param;
+
+struct _pei_raminit_ppi
+{
+	uint8_t v; // 0x00
+	pei_ram_data *ram_data; // 0x01
+	uint8_t *cfg0; // 0x05
+	pei_ram_param *ram_param; // 0x09
+	uint8_t *cfg1; // 0x0d
+	void *functions; // 0x11
+	uint8_t *mrc_input; // 0x15
+} __packed;
+
+typedef struct _pei_raminit_ppi pei_raminit_ppi;
