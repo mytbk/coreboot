@@ -164,6 +164,7 @@ extern frag_fffa54e7
 global ref_fffcc910
 extern frag_fffa3fd4
 extern frag_fffa3a17
+extern frag_fffa40d3
 
 ;; mrc_wdt
 
@@ -2768,32 +2769,12 @@ and ebx, 0xfffffffe
 mov dword [ebp - 0x648], eax
 call haswell_family_model
 mov edi, eax
+
+push ebx
+call frag_fffa40d3
+add esp, 4
+
 call haswell_stepping
-mov edx, 0xa00
-
-loc_fffa40d3:
-test ebx, ebx
-je short loc_fffa40de  ; je 0xfffa40de
-lea esi, [edx + ebx]
-mov ecx, dword [esi]
-jmp short loc_fffa40fc  ; jmp 0xfffa40fc
-
-loc_fffa40de:
-mov esi, dword [0xf0000060]
-mov ecx, dword [0xf0000060]
-and ecx, 0xfc000000
-and esi, 0xfc000000
-add ecx, edx
-add esi, edx
-mov ecx, dword [ecx]
-
-loc_fffa40fc:
-and ecx, 0xffffffe0
-add edx, 0x10
-or ecx, 0xc
-cmp edx, 0xa40
-mov dword [esi], ecx
-jne short loc_fffa40d3  ; jne 0xfffa40d3
 dec eax
 sete dl
 cmp edi, HASWELL_FAMILY_MOBILE

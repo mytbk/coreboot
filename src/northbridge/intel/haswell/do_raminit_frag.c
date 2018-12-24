@@ -476,3 +476,20 @@ void frag_fffa3a17(PEI_USB *pusb)
 		return;
 	}
 }
+
+void frag_fffa40d3(uint32_t bar);
+void frag_fffa40d3(uint32_t dmibar)
+{
+	printk(BIOS_DEBUG, "bar for frag_fffa40d3 is 0x%08x.\n", dmibar);
+	for (uint32_t i = 0xa00; i < 0xa40; i += 0x10) {
+		if (dmibar) {
+			u32 tmp = read32((void*)(dmibar + i));
+			tmp &= 0xffffffe0;
+			tmp |= 0xc;
+			write32((void*)(dmibar + i), tmp);
+		} else {
+			pci_update_config32(PCI_DEV(0, 0, 0), i,
+					0xffffffe0, 0xc);
+		}
+	}
+}
