@@ -163,6 +163,9 @@ global ref_fffcc8bc
 extern frag_fffa54e7
 global ref_fffcc910
 extern frag_fffa3fd4
+extern frag_fffa3aa7
+extern frag_fffa3ba4
+extern frag_fffa3c1b
 
 ;; mrc_wdt
 
@@ -2703,168 +2706,41 @@ call is_mobile_pch
 pop edx
 pop edx
 test eax, eax
-jne loc_fffa3ba2
+jne loc_fffa3ba4
 
 add dx, 0x63bf
-xor ebx, ebx
 cmp dx, 6
 jbe loc_fffa3ba4  ; all LP PCH
 jmp near loc_fffa3ab5  ; jmp 0xfffa3ab5
 
-
-loc_fffa3a6d:
-imul eax, ebx, 6
-lea eax, [ebp + eax - 0x402]
-cmp byte [eax + 1], 0
-jne short loc_fffa3a8d  ; jne 0xfffa3a8d
-mov dx, word [eax + 2]
-mov byte [eax + 4], 4
-cmp dx, 0x7f
-jbe short loc_fffa3a91  ; jbe 0xfffa3a91
-jmp short loc_fffa3a97  ; jmp 0xfffa3a97
-
-loc_fffa3a8d:
-mov byte [eax + 4], 3
-
-loc_fffa3a91:
-mov byte [eax + 5], 2
-jmp short loc_fffa3aa4  ; jmp 0xfffa3aa4
-
-loc_fffa3a97:
-cmp dx, 0x130
-sbb edx, edx
-add edx, 4
-mov byte [eax + 5], dl
-
-loc_fffa3aa4:
-inc ebx
-jmp short loc_fffa3aa9  ; jmp 0xfffa3aa9
-
 loc_fffa3aa7:
-xor ebx, ebx
-
-loc_fffa3aa9:
-call nb_usb2_ports
-movzx eax, al
-cmp ebx, eax
-jl short loc_fffa3a6d  ; jl 0xfffa3a6d
+lea eax, [ebp - 0x403]
+push eax
+call frag_fffa3aa7
+add esp, 4
 
 loc_fffa3ab5:
 call mrc_frag_pch
 call mrc_frag_smbus
 jmp loc_init_usb
 
-loc_fffa3b4e:
-imul eax, ebx, 6
-lea eax, [ebp + eax - 0x402]
-mov dl, byte [eax + 1]
-cmp dl, 5
-jne short loc_fffa3b62  ; jne 0xfffa3b62
-jmp short loc_fffa3b84  ; jmp 0xfffa3b84
-
-loc_fffa3b62:
-cmp dl, 2
-jne short loc_fffa3b7a  ; jne 0xfffa3b7a
-cmp word [eax + 2], 0x50
-mov byte [eax + 4], 4
-sbb edx, edx
-add edx, 2
-mov byte [eax + 5], dl
-jmp short loc_fffa3b9f  ; jmp 0xfffa3b9f
-
-loc_fffa3b7a:
-mov dx, word [eax + 2]
-cmp dx, 0x6f
-ja short loc_fffa3b8a  ; ja 0xfffa3b8a
-
-loc_fffa3b84:
-mov byte [eax + 4], 5
-jmp short loc_fffa3b95  ; jmp 0xfffa3b95
-
-loc_fffa3b8a:
-cmp dx, 0xff
-mov byte [eax + 4], 6
-ja short loc_fffa3b9b  ; ja 0xfffa3b9b
-
-loc_fffa3b95:
-mov byte [eax + 5], 2
-jmp short loc_fffa3b9f  ; jmp 0xfffa3b9f
-
-loc_fffa3b9b:
-mov byte [eax + 5], 3
-
-loc_fffa3b9f:
-inc ebx
-jmp short loc_fffa3ba4  ; jmp 0xfffa3ba4
-
-loc_fffa3ba2:
-xor ebx, ebx
-
 loc_fffa3ba4:
-call nb_usb2_ports
-movzx eax, al
-cmp ebx, eax
-jl short loc_fffa3b4e  ; jl 0xfffa3b4e
+lea eax, [ebp - 0x403]
+push eax
+call frag_fffa3ba4
+add esp, 4
+
 jmp near loc_fffa3ab5  ; jmp 0xfffa3ab5
 
 loc_fffa3bb5:
 cmp eax, 2
 jne loc_fffa3ab5  ; jne 0xfffa3ab5
-jmp short loc_fffa3c1b  ; jmp 0xfffa3c1b
 
-loc_fffa3bc0:
-imul eax, ebx, 6
-lea esi, [ebp + eax - 0x402]
-mov al, byte [esi + 1]
-cmp al, 3
-sete cl
-test al, al
-sete dl
-or cl, dl
-je short loc_fffa3bf3  ; je 0xfffa3bf3
-mov ax, word [esi + 2]
-cmp ax, 0x6f
-ja short loc_fffa3be7  ; ja 0xfffa3be7
-jmp short loc_fffa3c0a  ; jmp 0xfffa3c0a
+lea eax, [ebp - 0x403]
+push eax
+call frag_fffa3c1b
+add esp, 4
 
-loc_fffa3be7:
-cmp ax, 0xff
-mov byte [esi + 4], 6
-ja short loc_fffa3c14  ; ja 0xfffa3c14
-jmp short loc_fffa3c0e  ; jmp 0xfffa3c0e
-
-loc_fffa3bf3:
-cmp al, 2
-jne short loc_fffa3c0a  ; jne 0xfffa3c0a
-cmp word [esi + 2], 0x50
-mov byte [esi + 4], 4
-sbb eax, eax
-add eax, 2
-mov byte [esi + 5], al
-jmp short loc_fffa3c18  ; jmp 0xfffa3c18
-
-loc_fffa3c0a:
-mov byte [esi + 4], 5
-
-loc_fffa3c0e:
-mov byte [esi + 5], 2
-jmp short loc_fffa3c18  ; jmp 0xfffa3c18
-
-loc_fffa3c14:
-mov byte [esi + 5], 3
-
-loc_fffa3c18:
-inc ebx
-jmp short loc_fffa3c1d  ; jmp 0xfffa3c1d
-
-loc_fffa3c1b:
-xor ebx, ebx
-
-loc_fffa3c1d:
-call nb_usb2_ports
-movzx eax, al
-cmp ebx, eax
-jl short loc_fffa3bc0  ; jl 0xfffa3bc0
 jmp near loc_fffa3ab5  ; jmp 0xfffa3ab5
 
 loc_init_usb:
