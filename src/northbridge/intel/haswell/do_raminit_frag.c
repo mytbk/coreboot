@@ -375,8 +375,7 @@ void frag_fffa3fd4(pei_raminit_ppi *ram_ppi)
 	}
 }
 
-void frag_fffa3ba4(PEI_USB *pusb);
-void frag_fffa3ba4(PEI_USB *pusb)
+static void frag_fffa3ba4(PEI_USB *pusb)
 {
 	int nb_ehci = nb_usb2_ports();
 
@@ -403,8 +402,7 @@ void frag_fffa3ba4(PEI_USB *pusb)
 	}
 }
 
-void frag_fffa3aa7(PEI_USB *pusb);
-void frag_fffa3aa7(PEI_USB *pusb)
+static void frag_fffa3aa7(PEI_USB *pusb)
 {
 	int nb_ehci = nb_usb2_ports();
 
@@ -424,8 +422,7 @@ void frag_fffa3aa7(PEI_USB *pusb)
 	}
 }
 
-void frag_fffa3c1b(PEI_USB *pusb);
-void frag_fffa3c1b(PEI_USB *pusb)
+static void frag_fffa3c1b(PEI_USB *pusb)
 {
 	int nb_ehci = nb_usb2_ports();
 
@@ -450,5 +447,32 @@ void frag_fffa3c1b(PEI_USB *pusb)
 			setting->f4 = 5;
 			setting->f5 = 2;
 		}
+	}
+}
+
+void frag_fffa3a17(PEI_USB *pusb);
+void frag_fffa3a17(PEI_USB *pusb)
+{
+	int sku = mrc_sku_type();
+	if (sku != 1) {
+		if (sku != 2)
+			return;
+		frag_fffa3c1b(pusb);
+		return;
+	}
+
+	uint16_t did = pci_read_config16(PCH_LPC_DEV, 2);
+	if (is_desktop_pch(did)) {
+		frag_fffa3aa7(pusb);
+		return;
+	}
+	if (is_mobile_pch(did)) {
+		frag_fffa3ba4(pusb);
+		return;
+	}
+	did -= 0x9c41;
+	if (did <= 6) {
+		frag_fffa3ba4(pusb);
+		return;
 	}
 }
