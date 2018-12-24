@@ -29,11 +29,20 @@ struct _pei_ram_param
 	uint8_t chan1_disabled; // 0x2b
 	uint8_t v2c[0x2b]; // 0x2c
 	uint8_t dq_pins_interleaved; // 0x57
-	uint8_t v58[0x14]; // 0x58
+	uint16_t v58;
+	uint8_t v5a[10]; // 0x5a
+	uint32_t v64; // 0x64
+	uint16_t v68;
+	uint8_t v6a[2];
 	uint8_t ddr_refresh_2x; // 0x6c
-	uint8_t v6d[9]; // 0x6d
+	uint8_t v6d; // 0x6d
+	uint16_t v6e;
+	uint8_t v70[6];
 	uint8_t ddr_refresh_2x_76; // 0x76
-	uint8_t v77[0x51];
+	uint8_t v77[54];
+	uint16_t vad;
+	uint8_t vaf;
+	uint8_t vb0[24];
 } __packed;
 
 typedef struct _pei_ram_param pei_ram_param;
