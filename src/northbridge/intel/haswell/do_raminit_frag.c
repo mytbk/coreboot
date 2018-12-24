@@ -553,10 +553,16 @@ bar_update32(void *bar, uint32_t offset, uint32_t andv, uint32_t orv)
 	write32(bar + offset, tmp);
 }
 
-void frag_fffa49a0(void *dmibar, uint8_t t);
-void frag_fffa49a0(void *dmibar, uint8_t t)
+void frag_fffa4962(void *dmibar, u32 v0, u8 t);
+void frag_fffa4962(void *dmibar, u32 v0, u8 t)
 {
-	printk(BIOS_DEBUG, "frag_fffa49a0: bar is 0x%08x\n", (uint32_t)dmibar);
+	printk(BIOS_DEBUG, "frag_fffa4962: bar is 0x%08x\n", (uint32_t)dmibar);
+
+	if (dmibar) {
+		bar_update32(dmibar, 0xc28, 0xffffffe0, v0);
+	} else {
+		pci_update_config32(PCI_DEV(0, 0, 0), 0xc28, 0xffffffe0, v0);
+	}
 
 	u32 v = (t & 1)? 0x40: 0;
 	if (dmibar) {
