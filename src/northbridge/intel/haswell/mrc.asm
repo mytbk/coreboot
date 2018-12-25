@@ -2601,9 +2601,6 @@ push dword [ebx + 1]
 call mrc_set_bars
 add esp, 0xc
 
-loc_fffa3eec:
-mov edx, dword [ebp - 0x640]
-
 push ebx
 call frag_fffa3eec
 mov dword [ebp - 0x620], eax
@@ -2616,7 +2613,6 @@ push ebx
 call frag_fffa3fd4
 add esp, 12
 
-loc_fffa4025:
 cmp dword [ebp - 0x648], HASWELL_FAMILY_GT3E
 sete dl
 cmp dword [ebp - 0x648], HASWELL_FAMILY_MOBILE
