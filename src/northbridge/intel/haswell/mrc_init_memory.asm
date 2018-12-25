@@ -77,8 +77,8 @@ extern frag_fffc1c07
 extern set_cpuid
 extern test_memory
 extern frag_fffc1f53
-extern crc32
 global initialize_txt
+extern frag_fffc1d5a
 
 initialize_txt:
 push ebx
@@ -170,31 +170,14 @@ mov dword [ebp - 0x50c4], eax
 
 loc_fffc1d5a:
 lea eax, [ebp - 0x5094]
-xor ebx, ebx
 call fcn_fffa9196  ; call 0xfffa9196
-mov eax, dword [ebp - 0x50a4]
-mov esi, dword [eax + 0x15]
-test esi, esi
-je short loc_fffc1dac  ; je 0xfffc1dac
-cmp dword [ebp - 0x509c], 4
-je short loc_fffc1dac  ; je 0xfffc1dac
-lea eax, [esi + 4]
-mov edx, 0xfd0
-call crc32
-cmp eax, dword [esi]
-jne short loc_fffc1dac  ; jne 0xfffc1dac
-mov edx, dword [ebp - 0x50bc]
-push ebx
-mov bl, 1
-mov eax, dword [edx]
 lea edx, [ebp - 0x5036]
-push 0xfd4
-push esi
 push edx
-call dword [eax + 0x50] ; CopyMem
-add esp, 0x10
+push dword [ebp - 0x509c]
+push dword [ebp - 0x50a4] ; memory init ppi
+call frag_fffc1d5a
+add esp, 12
 
-loc_fffc1dac:
 cmp dword [ebp - 0x509c], 0x11
 jne short loc_fffc1dc2  ; jne 0xfffc1dc2
 test bl, bl
