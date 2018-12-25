@@ -80,6 +80,8 @@ extern frag_fffc1f53
 global initialize_txt
 extern frag_fffc1d5a
 extern frag_fffc1ea8
+extern frag_fffc2026
+global ref_fffcbf28
 
 initialize_txt:
 push ebx
@@ -273,109 +275,14 @@ mov ecx, esi
 loc_fffc2000:
 lea eax, [ebp - 0x397c]
 mov dword [ebp - 0x3963], ecx
-mov ebx, 1
 call fcn_fffa9196  ; call 0xfffa9196
-mov dl, 1
-mov word [ebp - 0x50c0], 0
-jmp near loc_fffc2116
 
-loc_fffc2026:
-movzx esi, word [ebp - 0x50c0]
-imul esi, esi, 0xc
-movzx eax, ax
-movzx edx, word [esi + ref_fffcbf2c]  ; movzx edx, word [esi - 0x340d4]
-cmp word [esi + ref_fffcbf2c], -1
-lea ecx, [esi + ref_fffcbf28]  ; lea ecx, [esi - 0x340d8]
-cmove edx, eax
 lea eax, [ebp - 0x503a]
-mov dword [ebp - 0x50c8], ecx
-call fcn_fffc83be  ; call 0xfffc83be
-cmp dword [esi + ref_fffcbf28], 0  ; cmp dword [esi - 0x340d8], 0
-mov dl, 1
-mov ecx, dword [ebp - 0x50c8]
-je loc_fffc210f  ; je 0xfffc210f
-mov al, byte [ecx + 0xb]
-cmp byte [ebp - 0x4022], al
-jae loc_fffc210f  ; jae 0xfffc210f
-mov eax, dword [ebp - 0x4021]
-test eax, eax
-jne short loc_fffc2090  ; jne 0xfffc2090
-test byte [ecx + 0xa], 0x10
-jmp short loc_fffc2097  ; jmp 0xfffc2097
-
-loc_fffc2090:
-dec eax
-jne short loc_fffc210f  ; jne 0xfffc210f
-test byte [ecx + 0xa], 0x20
-
-loc_fffc2097:
-je short loc_fffc210f  ; je 0xfffc210f
-mov eax, dword [ebp - 0x3963]
-cmp eax, 2
-jne short loc_fffc20aa  ; jne 0xfffc20aa
-test byte [ecx + 0xa], 8
-jmp short loc_fffc20be  ; jmp 0xfffc20be
-
-loc_fffc20aa:
-cmp eax, 3
-jne short loc_fffc20b5  ; jne 0xfffc20b5
-test byte [ecx + 0xa], 2
-jmp short loc_fffc20be  ; jmp 0xfffc20be
-
-loc_fffc20b5:
-cmp eax, 1
-jne short loc_fffc20c2  ; jne 0xfffc20c2
-test byte [ecx + 0xa], 4
-
-loc_fffc20be:
-jne short loc_fffc20ce  ; jne 0xfffc20ce
-jmp short loc_fffc210d  ; jmp 0xfffc210d
-
-loc_fffc20c2:
-test eax, eax
-mov dl, 1
-jne short loc_fffc210f  ; jne 0xfffc210f
-test byte [ecx + 0xa], 1
-je short loc_fffc210f  ; je 0xfffc210f
-
-loc_fffc20ce:
-mov edx, dword [ecx + 6]
-cmp edx, 0x3b
-jbe short loc_fffc20fc  ; jbe 0xfffc20fc
-
-loc_fffc20d6:
-call fcn_fffc6986  ; call 0xfffc6986
-sub esp, 0xc
-lea edx, [ebp - 0x503a]
-push edx
-call dword [esi + ref_fffcbf28]  ; ucall: call dword [esi - 0x340d8]
+push eax
+call frag_fffc2026
 mov ebx, eax
-call fcn_fffc6986  ; call 0xfffc6986
-add esp, 0x10
-test ebx, ebx
-sete dl
-jmp short loc_fffc210f  ; jmp 0xfffc210f
+add esp, 4
 
-loc_fffc20fc:
-xor ecx, ecx
-lea eax, [ebp - 0x503a]
-call fcn_fffc6438  ; call 0xfffc6438
-test eax, eax
-je short loc_fffc20d6  ; je 0xfffc20d6
-
-loc_fffc210d:
-mov dl, 1
-
-loc_fffc210f:
-inc word [ebp - 0x50c0]
-
-loc_fffc2116:
-mov eax, dword [ebp - 0x50c0]
-sub ax, 0x2300
-cmp word [ebp - 0x50c0], 0x33
-setbe cl
-test cl, dl
-jne loc_fffc2026  ; jne 0xfffc2026
 cmp ebx, 0x16
 je loc_fffc21fe  ; je 0xfffc21fe
 ja short loc_fffc2151  ; ja 0xfffc2151
