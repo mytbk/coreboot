@@ -149,11 +149,9 @@ extern io_fffa42c3
 extern io_fffa43e1
 extern io_fffa445e
 extern io_fffa44ad
-extern io_fffa4575
-extern io_fffa45f1
 extern io_fffa476b
 extern frag_fffa4962
-extern frag_fffa412c
+extern frag_fffa4025
 extern load_usb
 extern fill_pei_ram_data
 extern fill_ram_param
@@ -165,7 +163,6 @@ extern frag_fffa54e7
 global ref_fffcc910
 extern frag_fffa3fd4
 extern frag_fffa3a17
-extern frag_fffa40d3
 extern frag_fffa4507
 
 ;; mrc_wdt
@@ -2660,160 +2657,16 @@ mov ebx, esi
 and eax, 0xfffffffe
 and ebx, 0xfffffffe
 mov dword [ebp - 0x648], eax
-call haswell_family_model
-mov edi, eax
 
-push ebx ; ebx is dmibar
-call frag_fffa40d3
-add esp, 4
-
-call haswell_stepping
-dec eax
-sete dl
-cmp edi, HASWELL_FAMILY_MOBILE
-sete al
-and dl, al
-mov byte [ebp - 0x658], dl
-je loc_fffa4126
-push ebx
-call frag_fffa412c
-add esp, 4
-
-loc_fffa4126:
-test ebx, ebx
-jne loc_fffa4176
-call io_fffa4188
-
-loc_fffa4176:
-cmp byte [ebp - 0x658], 0
-jne loc_fffa42c3  ; jne 0xfffa42c3
-
-loc_fffa4231:
-test ebx, ebx
-jne short loc_fffa4292  ; jne 0xfffa4292
-
-loc_fffa4235:
-call io_fffa4235
-jmp near loc_fffa43cb  ; jmp 0xfffa43cb
-
-loc_fffa4292:
-mov eax, dword [ebx + 0x90c]
-and eax, 0xfffff81f
-or eax, 0x120
-mov dword [ebx + 0x90c], eax
-mov eax, dword [ebx + 0x92c]
-and eax, 0xfffff81f
-or eax, 0x120
-mov dword [ebx + 0x92c], eax
-jmp near loc_fffa43cb  ; jmp 0xfffa43cb
-
-loc_fffa42c3:
-test ebx, ebx
-jne loc_fffa4378  ; jne 0xfffa4378
-call io_fffa42c3
-jmp near loc_fffa4235  ; jmp 0xfffa4235
-
-loc_fffa4378:
-mov eax, dword [ebx + 0x904]
-and eax, 0xfe3fffff
-mov dword [ebx + 0x904], eax
-mov eax, dword [ebx + 0x924]
-and eax, 0xfe3fffff
-mov dword [ebx + 0x924], eax
-mov eax, dword [ebx + 0x904]
-and eax, 0x9fffffff
-or eax, 0x20000000
-mov dword [ebx + 0x904], eax
-mov eax, dword [ebx + 0x924]
-and eax, 0x9fffffff
-or eax, 0x20000000
-mov dword [ebx + 0x924], eax
-jmp near loc_fffa4231  ; jmp 0xfffa4231
-
-loc_fffa43cb:
-cmp byte [ebp - 0x658], 0
-jne short loc_fffa43e1  ; jne 0xfffa43e1
-
-loc_fffa43d4:
-test ebx, ebx
-je loc_fffa44ad  ; je 0xfffa44ad
-jmp near loc_fffa5681  ; jmp 0xfffa5681
-
-loc_fffa43e1:
-test ebx, ebx
-jne short loc_fffa4437  ; jne 0xfffa4437
-call io_fffa43e1
-jmp short loc_fffa44ad  ; jmp 0xfffa44ad
-
-loc_fffa4437:
-mov eax, dword [ebx + 0x90c]
-and eax, 0xfff1ffff
-mov dword [ebx + 0x90c], eax
-mov eax, dword [ebx + 0x92c]
-and eax, 0xfff1ffff
-mov dword [ebx + 0x92c], eax
-jmp near loc_fffa43d4  ; jmp 0xfffa43d4
-
-loc_fffa44ad:
-call io_fffa44ad
+; frag_fffa4025
+; input ebx (dmibar)
+; input [ebp - 0x660] (ppi)
 
 push dword [ebp - 0x660]
-call frag_fffa4507
-add esp, 4
-
-call io_fffa445e
-
-loc_fffa4564:
-cmp byte [ebp - 0x658], 0
-jne loc_fffa45f1  ; jne 0xfffa45f1
-
-loc_fffa4571:
-test ebx, ebx
-jne short loc_fffa45ca  ; jne 0xfffa45ca
-
-loc_fffa4575:
-call io_fffa4575
-jmp near loc_fffa476b  ; jmp 0xfffa476b
-
-loc_fffa45ca:
-mov eax, dword [ebx + 0x80c]
-and eax, 0xffe3ffff
-mov dword [ebx + 0x80c], eax
-mov eax, dword [ebx + 0x82c]
-and eax, 0xffe3ffff
-mov dword [ebx + 0x82c], eax
-jmp near loc_fffa476b  ; jmp 0xfffa476b
-
-loc_fffa45f1:
-test ebx, ebx
-jne loc_fffa46f4  ; jne 0xfffa46f4
-call io_fffa45f1
-jmp near loc_fffa4575  ; jmp 0xfffa4575
-
-loc_fffa46f4:
-mov eax, dword [ebx + 0x910]
-and eax, 0x1fffffff
-or eax, 0x80000000
-mov dword [ebx + 0x910], eax
-mov eax, dword [ebx + 0x930]
-and eax, 0x1fffffff
-or eax, 0x80000000
-mov dword [ebx + 0x930], eax
-mov eax, dword [ebx + 0x80c]
-and eax, 0xfffffe7f
-or ah, 1
-mov dword [ebx + 0x80c], eax
-mov eax, dword [ebx + 0x82c]
-and eax, 0xfffffe7f
-or ah, 1
-mov dword [ebx + 0x82c], eax
-mov eax, dword [ebx + 0x80c]
-and ah, 0xcf
-mov dword [ebx + 0x80c], eax
-mov eax, dword [ebx + 0x82c]
-and ah, 0xcf
-mov dword [ebx + 0x82c], eax
-jmp near loc_fffa4571  ; jmp 0xfffa4571
+push ebx
+call frag_fffa4025
+add esp, 8
+mov byte [ebp - 0x658], al
 
 loc_fffa476b:
 cmp byte [ebp - 0x658], 0
@@ -3580,15 +3433,6 @@ mov dword [ebx + 0x84], eax
 mov dl, 1
 add esp, 0x10
 jmp near loc_fffa4ce2  ; jmp 0xfffa4ce2
-
-loc_fffa5681:
-mov eax, dword [ebx + 0x910]
-and ah, 0xc3
-mov dword [ebx + 0x910], eax
-mov eax, dword [ebx + 0x930]
-and ah, 0xc3
-mov dword [ebx + 0x930], eax
-jmp near loc_fffa4564  ; jmp 0xfffa4564
 
 loc_fffa56a4:
 lea esp, [ebp - 0xc]
