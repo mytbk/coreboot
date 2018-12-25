@@ -5,6 +5,7 @@
 #include "mrc_utils.h"
 #include <arch/cpu.h>
 #include "pei_ram.h"
+#include <console/console.h>
 
 int frag_fffc1d20(void);
 int frag_fffc1d20(void)
@@ -205,4 +206,99 @@ int frag_fffc1ea8(void *ram_data, pei_raminit_ppi *ppi,
 		return 0;
 	}
 	return 2;
+}
+
+#ifndef __packed
+#if defined(__WIN32) || defined(__WIN64)
+#define __packed __attribute__((gcc_struct, packed))
+#else
+#define __packed __attribute__((packed))
+#endif
+#endif
+
+typedef struct _ram_st {
+	int (*func)(void*);
+	uint16_t v1;
+	uint32_t v2;
+	uint8_t v3;
+	uint8_t v4;
+} __packed ram_st;
+extern ram_st ref_fffcbf28[];
+
+void __attribute((regparm(2))) fcn_fffc83be(void *ram_data, uint32_t tmp);
+int __attribute((regparm(3))) fcn_fffc6438(void *ram_data, u32 a, u32 b);
+void fcn_fffc6986(void);
+
+int frag_fffc2026(void *ram_data);
+int frag_fffc2026(void *ram_data)
+{
+	uint32_t tmp;
+	int ret = 1;
+	uint8_t dl = 1;
+
+	for (int i = 0; i <= 0x33 && dl; i++) {
+		ram_st *st = &ref_fffcbf28[i];
+
+		if (ref_fffcbf28[i].v1 == ~0) {
+			tmp = (uint16_t)(i - 0x2300);
+		} else {
+			tmp = ref_fffcbf28[i].v1;
+		}
+		fcn_fffc83be(ram_data, tmp);
+
+		dl = 1;
+		if (ref_fffcbf28[i].func == NULL)
+			continue;
+		if (*(uint8_t*)(ram_data + 0x1018) >= st->v4)
+			continue;
+
+		tmp = *(uint32_t*)(ram_data + 0x1019);
+		if (tmp != 0) {
+			tmp--; if (tmp != 0) continue;
+			if ((st->v3 & 0x20) == 0) continue;
+		} else {
+			if ((st->v3 & 0x10) == 0)
+				continue;
+		}
+
+		tmp = *(uint32_t*)(ram_data + 0x16d7);
+		if (tmp == 2) {
+			if (st->v3 & 8)
+				goto loc_fffc20ce;
+			goto loc_fffc210d;
+		} else if (tmp == 3) {
+			if (st->v3 & 2)
+				goto loc_fffc20ce;
+			goto loc_fffc210d;
+		} else if (tmp == 1) {
+			if (st->v3 & 4)
+				goto loc_fffc20ce;
+			goto loc_fffc210d;
+		} else if (tmp != 0) {
+			dl = 1;
+			continue;
+		} else {
+			dl = 1;
+			if (st->v3 & 1)
+				goto loc_fffc20ce;
+			else
+				continue;
+		}
+loc_fffc20ce:
+		tmp = st->v2;
+		if (tmp > 0x3b) {
+loc_fffc20d6:
+			fcn_fffc6986();
+			ret = ref_fffcbf28[i].func(ram_data);
+			fcn_fffc6986();
+			dl = (ret == 0)? 1:0;
+			continue;
+		}
+		if (fcn_fffc6438(ram_data, tmp, 0) == 0) /* maybe 3 reg params */
+			goto loc_fffc20d6;
+loc_fffc210d:
+		dl = 1;
+	}
+	printk(BIOS_DEBUG, "return from frag_fffc2026 with value 0x%x\n", ret);
+	return ret;
 }
