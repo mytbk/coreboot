@@ -152,15 +152,13 @@ void io_fffa44ad(void)
 	pci_update_config32(PCI_DEV(0, 0, 0), 0x92c, 0xfe1fffff, 0xa00000);
 }
 
-void io_fffa4575(void);
-void io_fffa4575(void)
+static void io_fffa4575(void)
 {
 	pci_update_config32(PCI_DEV(0, 0, 0), 0x80c, 0xffe3ffff, 0);
 	pci_update_config32(PCI_DEV(0, 0, 0), 0x82c, 0xffe3ffff, 0);
 }
 
-void io_fffa45f1(void);
-void io_fffa45f1(void)
+static void io_fffa45f1(void)
 {
 	pci_update_config32(PCI_DEV(0, 0, 0), 0x910, 0x1fffffff, 0x80000000);
 	pci_update_config32(PCI_DEV(0, 0, 0), 0x930, 0x1fffffff, 0x80000000);
@@ -449,23 +447,6 @@ void frag_fffa3a17(PEI_USB *pusb)
 	}
 }
 
-void frag_fffa40d3(uint32_t bar);
-void frag_fffa40d3(uint32_t dmibar)
-{
-	printk(BIOS_DEBUG, "bar for frag_fffa40d3 is 0x%08x.\n", dmibar);
-	for (uint32_t i = 0xa00; i < 0xa40; i += 0x10) {
-		if (dmibar) {
-			u32 tmp = read32((void*)(dmibar + i));
-			tmp &= 0xffffffe0;
-			tmp |= 0xc;
-			write32((void*)(dmibar + i), tmp);
-		} else {
-			pci_update_config32(PCI_DEV(0, 0, 0), i,
-					0xffffffe0, 0xc);
-		}
-	}
-}
-
 void frag_fffa4507(void *ppi);
 void frag_fffa4507(void *ppi)
 {
@@ -553,6 +534,18 @@ bar_update32(void *bar, uint32_t offset, uint32_t andv, uint32_t orv)
 	write32(bar + offset, tmp);
 }
 
+static void frag_fffa40d3(void * dmibar)
+{
+	for (uint32_t i = 0xa00; i < 0xa40; i += 0x10) {
+		if (dmibar) {
+			bar_update32(dmibar, i, 0xffffffe0, 0xc);
+		} else {
+			pci_update_config32(PCI_DEV(0, 0, 0), i,
+					0xffffffe0, 0xc);
+		}
+	}
+}
+
 void frag_fffa4962(void *dmibar, u32 v0, u8 t);
 void frag_fffa4962(void *dmibar, u32 v0, u8 t)
 {
@@ -597,8 +590,7 @@ void frag_fffa4962(void *dmibar, u32 v0, u8 t)
 	bar_update32(dmibar, 0x22c, 0xffff0000, 0x2020);
 }
 
-void frag_fffa412c(void *dmibar);
-void frag_fffa412c(void *dmibar)
+static void frag_fffa412c(void *dmibar)
 {
 	for (int i = 0; i < 0x40; i += 0x10) {
 		if (dmibar) {
@@ -610,4 +602,90 @@ void frag_fffa412c(void *dmibar)
 			pci_or_config32(PCI_DEV(0, 0, 0), 0xa04 + i, 0x0800);
 		}
 	}
+}
+
+int frag_fffa4025(void *dmibar, void *ppi);
+int frag_fffa4025(void *dmibar, void *ppi)
+{
+	int typ; /* bp - 0x658 */
+	if (haswell_family_model() == HASWELL_FAMILY_MOBILE
+			&& haswell_stepping() == 1)
+		typ = 1;
+	else
+		typ = 0;
+
+	frag_fffa40d3(dmibar);
+
+	if (typ) {
+		frag_fffa412c(dmibar);
+	}
+	if (dmibar == NULL) {
+		io_fffa4188();
+	}
+	if (typ == 0) {
+		if (dmibar == NULL) {
+			io_fffa4235();
+		}
+		bar_update32(dmibar, 0x90c, 0xfffff81f, 0x120);
+		bar_update32(dmibar, 0x92c, 0xfffff81f, 0x120);
+	} else {
+		if (dmibar == NULL) {
+			io_fffa42c3();
+			io_fffa4235();
+		}
+		bar_update32(dmibar, 0x904, 0xfe3fffff, 0);
+		bar_update32(dmibar, 0x924, 0xfe3fffff, 0);
+		bar_update32(dmibar, 0x904, 0x9fffffff, 0x20000000);
+		bar_update32(dmibar, 0x924, 0x9fffffff, 0x20000000);
+		bar_update32(dmibar, 0x90c, 0xfffff81f, 0x120);
+		bar_update32(dmibar, 0x92c, 0xfffff81f, 0x120);
+	}
+	if (typ == 0) {
+		if (dmibar == NULL) {
+			goto loc_fffa44ad;
+		} else {
+			bar_update32(dmibar, 0x910, 0xffffc3ff, 0);
+			bar_update32(dmibar, 0x930, 0xffffc3ff, 0);
+			goto loc_fffa4564;
+		}
+	} else {
+		if (dmibar == NULL) {
+			io_fffa43e1();
+			goto loc_fffa44ad;
+		} else {
+			bar_update32(dmibar, 0x90c, 0xfff1ffff, 0);
+			bar_update32(dmibar, 0x92c, 0xfff1ffff, 0);
+			bar_update32(dmibar, 0x910, 0xffffc3ff, 0);
+			bar_update32(dmibar, 0x930, 0xffffc3ff, 0);
+			goto loc_fffa4564;
+		}
+	}
+loc_fffa44ad:
+	io_fffa44ad();
+	frag_fffa4507(ppi);
+	io_fffa445e();
+loc_fffa4564:
+	if (typ == 0) {
+		if (dmibar == NULL) {
+			io_fffa4575();
+		} else {
+			bar_update32(dmibar, 0x80c, 0xffe3ffff, 0);
+			bar_update32(dmibar, 0x82c, 0xffe3ffff, 0);
+		}
+	} else {
+		if (dmibar == NULL) {
+			io_fffa45f1();
+			io_fffa4575();
+		} else {
+			bar_update32(dmibar, 0x910, 0x1fffffff, 0x80000000);
+			bar_update32(dmibar, 0x930, 0x1fffffff, 0x80000000);
+			bar_update32(dmibar, 0x80c, 0xfffffe7f, 0x0100);
+			bar_update32(dmibar, 0x82c, 0xfffffe7f, 0x0100);
+			bar_update32(dmibar, 0x80c, 0xffffcfff, 0);
+			bar_update32(dmibar, 0x82c, 0xffffcfff, 0);
+			bar_update32(dmibar, 0x80c, 0xffe3ffff, 0);
+			bar_update32(dmibar, 0x82c, 0xffe3ffff, 0);
+		}
+	}
+	return typ;
 }
