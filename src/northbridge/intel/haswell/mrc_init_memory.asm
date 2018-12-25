@@ -78,6 +78,7 @@ extern frag_fffc1c07
 extern set_cpuid
 extern test_memory
 extern frag_fffc1f53
+global initialize_txt
 
 initialize_txt:
 push ebx
