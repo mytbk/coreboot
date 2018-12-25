@@ -36,6 +36,7 @@ extern mrc_pch_init
 extern dmi_check_link
 extern pei_get_platform_memsize
 extern pei_choose_ranges
+extern crc32
 
 ; PEI services
 extern PeiServiceGetBootMode
@@ -79,7 +80,7 @@ global fcn_fffaa6af
 global fcn_fffaa884
 global fcn_fffaa9d1
 global fcn_fffaacb1
-global fcn_fffab210
+global crc32
 global fcn_fffab280
 global fcn_fffab4c0
 global fcn_fffad6f1
@@ -1420,7 +1421,7 @@ mov esi, dword [edx + 9]
 call fcn_fffa9196  ; call 0xfffa9196
 mov edx, 0xc8
 mov eax, esi
-call fcn_fffab210  ; call 0xfffab210
+call crc32  ; call 0xfffab210
 mov dl, byte [ebx + 0x9dc]
 cmp byte [ebp - 0xc], dl
 mov dl, 1
@@ -10097,60 +10098,6 @@ pop esi
 pop ebp
 ret
 
-fcn_fffab210:
-push ebp
-mov ebp, esp
-push esi
-push ebx
-xor ebx, ebx
-lea esp, [esp - 0x400]
-
-loc_fffab21e:
-mov dword [ebp + ebx*4 - 0x408], ebx
-mov ecx, ebx
-mov esi, 8
-
-loc_fffab22c:
-test cl, 1
-je short loc_fffab23b  ; je 0xfffab23b
-shr ecx, 1
-xor ecx, 0xedb88320
-jmp short loc_fffab23d  ; jmp 0xfffab23d
-
-loc_fffab23b:
-shr ecx, 1
-
-loc_fffab23d:
-dec esi
-jne short loc_fffab22c  ; jne 0xfffab22c
-mov dword [ebp + ebx*4 - 0x408], ecx
-inc ebx
-cmp ebx, 0x100
-jne short loc_fffab21e  ; jne 0xfffab21e
-or ecx, 0xffffffff
-xor bx, bx
-jmp short loc_fffab26d  ; jmp 0xfffab26d
-
-loc_fffab258:
-mov esi, ecx
-xor cl, byte [eax + ebx]
-movzx ecx, cl
-inc ebx
-shr esi, 8
-mov ecx, dword [ebp + ecx*4 - 0x408]
-xor ecx, esi
-
-loc_fffab26d:
-cmp ebx, edx
-jne short loc_fffab258  ; jne 0xfffab258
-lea esp, [esp + 0x400]
-mov eax, ecx
-pop ebx
-not eax
-pop esi
-pop ebp
-ret
-
 fcn_fffab280:  ; not directly referenced
 push ebp
 mov ebp, esp
@@ -10279,11 +10226,11 @@ mov dword [ebx + 0xfd3], eax
 mov al, byte [ebx + 0x1746]
 mov byte [ebx + 0xfd7], al
 mov eax, dword [ebx + 0x1033]
-call fcn_fffab210  ; call 0xfffab210
+call crc32  ; call 0xfffab210
 mov dword [ebx + 0x9e0], eax
 mov edx, 0xfd0
 mov eax, dword [ebp - 0x28]
-call fcn_fffab210  ; call 0xfffab210
+call crc32  ; call 0xfffab210
 mov dword [ebx + 4], eax
 lea esp, [esp + 0x2c]
 pop ebx

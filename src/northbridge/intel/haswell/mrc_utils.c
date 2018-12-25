@@ -66,3 +66,29 @@ void __attribute((regparm(1))) printGuid(const void *g)
 			gg->g8[2], gg->g8[3], gg->g8[4], gg->g8[5],
 			gg->g8[6], gg->g8[7]);
 }
+
+uint32_t __attribute((regparm(2))) crc32(uint8_t data[], size_t len)
+{
+	uint32_t tab[256]; // ebp - 0x408
+	for (int i = 0; i < 256; i++) {
+		tab[i] = i;
+		u32 tmp = i;
+		for (int j = 0; j < 8; j++) {
+			if ((tmp & 1) != 0) {
+				tmp >>= 1;
+				tmp ^= 0xedb88320;
+			} else {
+				tmp >>= 1;
+			}
+		}
+
+		tab[i] = tmp;
+	}
+	uint32_t crc = ~0;
+	for (size_t i = 0; i < len; i++) {
+		uint32_t tmp = crc >> 8;
+		uint8_t idx = (u8)crc ^ data[i];
+		crc = tab[idx] ^ tmp;
+	}
+	return crc;
+}

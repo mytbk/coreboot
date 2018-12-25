@@ -29,7 +29,6 @@ extern fcn_fffaa6af
 extern fcn_fffaa884
 extern fcn_fffaa9d1
 extern fcn_fffaacb1
-extern fcn_fffab210
 extern fcn_fffab280
 extern fcn_fffab4c0
 extern fcn_fffad6f1
