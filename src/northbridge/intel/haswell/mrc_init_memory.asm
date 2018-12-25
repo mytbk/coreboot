@@ -74,11 +74,12 @@ extern fcn_fffc83be
 extern frag_fffc1d20
 extern frag_fffc1fc3
 extern create_raminit_hob
-extern frag_fffc1cd2
+extern frag_fffc1c07
 extern set_cpuid
 extern test_memory
 
 initialize_txt:
+push ebx
 mov edx, cr4
 mov eax, edx
 or eax, 0x4000 ; cr4 bit 14: Safer Mode Extensions Enable
@@ -87,6 +88,7 @@ xor eax, eax
 mov ebx, eax
 getsec
 mov cr4, edx
+pop ebx
 ret
 
 
@@ -153,27 +155,9 @@ push 0
 push gEfiPeiReadOnlyVariablePpiGuid
 push ecx
 call dword [eax + 0x20] ; LocatePpi
-mov eax, esi
-mov ecx, edi
-cpuid
 add esp, 0x20
-and cl, 0x40
-je loc_fffc1d20  ; je 0xfffc1d20
-mov eax, esi
-mov ecx, edi
-cpuid
-mov esi, ecx
-xor eax, eax
-and esi, 0x40
-je short loc_fffc1ca2  ; je 0xfffc1ca2
-call initialize_txt ; this will set ebx to 0
-xor ebx, ebx
 
-loc_fffc1ca2:
-test al, 1
-je short loc_fffc1d20
-
-call frag_fffc1cd2
+call frag_fffc1c07
 
 loc_fffc1d20:
 cmp dword [ebp - 0x509c], 0x11
