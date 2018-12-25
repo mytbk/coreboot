@@ -2594,10 +2594,8 @@ call haswell_family_model
 mov ecx, dword [ebp - 0x640]
 mov dword [ebp - 0x648], eax
 
-; [ebp - 0x628] = ram init ppi
-lea edx, [ebp - 0x526]
-mov dword [ebp - 0x628], edx
-mov ebx, dword [ebp - 0x628]
+; ram init ppi
+lea ebx, [ebp - 0x526]
 
 push dword [ebx + 1]
 call mrc_set_bars
@@ -2605,7 +2603,6 @@ add esp, 0xc
 
 loc_fffa3eec:
 mov edx, dword [ebp - 0x640]
-mov ebx, dword [ebp - 0x628]
 
 push ebx
 call frag_fffa3eec
@@ -2626,8 +2623,6 @@ cmp dword [ebp - 0x648], HASWELL_FAMILY_MOBILE
 sete al
 or dl, al
 je loc_fffa4d64  ; je 0xfffa4d64
-mov eax, dword [ebp - 0x628]
-mov dword [ebp - 0x660], eax
 call haswell_stepping
 mov eax, dword [0xf0000060]
 sub esp, 0xc
@@ -2659,14 +2654,14 @@ and ebx, 0xfffffffe
 mov dword [ebp - 0x648], eax
 
 ; superfrag_fffa4025(mchbar, dmibar, ppi)
-push dword [ebp - 0x660]
+lea eax, [ebp - 0x526]
+push eax
 push ebx
 push dword [ebp - 0x648]
 call superfrag_fffa4025
 add esp, 12
 
-
-mov ecx, dword [ebp - 0x660]
+lea ecx, [ebp - 0x526]
 mov eax, dword [ecx + 0xd]
 cmp byte [eax + 3], 0
 je short loc_fffa4ce2  ; je 0xfffa4ce2
@@ -2730,9 +2725,9 @@ jmp short loc_fffa4d21  ; jmp 0xfffa4d21
 
 loc_fffa4d64:
 mov eax, dword [ebp - 0x640]
-mov edx, dword [ebp - 0x628]
+lea edx, [ebp - 0x526]
 call fcn_fffa0625  ; call 0xfffa0625
-mov edi, dword [ebp - 0x628]
+lea edi, [ebp - 0x526]
 mov dword [ebp - 0x624], 0
 mov eax, dword [edi + 0x11]
 cmp byte [eax + 0xb], 0
@@ -2740,7 +2735,7 @@ jne loc_fffa4e1b  ; jne 0xfffa4e1b
 
 loc_fffa4d92:
 mov eax, dword [0xf0000060]
-mov esi, dword [ebp - 0x628]
+lea esi, [ebp - 0x526]
 and eax, 0xfc000000
 mov edx, dword [eax + 0x4c]
 mov eax, dword [eax + 0x48]
@@ -3230,7 +3225,7 @@ loc_fffa549a:
 inc eax
 cmp eax, 4
 jne short loc_fffa5467  ; jne 0xfffa5467
-mov eax, dword [ebp - 0x628]
+lea eax, [ebp - 0x526]
 mov eax, dword [eax + 1]
 mov edx, dword [eax + 4]
 mov eax, dword [edx + 0x5f00]
