@@ -596,3 +596,18 @@ void frag_fffa4962(void *dmibar, u32 v0, u8 t)
 	bar_update32(dmibar, 0x208, 0xfffff800, 0x6b5);
 	bar_update32(dmibar, 0x22c, 0xffff0000, 0x2020);
 }
+
+void frag_fffa412c(void *dmibar);
+void frag_fffa412c(void *dmibar)
+{
+	for (int i = 0; i < 0x40; i += 0x10) {
+		if (dmibar) {
+			void *addr = dmibar + 0xa04 + i;
+			u32 tmp = read32(addr);
+			tmp |= 0x0800;
+			write32(addr, tmp);
+		} else {
+			pci_or_config32(PCI_DEV(0, 0, 0), 0xa04 + i, 0x0800);
+		}
+	}
+}
