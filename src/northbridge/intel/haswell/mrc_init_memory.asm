@@ -79,6 +79,7 @@ extern test_memory
 extern frag_fffc1f53
 global initialize_txt
 extern frag_fffc1d5a
+extern frag_fffc1ea8
 
 initialize_txt:
 push ebx
@@ -224,46 +225,15 @@ call set_cpuid
 pop eax
 
 loc_fffc1ea8:
-mov eax, dword [ebp - 0x50c4]
-dec eax
-cmp eax, 1
-jbe short loc_fffc1ee8  ; jbe 0xfffc1ee8
-dec bl
-jne loc_fffc2376  ; jne 0xfffc2376
-mov edx, dword [ebp - 0x50a4]
-mov eax, dword [edx + 9]
-cmp byte [eax + 0x56], 0
-je loc_fffc2376  ; je 0xfffc2376
-lea eax, [ebp - 0x503a]
-mov edi, 3
-call fcn_fffa10df  ; call 0xfffa10df
-test al, al
-je short loc_fffc1f53  ; je 0xfffc1f53
-jmp near loc_fffc2376  ; jmp 0xfffc2376
 
-loc_fffc1ee8:
-test bl, bl
-je loc_fffc2376  ; je 0xfffc2376
-mov edx, dword [ebp - 0x50a4]
+push ebx
+push dword [ebp - 0x50c4]
+push dword [ebp - 0x50a4]
 lea eax, [ebp - 0x503a]
-call fcn_fffa10df  ; call 0xfffa10df
-dec al
-je loc_fffc2376  ; je 0xfffc2376
-mov eax, dword [ebp - 0x50a4]
-mov eax, dword [eax + 1]
-mov eax, dword [eax + 4]
-movq qword [ebp - 0x5088], mm0
-movq mm0, qword [eax + 0x5d10]
-movq qword [ebp - 0x5090], mm0
-movq mm0, qword [ebp - 0x5088]
-emms
-mov eax, dword [ebp - 0x508c]
-or eax, dword [ebp - 0x5090]
-mov edi, dword [ebp - 0x50c4]
-jne short loc_fffc1f53  ; jne 0xfffc1f53
-dec edi
-je loc_fffc2376  ; je 0xfffc2376
-mov edi, 2
+push eax
+call frag_fffc1ea8
+mov edi, eax
+add esp, 16
 
 loc_fffc1f53:
 lea eax, [ebp - 0x3fdb]
@@ -271,7 +241,6 @@ push eax
 call frag_fffc1f53
 add esp, 4
 
-loc_fffc1f77:
 push eax
 lea ecx, [ebp - 0x4062]
 mov edx, edi
@@ -576,13 +545,6 @@ mov edx, 0x55
 call fcn_fffc83be  ; call 0xfffc83be
 xor eax, eax
 jmp short loc_fffc23a2  ; jmp 0xfffc23a2
-
-loc_fffc2376:
-mov edx, 0xfd4
-lea eax, [ebp - 0x5036]
-call mrc_zeromem
-xor edi, edi
-jmp near loc_fffc1f53  ; jmp 0xfffc1f53
 
 loc_fffc238d:
 mov edx, 0xd5
