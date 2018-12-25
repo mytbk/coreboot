@@ -3,6 +3,7 @@
 #include "mrc_pei.h"
 #include <cpu/x86/msr.h>
 #include "mrc_utils.h"
+#include <arch/cpu.h>
 
 int frag_fffc1d20(void);
 int frag_fffc1d20(void)
@@ -39,8 +40,7 @@ void *create_raminit_hob(void)
 	return hob;
 }
 
-void frag_fffc1cd2(void);
-void frag_fffc1cd2(void)
+static void frag_fffc1cd2(void)
 {
 	for (int i = 0; i < 0x2ee; i++) {
 		uint8_t tmp = read8((void*)0xfed40000);
@@ -111,4 +111,23 @@ int test_memory(void)
 		}
 	}
 	return 0;
+}
+
+void frag_fffc1c07(void);
+int initialize_txt(void);
+void frag_fffc1c07()
+{
+	struct cpuid_result res;
+	int t;
+
+	res = cpuid_ext(1, 0);
+	if ((u8)res.ecx & 0x40) {
+		res = cpuid_ext(1, 0);
+		t = 0;
+		if (res.ecx & 0x40) {
+			t = initialize_txt();
+		}
+		if (t != 1)
+			frag_fffc1cd2();
+	}
 }
