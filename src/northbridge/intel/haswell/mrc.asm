@@ -2674,20 +2674,15 @@ cmp edi, HASWELL_FAMILY_MOBILE
 sete al
 and dl, al
 mov byte [ebp - 0x658], dl
-jne short loc_fffa412c  ; jne 0xfffa412c
+je loc_fffa4126
+push ebx
+call frag_fffa412c
+add esp, 4
 
 loc_fffa4126:
 test ebx, ebx
 jne loc_fffa4176
 call io_fffa4188
-jmp loc_fffa4176
-
-loc_fffa412c:
-push ebx
-call frag_fffa412c
-add esp, 4
-
-jmp short loc_fffa4126  ; jmp 0xfffa4126
 
 loc_fffa4176:
 cmp byte [ebp - 0x658], 0
