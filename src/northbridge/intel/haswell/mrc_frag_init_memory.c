@@ -145,7 +145,6 @@ void * frag_fffc1f53(uint32_t *wb)
 	return hob;
 }
 
-int __attribute((regparm(2))) fcn_fffab210(void *, int);
 void frag_fffc1d5a(void *ppi, int t, void* dst);
 void frag_fffc1d5a(void *ppi, int t, void* dst)
 {
@@ -155,7 +154,7 @@ void frag_fffc1d5a(void *ppi, int t, void* dst)
 	if (t == 4)
 		return;
 
-	int ret = fcn_fffab210(esi + 4, 0xfd0);
+	int ret = crc32(esi + 4, 0xfd0);
 	if (ret != *(int*)esi)
 		return;
 
