@@ -29,7 +29,6 @@ extern fcn_fffaa6af
 extern fcn_fffaa884
 extern fcn_fffaa9d1
 extern fcn_fffaacb1
-extern fcn_fffab210
 extern fcn_fffab280
 extern fcn_fffab4c0
 extern fcn_fffad6f1
@@ -78,6 +77,7 @@ extern frag_fffc1c07
 extern set_cpuid
 extern test_memory
 extern frag_fffc1f53
+extern crc32
 global initialize_txt
 
 initialize_txt:
@@ -180,7 +180,7 @@ cmp dword [ebp - 0x509c], 4
 je short loc_fffc1dac  ; je 0xfffc1dac
 lea eax, [esi + 4]
 mov edx, 0xfd0
-call fcn_fffab210  ; call 0xfffab210
+call crc32
 cmp eax, dword [esi]
 jne short loc_fffc1dac  ; jne 0xfffc1dac
 mov edx, dword [ebp - 0x50bc]
