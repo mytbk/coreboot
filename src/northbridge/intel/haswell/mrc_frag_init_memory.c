@@ -4,6 +4,7 @@
 #include <cpu/x86/msr.h>
 #include "mrc_utils.h"
 #include <arch/cpu.h>
+#include "pei_ram.h"
 
 int frag_fffc1d20(void);
 int frag_fffc1d20(void)
@@ -159,4 +160,49 @@ void frag_fffc1d5a(void *ppi, int t, void* dst)
 		return;
 
 	memcpy(dst, esi, 0xfd4);
+}
+
+int __attribute((regparm(2)))
+fcn_fffa10df(void *ram_data, void *ppi);
+
+/*
+ram_data: ebp - 0x503a
+ppi: [ebp - 0x50a4]
+v50c4: [ebp - 0x50c4]
+return value moved to edi
+*/
+int frag_fffc1ea8(void *ram_data, pei_raminit_ppi *ppi,
+		uint32_t v50c4, uint8_t bl);
+int frag_fffc1ea8(void *ram_data, pei_raminit_ppi *ppi,
+		uint32_t v50c4, uint8_t bl)
+{
+	if (v50c4 - 1 > 1) {
+		if (bl == 1) {
+			if (ppi->ram_param->v2c[0x2a] != 0) {
+				if (fcn_fffa10df(ram_data, ppi) == 0)
+					return 3;
+			}
+		}
+		mrc_zeromem(ram_data + 4, 0xfd4);
+		return 0;
+	}
+	if (bl == 0) {
+		mrc_zeromem(ram_data + 4, 0xfd4);
+		return 0;
+	}
+	if (fcn_fffa10df(ram_data, ppi) == 1) {
+		mrc_zeromem(ram_data + 4, 0xfd4);
+		return 0;
+	}
+	void * mchbar = (void*)ppi->ram_data->mchbar;
+	uint32_t reg_5d10 = read32(mchbar + 0x5d10);
+	uint32_t reg_5d14 = read32(mchbar + 0x5d14);
+	if (reg_5d10 | reg_5d14)
+		return v50c4;
+
+	if (v50c4 - 1 == 0) {
+		mrc_zeromem(ram_data + 4, 0xfd4);
+		return 0;
+	}
+	return 2;
 }
