@@ -2411,11 +2411,7 @@ mov word [ebp - 0x590], 2
 mov byte [ebp - 0x58e], 1
 mov byte [ebp - 0x58d], 2
 mov byte [ebp - 0x58c], 3
-mov eax, dword [ecx + 0x4a]
 mov byte [ebp - 0x58b], 2
-mov byte [ebp - 0x316], al
-mov eax, dword [ecx + 0x4e]
-mov byte [ebp - 0x315], al
 lea edi, [ebp - 0x463]
 mov eax, ebx
 mov ecx, 0x18
