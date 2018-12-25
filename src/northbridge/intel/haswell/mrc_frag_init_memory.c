@@ -144,3 +144,20 @@ void * frag_fffc1f53(uint32_t *wb)
 		*wb = tmp;
 	return hob;
 }
+
+int __attribute((regparm(2))) fcn_fffab210(void *, int);
+void frag_fffc1d5a(void *ppi, int t, void* dst);
+void frag_fffc1d5a(void *ppi, int t, void* dst)
+{
+	void * esi = *(void**)(ppi + 0x15);
+	if (esi == NULL)
+		return;
+	if (t == 4)
+		return;
+
+	int ret = fcn_fffab210(esi + 4, 0xfd0);
+	if (ret != *(int*)esi)
+		return;
+
+	memcpy(dst, esi, 0xfd4);
+}
