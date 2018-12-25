@@ -565,7 +565,7 @@ void frag_fffa4962(void *dmibar, u32 v0, u8 t)
 	}
 
 	u32 v = (t & 1)? 0x40: 0;
-	if (dmibar) {
+	if (!dmibar) {
 		pci_update_config16(PCI_DEV(0, 1, 0), 0xc38, 0xffbf, v);
 		pci_update_config16(PCI_DEV(0, 1, 1), 0xc38, 0xffbf, v);
 		pci_update_config16(PCI_DEV(0, 1, 2), 0xc38, 0xffbf, v);
