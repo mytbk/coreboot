@@ -755,3 +755,63 @@ void superfrag_fffa4025(void *mchbar, void *dmibar, void *ppi)
 	}
 	frag_fffa4962(dmibar, tmp4, typ);
 }
+
+void frag_fffa53b4(void *edi, void *base, uint8_t a[]);
+void frag_fffa53b4(void *edi, void *base, uint8_t a[])
+{
+	int *b32 = (int*)base;
+
+	a[0] = a[1] = a[2] = a[3] = 0;
+	for (int i = 0; i < 8; i++) {
+		int idx = b32[i];
+		a[idx] |= (1 << i);
+	}
+
+	uint8_t *b8 = (uint8_t*)(base + 0x20);
+	for (int i = 0; i < 4; i++) {
+		if (b8[i*2] != 1)
+			continue;
+
+		uint32_t tmp = b8[i*2+1];
+		tmp <<= 18;
+
+		uint32_t tmp2 = a[i];
+		tmp2 |= 0x80000000;
+
+		uint32_t tmp3;
+		if (i == 2) {
+			tmp3 = 0x2c;
+		} else if (i == 3) {
+			tmp3 = 0x38;
+		} else if (i == 1) {
+			tmp3 = 0x20;
+		} else {
+			tmp3 = 0x14;
+		}
+
+		uint32_t *addr = (uint32_t *)(edi + tmp3);
+		uint32_t tmp4 = *addr;
+		tmp4 &= 0xf8ffff01;
+		tmp4 |= tmp;
+		tmp4 |= tmp2;
+		*addr = tmp4;
+	}
+}
+
+void frag_fffa536b(void *edx);
+void frag_fffa536b(void *edx)
+{
+	for (int i = 0; i < 8; i++) {
+		int ecx = ((int*)edx)[i];
+		if (ecx == 1) {
+			if (*(uint8_t*)(edx + 0x22) == 0)
+				((int*)edx)[i] = 0;
+		} else if (ecx == 2) {
+			if (*(uint8_t*)(edx + 0x24) == 0)
+				((int*)edx)[i] = 0;
+		} else if (ecx == 3) {
+			if (*(uint8_t*)(edx + 0x26) == 0)
+				((int*)edx)[i] = 0;
+		}
+	}
+}
