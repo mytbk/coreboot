@@ -164,6 +164,8 @@ extern frag_fffa3fd4
 extern frag_fffa3a17
 extern frag_fffa4507
 global fcn_fffa0516
+extern frag_fffa53b4
+extern frag_fffa536b
 
 ;; mrc_wdt
 
@@ -2766,7 +2768,10 @@ call dword [eax + 0x20]  ; ucall
 add esp, 0x20
 cmp ebx, HASWELL_FAMILY_ULT
 jne loc_fffa5349  ; jne 0xfffa5349
-jmp near loc_fffa533a  ; jmp 0xfffa533a
+mov al, byte [edi + 0xa78]
+or eax, 2
+mov byte [edi + 0xa78], al
+jmp loc_fffa5349
 
 loc_fffa4e1b:
 mov edx, 7
@@ -3076,11 +3081,6 @@ cmp bl, 6
 jne loc_fffa4e71  ; jne 0xfffa4e71
 jmp near loc_fffa4d92  ; jmp 0xfffa4d92
 
-loc_fffa533a:
-mov al, byte [edi + 0xa78]
-or eax, 2
-mov byte [edi + 0xa78], al
-
 loc_fffa5349:
 mov eax, dword [esi + 0xd]
 mov edx, dword [ebp - 0x5e8]
@@ -3092,88 +3092,20 @@ mov byte [edx + 0x24], al
 mov eax, dword [esi + 0xd]
 mov al, byte [eax + 2]
 mov byte [edx + 0x26], al
-xor eax, eax
 
-loc_fffa536b:
-mov edx, dword [ebp - 0x5e8]
-mov ecx, dword [edx + eax*4]
-cmp ecx, 1
-jne short loc_fffa537f  ; jne 0xfffa537f
-cmp byte [edx + 0x22], 0
-jmp short loc_fffa5393  ; jmp 0xfffa5393
+push dword [ebp - 0x5e8]
+call frag_fffa536b
+add esp, 4
 
-loc_fffa537f:
-cmp ecx, 2
-jne short loc_fffa538a  ; jne 0xfffa538a
-cmp byte [edx + 0x24], 0
-jmp short loc_fffa5393  ; jmp 0xfffa5393
-
-loc_fffa538a:
-cmp ecx, 3
-jne short loc_fffa539c  ; jne 0xfffa539c
-cmp byte [edx + 0x26], 0
-
-loc_fffa5393:
-jne short loc_fffa539c  ; jne 0xfffa539c
-mov dword [edx + eax*4], 0
-
-loc_fffa539c:
-inc eax
-cmp eax, 8
-jne short loc_fffa536b  ; jne 0xfffa536b
 mov ebx, dword [ebp - 0x5e8]
-mov dword [ebp - 0x5b4], 0
-xor ecx, ecx
 
-loc_fffa53b4:
-mov eax, dword [ebx + ecx*4]
-mov esi, 1
-shl esi, cl
-inc ecx
-mov edx, esi
-or byte [ebp + eax - 0x5b4], dl
-cmp ecx, 8
-jne short loc_fffa53b4  ; jne 0xfffa53b4
-xor eax, eax
+lea eax, [ebp - 0x5b4]
+push eax
+push ebx
+push edi
+call frag_fffa53b4
+add esp, 12
 
-loc_fffa53cf:
-cmp byte [ebx + eax*2 + 0x20], 1
-mov dl, al
-jne short loc_fffa542d  ; jne 0xfffa542d
-movzx ecx, byte [ebx + eax*2 + 0x21]
-shl ecx, 0x18
-mov dword [ebp - 0x648], ecx
-movzx ecx, byte [ebp + eax - 0x5b4]
-or ecx, 0x80000000
-cmp al, 2
-je short loc_fffa540d  ; je 0xfffa540d
-cmp al, 3
-je short loc_fffa5414  ; je 0xfffa5414
-dec dl
-mov esi, 0x14
-mov edx, 0x20
-cmove esi, edx
-jmp short loc_fffa5419  ; jmp 0xfffa5419
-
-loc_fffa540d:
-mov esi, 0x2c
-jmp short loc_fffa5419  ; jmp 0xfffa5419
-
-loc_fffa5414:
-mov esi, 0x38
-
-loc_fffa5419:
-add esi, edi
-mov edx, dword [esi]
-and edx, 0xf8ffff01
-or edx, dword [ebp - 0x648]
-or edx, ecx
-mov dword [esi], edx
-
-loc_fffa542d:
-inc eax
-cmp eax, 4
-jne short loc_fffa53cf  ; jne 0xfffa53cf
 mov al, byte [edi + 4]
 and eax, 0xfffffff8
 cmp byte [ebx + 0x22], 1
