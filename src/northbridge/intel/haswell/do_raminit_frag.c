@@ -546,8 +546,7 @@ static void frag_fffa40d3(void * dmibar)
 	}
 }
 
-void frag_fffa4962(void *dmibar, u32 v0, u8 t);
-void frag_fffa4962(void *dmibar, u32 v0, u8 t)
+static void frag_fffa4962(void *dmibar, u32 v0, u8 t)
 {
 	printk(BIOS_DEBUG, "frag_fffa4962: bar is 0x%08x\n", (uint32_t)dmibar);
 
@@ -604,8 +603,7 @@ static void frag_fffa412c(void *dmibar)
 	}
 }
 
-int frag_fffa4025(void *dmibar, void *ppi);
-int frag_fffa4025(void *dmibar, void *ppi)
+static int frag_fffa4025(void *dmibar, void *ppi)
 {
 	int typ; /* bp - 0x658 */
 	if (haswell_family_model() == HASWELL_FAMILY_MOBILE
@@ -691,12 +689,69 @@ loc_fffa4564:
 }
 
 uint32_t __attribute((regparm(3)))
-fcn_fffa0516(uint32_t mchbar, uint32_t a0, uint32_t a1, uint32_t a2);
+fcn_fffa0516(void* mchbar, uint32_t a0, uint32_t a1, uint32_t a2);
 
-void frag_fffa47f0(uint32_t mchbar);
-void frag_fffa47f0(uint32_t mchbar)
+void superfrag_fffa4025(void *mchbar, void *dmibar, void *ppi);
+void superfrag_fffa4025(void *mchbar, void *dmibar, void *ppi)
 {
-	uint32_t tmp = fcn_fffa0516(mchbar, 0xc008018, 0x22, 0);
-	tmp = (tmp & 0xffffe1ff) | 0x0c00;
-	fcn_fffa0516(mchbar, 0xc008018, 0x23, tmp);
+	uint32_t tmp1;
+	uint8_t tmp2, tmp3;
+	int typ;
+	uint32_t tmp4;
+	uint32_t tmp;
+
+	typ = frag_fffa4025(dmibar, ppi);
+	if (typ != 0) {
+		if (dmibar == NULL) {
+			io_fffa476b();
+		} else {
+			bar_update32(dmibar, 0x80c, ~0, 0x600000);
+			bar_update32(dmibar, 0x82c, ~0, 0x600000);
+		}
+		tmp = fcn_fffa0516(mchbar, 0xc008018, 0x22, 0);
+		tmp = (tmp & 0xffffe1ff) | 0x0c00;
+		fcn_fffa0516(mchbar, 0xc008018, 0x23, tmp);
+		tmp1 = 0xc008018;
+		tmp2 = 0x23;
+		tmp3 = 0x22;
+	} else {
+		tmp1 = 0xc008001;
+		tmp2 = 0x16;
+		tmp3 = 0x15;
+	}
+
+	if (dmibar == NULL) {
+		tmp = fcn_fffa0516(mchbar, tmp1, tmp3, 0);
+		tmp &= 0xc1ffffff;
+		tmp |= 0x6000000;
+		fcn_fffa0516(mchbar, tmp1, tmp2, tmp);
+	}
+	if (typ != 0) {
+		tmp = fcn_fffa0516(mchbar, 0xc088018, tmp3, 0);
+		tmp &= 0x81ffffff;
+		tmp |= 0x10000000;
+		fcn_fffa0516(mchbar, 0xc088018, tmp2, tmp);
+		tmp = fcn_fffa0516(mchbar, 0xc0c8018, tmp3, 0);
+		tmp &= 0xffefffff;
+		fcn_fffa0516(mchbar, 0xc0c8018, tmp2, tmp);
+		tmp1 = 0xc0c8018;
+	} else {
+		tmp1 = 0xc0c8001;
+	}
+	tmp = fcn_fffa0516(mchbar, tmp1, tmp3, 0);
+	tmp &= 0xe07fffff;
+	fcn_fffa0516(mchbar, tmp1, tmp2, tmp);
+	if (typ != 0) {
+		tmp = fcn_fffa0516(mchbar, 0xc308803, 0x20, 0);
+		tmp &= 0x8ff83fff;
+		tmp |= 0x40064000;
+		fcn_fffa0516(mchbar, 0xc308803, 0x21, tmp);
+		if (dmibar == NULL) {
+			pci_update_config32(PCI_DEV(0, 0, 0), 0xc24, 0xffff807f, 2);
+		}
+		tmp4 = 0;
+	} else {
+		tmp4 = 0x13;
+	}
+	frag_fffa4962(dmibar, tmp4, typ);
 }
