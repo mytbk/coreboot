@@ -77,6 +77,7 @@ extern create_raminit_hob
 extern frag_fffc1c07
 extern set_cpuid
 extern test_memory
+extern frag_fffc1f53
 
 initialize_txt:
 push ebx
@@ -276,16 +277,10 @@ je loc_fffc2376  ; je 0xfffc2376
 mov edi, 2
 
 loc_fffc1f53:
-mov edx, 4
-mov eax, ref_fffcd4a4  ; mov eax, 0xfffcd4a4
-call locate_hob
-test eax, eax
-je short loc_fffc1f77  ; je 0xfffc1f77
-mov dl, byte [eax + 0x21]
-add dl, byte [eax + 0x19]
-je short loc_fffc1f77  ; je 0xfffc1f77
-movzx edx, dl
-mov dword [ebp - 0x3fdb], edx
+lea eax, [ebp - 0x3fdb]
+push eax
+call frag_fffc1f53
+add esp, 4
 
 loc_fffc1f77:
 push eax
