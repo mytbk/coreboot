@@ -689,3 +689,14 @@ loc_fffa4564:
 	}
 	return typ;
 }
+
+uint32_t __attribute((regparm(3)))
+fcn_fffa0516(uint32_t mchbar, uint32_t a0, uint32_t a1, uint32_t a2);
+
+void frag_fffa47f0(uint32_t mchbar);
+void frag_fffa47f0(uint32_t mchbar)
+{
+	uint32_t tmp = fcn_fffa0516(mchbar, 0xc008018, 0x22, 0);
+	tmp = (tmp & 0xffffe1ff) | 0x0c00;
+	fcn_fffa0516(mchbar, 0xc008018, 0x23, tmp);
+}
