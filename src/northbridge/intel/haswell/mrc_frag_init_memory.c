@@ -131,3 +131,16 @@ void frag_fffc1c07()
 			frag_fffc1cd2();
 	}
 }
+
+extern EFI_GUID ref_fffcd4a4;
+void * frag_fffc1f53(uint32_t *wb);
+void * frag_fffc1f53(uint32_t *wb)
+{
+	void *hob = locate_hob(&ref_fffcd4a4, 4);
+	if (hob == NULL)
+		return NULL;
+	uint8_t tmp = *(uint8_t*)(hob + 0x21) + *(uint8_t*)(hob + 0x19);
+	if (tmp != 0)
+		*wb = tmp;
+	return hob;
+}
