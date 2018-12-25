@@ -164,6 +164,8 @@ global ref_fffcc910
 extern frag_fffa3fd4
 extern frag_fffa3a17
 extern frag_fffa4507
+extern frag_fffa47f0
+global fcn_fffa0516
 
 ;; mrc_wdt
 
@@ -2685,21 +2687,11 @@ or eax, 0x600000
 mov dword [ebx + 0x82c], eax
 
 loc_fffa47f0:
-sub esp, 0xc
-mov ecx, 0x22
-push 0
-mov edx, 0xc008018
-mov eax, dword [ebp - 0x648]
-call fcn_fffa0516  ; call 0xfffa0516
-and ah, 0xe1
-mov ecx, 0x23
-or ah, 0xc
-mov edx, 0xc008018
-mov dword [esp], eax
-mov eax, dword [ebp - 0x648]
-call fcn_fffa0516  ; call 0xfffa0516
+push dword [ebp - 0x648]
+call frag_fffa47f0
+add esp, 4
+
 mov esi, 0xc008018
-add esp, 0x10
 mov byte [ebp - 0x65a], 0x23
 mov byte [ebp - 0x659], 0x22
 jmp short loc_fffa4853  ; jmp 0xfffa4853
