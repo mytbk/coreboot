@@ -153,6 +153,7 @@ extern io_fffa4575
 extern io_fffa45f1
 extern io_fffa476b
 extern frag_fffa4962
+extern frag_fffa412c
 extern load_usb
 extern fill_pei_ram_data
 extern fill_ram_param
@@ -2662,7 +2663,7 @@ mov dword [ebp - 0x648], eax
 call haswell_family_model
 mov edi, eax
 
-push ebx
+push ebx ; ebx is dmibar
 call frag_fffa40d3
 add esp, 4
 
@@ -2682,31 +2683,10 @@ call io_fffa4188
 jmp loc_fffa4176
 
 loc_fffa412c:
-xor eax, eax
-lea ecx, [ebx + 0xa04]
+push ebx
+call frag_fffa412c
+add esp, 4
 
-loc_fffa4134:
-test ebx, ebx
-je short loc_fffa413f  ; je 0xfffa413f
-lea esi, [ecx + eax]
-mov edx, dword [esi]
-jmp short loc_fffa4167  ; jmp 0xfffa4167
-
-loc_fffa413f:
-mov edx, dword [0xf0000060]
-and edx, 0xfc000000
-lea esi, [eax + edx + 0xa04]
-mov edx, dword [0xf0000060]
-and edx, 0xfc000000
-lea edx, [eax + edx + 0xa04]
-mov edx, dword [edx]
-
-loc_fffa4167:
-add eax, 0x10
-or dh, 8
-cmp eax, 0x40
-mov dword [esi], edx
-jne short loc_fffa4134  ; jne 0xfffa4134
 jmp short loc_fffa4126  ; jmp 0xfffa4126
 
 loc_fffa4176:
