@@ -150,8 +150,7 @@ extern io_fffa43e1
 extern io_fffa445e
 extern io_fffa44ad
 extern io_fffa476b
-extern frag_fffa4962
-extern frag_fffa4025
+extern superfrag_fffa4025
 extern load_usb
 extern fill_pei_ram_data
 extern fill_ram_param
@@ -164,7 +163,6 @@ global ref_fffcc910
 extern frag_fffa3fd4
 extern frag_fffa3a17
 extern frag_fffa4507
-extern frag_fffa47f0
 global fcn_fffa0516
 
 ;; mrc_wdt
@@ -2660,119 +2658,13 @@ and eax, 0xfffffffe
 and ebx, 0xfffffffe
 mov dword [ebp - 0x648], eax
 
-; frag_fffa4025
-; input ebx (dmibar)
-; input [ebp - 0x660] (ppi)
-
+; superfrag_fffa4025(mchbar, dmibar, ppi)
 push dword [ebp - 0x660]
 push ebx
-call frag_fffa4025
-add esp, 8
-mov byte [ebp - 0x658], al
-
-loc_fffa476b:
-cmp byte [ebp - 0x658], 0
-je loc_fffa4840  ; je 0xfffa4840
-test ebx, ebx
-jne short loc_fffa47ce  ; jne 0xfffa47ce
-call io_fffa476b
-jmp short loc_fffa47f0  ; jmp 0xfffa47f0
-
-loc_fffa47ce:
-mov eax, dword [ebx + 0x80c]
-or eax, 0x600000
-mov dword [ebx + 0x80c], eax
-mov eax, dword [ebx + 0x82c]
-or eax, 0x600000
-mov dword [ebx + 0x82c], eax
-
-loc_fffa47f0:
 push dword [ebp - 0x648]
-call frag_fffa47f0
-add esp, 4
-
-mov esi, 0xc008018
-mov byte [ebp - 0x65a], 0x23
-mov byte [ebp - 0x659], 0x22
-jmp short loc_fffa4853  ; jmp 0xfffa4853
-
-loc_fffa4840:
-mov byte [ebp - 0x65a], 0x16
-mov esi, 0xc008001
-mov byte [ebp - 0x659], 0x15
-
-loc_fffa4853:
-test ebx, ebx
-jne short loc_fffa4894  ; jne 0xfffa4894
-sub esp, 0xc
-mov edx, esi
-push 0
-movzx ecx, byte [ebp - 0x659]
-mov eax, dword [ebp - 0x648]
-call fcn_fffa0516  ; call 0xfffa0516
-and eax, 0xc1ffffff
-mov edx, esi
-movzx ecx, byte [ebp - 0x65a]
-or eax, 0x6000000
-mov dword [esp], eax
-mov eax, dword [ebp - 0x648]
-call fcn_fffa0516  ; call 0xfffa0516
-add esp, 0x10
-
-loc_fffa4894:
-cmp byte [ebp - 0x658], 0
-jne loc_fffa55a4  ; jne 0xfffa55a4
-mov esi, 0xc0c8001
-
-loc_fffa48a6:
-sub esp, 0xc
-mov edx, esi
-push 0
-movzx ecx, byte [ebp - 0x659]
-mov eax, dword [ebp - 0x648]
-call fcn_fffa0516  ; call 0xfffa0516
-and eax, 0xe07fffff
-mov edx, esi
-movzx ecx, byte [ebp - 0x65a]
-mov dword [esp], eax
-mov eax, dword [ebp - 0x648]
-call fcn_fffa0516  ; call 0xfffa0516
-add esp, 0x10
-cmp byte [ebp - 0x658], 0
-mov edx, 0x13
-je short loc_fffa4962  ; je 0xfffa4962
-sub esp, 0xc
-mov ecx, 0x20
-push 0
-mov edx, 0xc308803
-mov eax, dword [ebp - 0x648]
-call fcn_fffa0516  ; call 0xfffa0516
-and eax, 0x8ff83fff
-mov ecx, 0x21
-or eax, 0x40064000
-mov edx, 0xc308803
-mov dword [esp], eax
-mov eax, dword [ebp - 0x648]
-call fcn_fffa0516  ; call 0xfffa0516
-add esp, 0x10
-test ebx, ebx
-jne loc_fffa5628  ; jne 0xfffa5628
-mov edx, dword [0xf0000060]
-mov eax, dword [0xf0000060]
-and eax, 0xfc000000
-and edx, 0xfc000000
-mov eax, dword [eax + 0xc24]
-and eax, 0xffff807f
-or ah, 2
-mov dword [edx + 0xc24], eax
-jmp near loc_fffa5628  ; jmp 0xfffa5628
-
-loc_fffa4962:
-push dword [ebp - 0x658]
-push edx
-push ebx
-call frag_fffa4962
+call superfrag_fffa4025
 add esp, 12
+
 
 mov ecx, dword [ebp - 0x660]
 mov eax, dword [ecx + 0xd]
@@ -3367,41 +3259,6 @@ jmp near loc_fffa56a4  ; jmp 0xfffa56a4
 loc_fffa559c:
 or eax, 0xffffffff
 jmp near loc_fffa56a4  ; jmp 0xfffa56a4
-
-loc_fffa55a4:
-sub esp, 0xc
-mov edx, 0xc088018
-push 0
-movzx esi, byte [ebp - 0x659]
-mov eax, dword [ebp - 0x648]
-mov ecx, esi
-call fcn_fffa0516  ; call 0xfffa0516
-and eax, 0x81ffffff
-mov edx, 0xc088018
-movzx edi, byte [ebp - 0x65a]
-or eax, 0x10000000
-mov dword [esp], eax
-mov ecx, edi
-mov eax, dword [ebp - 0x648]
-call fcn_fffa0516  ; call 0xfffa0516
-mov ecx, esi
-mov edx, 0xc0c8018
-mov eax, dword [ebp - 0x648]
-mov dword [esp], 0
-call fcn_fffa0516  ; call 0xfffa0516
-and eax, 0xffefffff
-mov ecx, edi
-mov dword [esp], eax
-mov edx, 0xc0c8018
-mov eax, dword [ebp - 0x648]
-mov esi, 0xc0c8018
-call fcn_fffa0516  ; call 0xfffa0516
-add esp, 0x10
-jmp near loc_fffa48a6  ; jmp 0xfffa48a6
-
-loc_fffa5628:
-xor edx, edx
-jmp near loc_fffa4962  ; jmp 0xfffa4962
 
 loc_fffa562f:
 mov edx, dword [ebp - 0x640]
