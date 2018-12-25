@@ -773,7 +773,7 @@ void frag_fffa53b4(void *edi, void *base, uint8_t a[])
 			continue;
 
 		uint32_t tmp = b8[i*2+1];
-		tmp <<= 18;
+		tmp <<= 0x18;
 
 		uint32_t tmp2 = a[i];
 		tmp2 |= 0x80000000;
