@@ -469,9 +469,9 @@ void fill_ram_param(pei_ram_param *param, struct pei_data *pd)
 {
 	memset(param, 0, sizeof(pei_ram_param));
 	param->v00 = 1;
-	param->v03[0] = 1;
-	param->v03[14] = 1;
-	param->v03[0x21] = 1;
+	param->v03 = 1;
+	param->v08[9] = 1;
+	param->v08[0x1c] = 1;
 	param->chan0_disabled = pd->dimm_channel0_disabled;
 	param->chan1_disabled = pd->dimm_channel1_disabled;
 	param->v2c[0] = 1;

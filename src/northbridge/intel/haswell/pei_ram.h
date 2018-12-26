@@ -24,7 +24,9 @@ struct _pei_ram_param
 {
 	uint8_t v00; // 0x00
 	uint16_t max_ddr3_freq; // 0x01
-	uint8_t v03[0x27]; // 0x03
+	uint8_t v03;
+	uint32_t v04;
+	uint8_t v08[0x22];
 	uint8_t chan0_disabled; // 0x2a
 	uint8_t chan1_disabled; // 0x2b
 	uint8_t v2c[0x2b]; // 0x2c
