@@ -173,7 +173,6 @@ mov dword [ebp - 0x50c4], eax
 
 loc_fffc1d5a:
 lea eax, [ebp - 0x5094]
-xor ebx, ebx
 call fcn_fffa9196  ; call 0xfffa9196
 
 lea edx, [ebp - 0x5036]
@@ -183,9 +182,6 @@ push dword [ebp - 0x50a4] ; memory init ppi
 call frag_fffc1d5a
 add esp, 12
 
-mov bl, 1
-
-loc_fffc1dac:
 cmp dword [ebp - 0x509c], 0x11
 jne short loc_fffc1dc2  ; jne 0xfffc1dc2
 test bl, bl

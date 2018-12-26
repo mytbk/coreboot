@@ -147,20 +147,20 @@ void * frag_fffc1f53(uint32_t *wb)
 	return hob;
 }
 
-void frag_fffc1d5a(void *ppi, int t, void* dst);
-void frag_fffc1d5a(void *ppi, int t, void* dst)
+int frag_fffc1d5a(void *ppi, int t, void* dst);
+int frag_fffc1d5a(void *ppi, int t, void* dst)
 {
 	void * esi = *(void**)(ppi + 0x15);
 	if (esi == NULL)
-		return;
+		return 0;
 	if (t == 4)
-		return;
+		return 0;
 
-	int ret = crc32(esi + 4, 0xfd0);
-	if (ret != *(int*)esi)
-		return;
+	if (crc32(esi + 4, 0xfd0) != *(uint32_t*)esi)
+		return 0;
 
 	memcpy(dst, esi, 0xfd4);
+	return 1;
 }
 
 void __attribute((regparm(1))) fcn_fffa9196(void *a);
