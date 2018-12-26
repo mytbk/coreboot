@@ -55,6 +55,7 @@ romstage-y += pei_mem.c
 romstage-y += do_raminit_frag.c
 romstage-y += mrc_frag_init_memory.c
 romstage-y += mrc_wdt.c
+romstage-y += pei_smbus.c
 postcar-y += memmap.c
 
 endif
