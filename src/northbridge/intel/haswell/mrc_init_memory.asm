@@ -78,7 +78,7 @@ extern set_cpuid
 extern test_memory
 extern frag_fffc1f53
 global initialize_txt
-extern frag_fffc1d5a
+extern copy_mrc_input
 extern frag_fffc1ea8
 extern frag_fffc2026
 global ref_fffcbf28
@@ -179,7 +179,7 @@ lea edx, [ebp - 0x5036]
 push edx
 push dword [ebp - 0x509c]
 push dword [ebp - 0x50a4] ; memory init ppi
-call frag_fffc1d5a
+call copy_mrc_input
 add esp, 12
 
 cmp dword [ebp - 0x509c], 0x11
