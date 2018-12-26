@@ -163,8 +163,32 @@ void frag_fffc1d5a(void *ppi, int t, void* dst)
 	memcpy(dst, esi, 0xfd4);
 }
 
-int __attribute((regparm(2)))
-fcn_fffa10df(void *ram_data, void *ppi);
+void __attribute((regparm(1))) fcn_fffa9196(void *a);
+static int check_data_structs(void *ram_data, pei_raminit_ppi *ppi)
+{
+	uint32_t chk;
+	uint32_t crc;
+
+	pei_ram_param *parm = ppi->ram_param;
+	fcn_fffa9196((void*)&chk);
+	crc = crc32((void*)parm, 0xc8);
+
+	if (chk != *(uint32_t*)(ram_data + 0x9dc))
+		return 1;
+
+	if (*(uint32_t*)(ram_data + 0x9d8)
+			!= *(uint32_t*)(ram_data + 0x1005))
+		return 1;
+
+	if (*(uint32_t*)(ram_data + 0x9d4)
+			!= *(uint32_t*)(ram_data + 0x1001))
+		return 1;
+
+	if (*(uint32_t*)(ram_data + 0x9e0) != crc)
+		return 1;
+
+	return 0;
+}
 
 /*
 ram_data: ebp - 0x503a
@@ -180,7 +204,7 @@ int frag_fffc1ea8(void *ram_data, pei_raminit_ppi *ppi,
 	if (v50c4 - 1 > 1) {
 		if (bl == 1) {
 			if (ppi->ram_param->v2c[0x2a] != 0) {
-				if (fcn_fffa10df(ram_data, ppi) == 0)
+				if (check_data_structs(ram_data, ppi) == 0)
 					return 3;
 			}
 		}
@@ -191,7 +215,7 @@ int frag_fffc1ea8(void *ram_data, pei_raminit_ppi *ppi,
 		mrc_zeromem(ram_data + 4, 0xfd4);
 		return 0;
 	}
-	if (fcn_fffa10df(ram_data, ppi) == 1) {
+	if (check_data_structs(ram_data, ppi) == 1) {
 		mrc_zeromem(ram_data + 4, 0xfd4);
 		return 0;
 	}

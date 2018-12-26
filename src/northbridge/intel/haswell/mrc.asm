@@ -61,7 +61,6 @@ extern mrc_init_memory
 global ref_fffcd4a4
 global ref_fffcd4e4
 
-global fcn_fffa10df
 extern locate_hob
 global fcn_fffa1d20
 global fcn_fffa56ac
@@ -1408,50 +1407,6 @@ pop esi
 pop edi
 pop ebp
 ret
-
-fcn_fffa10df:
-push ebp
-mov ebp, esp
-push esi
-push ebx
-mov ebx, eax
-lea eax, [ebp - 0xc]
-lea esp, [esp - 0x10]
-mov esi, dword [edx + 9]
-call fcn_fffa9196  ; call 0xfffa9196
-mov edx, 0xc8
-mov eax, esi
-call crc32  ; call 0xfffab210
-mov dl, byte [ebx + 0x9dc]
-cmp byte [ebp - 0xc], dl
-mov dl, 1
-jne short loc_fffa1154  ; jne 0xfffa1154
-mov cl, byte [ebx + 0x9dd]
-cmp byte [ebp - 0xb], cl
-jne short loc_fffa1154  ; jne 0xfffa1154
-mov cl, byte [ebx + 0x9de]
-cmp byte [ebp - 0xa], cl
-jne short loc_fffa1154  ; jne 0xfffa1154
-mov cl, byte [ebx + 0x9df]
-cmp byte [ebp - 9], cl
-jne short loc_fffa1154  ; jne 0xfffa1154
-mov ecx, dword [ebx + 0x9d8]
-cmp dword [ebx + 0x1005], ecx
-jne short loc_fffa1154  ; jne 0xfffa1154
-mov ecx, dword [ebx + 0x9d4]
-cmp dword [ebx + 0x1001], ecx
-jne short loc_fffa1154  ; jne 0xfffa1154
-cmp eax, dword [ebx + 0x9e0]
-setne dl
-
-loc_fffa1154:
-lea esp, [esp + 0x10]
-mov al, dl
-pop ebx
-pop esi
-pop ebp
-ret
-
 
 fcn_fffa1d20:
 push ebp
