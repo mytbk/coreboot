@@ -37,6 +37,7 @@ extern dmi_check_link
 extern pei_get_platform_memsize
 extern pei_choose_ranges
 extern crc32
+extern rtc_wait
 
 ; PEI services
 extern PeiServiceGetBootMode
@@ -119,7 +120,6 @@ global fcn_fffbd7da
 global fcn_fffc6438
 global fcn_fffc6986
 global fcn_fffc7720
-global fcn_fffc83be
 
 ;; pei_usb
 
@@ -9632,7 +9632,7 @@ test esi, esi
 je loc_fffaaa25  ; je 0xfffaaa25
 mov edx, 0xdddc
 mov eax, ebx
-call fcn_fffc83be  ; call 0xfffc83be
+call rtc_wait  ; call 0xfffc83be
 
 loc_fffaaca7:  ; not directly referenced
 lea esp, [ebp - 0xc]
@@ -44929,38 +44929,6 @@ imul eax, eax, 0xa
 lea eax, [edx + eax + 0x7d0]
 mov word [edi], ax
 pop eax
-pop ebx
-pop esi
-pop edi
-pop ebp
-ret
-
-fcn_fffc83be:
-push ebp
-mov ecx, edx
-mov ebp, esp
-push edi
-push esi
-push ebx
-mov word [eax + 0xfee], dx
-mov eax, edx
-out 0x80, ax
-mov edi, 0x48
-mov esi, 0x49
-
-loc_fffc83dc:
-mov eax, edi
-out 0x74, al
-in al, 0x75
-movzx ebx, al
-mov eax, esi
-out 0x74, al
-in al, 0x75
-mov edx, eax
-shl edx, 8
-or edx, ebx
-cmp cx, dx
-je short loc_fffc83dc  ; je 0xfffc83dc
 pop ebx
 pop esi
 pop edi
