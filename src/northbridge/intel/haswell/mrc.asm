@@ -54,6 +54,11 @@ global gEfiPeiReadOnlyVariablePpiGuid
 global gPchMeUmaPpiGuid
 global haswell_family_model
 global haswell_stepping
+global gPeiSmbusPolicyPpiGuid
+global gEfiPeiSmbusPpiGuid
+global gEfiPeiMemoryDiscoveredPpiGuid
+global fcn_fffc5f08
+global fcn_fffc5c8e
 
 extern mrc_init_memory
 
@@ -137,7 +142,7 @@ global wstr_pchinitpei
 ;; raminit_frag
 extern mrc_frag_smbus
 extern mrc_frag_pch
-global fcn_fffc5bf6
+extern fcn_fffc5bf6
 global fcn_fffb9720
 global gPchDmiTcVcPpiGuid
 global ref_fffcc97c
@@ -42399,54 +42404,6 @@ pop ebx
 pop esi
 pop edi
 pop ebp
-ret
-
-error_unsupported:
-push ebp
-mov eax, 0x80000003 ; EFI_UNSUPPORTED
-mov ebp, esp
-pop ebp
-ret
-
-fcn_fffc5bf6:
-push ebp
-mov ebp, esp
-push ebx
-mov ebx, edx
-lea esp, [esp - 0x10]
-mov dword [edx], 0x626d7370
-mov dword [edx + 4], eax
-mov edx, dword [eax]
-lea ecx, [ebx + 8]
-push ecx
-push 0
-push 0
-push gPeiSmbusPolicyPpiGuid
-push eax
-call dword [edx + 0x20]  ; ucall
-mov eax, dword [ebx + 8]
-add esp, 0x20
-mov edx, dword [eax]
-mov dword [ebx + 0x10], 0x80000010
-mov dword [ebx + 0xc], edx
-mov dword [ebx + 0x14], gEfiPeiSmbusPpiGuid
-mov dword [ebx + 0x1c], fcn_fffc5f08  ; mov dword [ebx + 0x1c], 0xfffc5f08
-mov dword [ebx + 0x20], error_unsupported
-mov dword [ebx + 0x24], error_unsupported
-mov dword [ebx + 0x28], error_unsupported
-mov dword [ebx + 0x2c], 0x80000020
-mov dword [ebx + 0x30], gEfiPeiMemoryDiscoveredPpiGuid
-mov dword [ebx + 0x34], fcn_fffc5c8e  ; mov dword [ebx + 0x34], 0xfffc5c8e
-mov byte [ebx + 0x38], 0
-lea edx, [ebx + 0x1c]
-mov dword [ebx + 0x18], edx
-mov dl, byte [eax + 8]
-mov byte [ebx + 0xc1], dl
-mov eax, dword [eax + 9]
-mov dword [ebx + 0xc2], eax
-mov byte [ebx + 0xc6], 0
-mov ebx, dword [ebp - 4]
-leave
 ret
 
 fcn_fffc5c8e:  ; not directly referenced
