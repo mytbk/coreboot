@@ -148,19 +148,19 @@ void * frag_fffc1f53(uint32_t *wb)
 	return hob;
 }
 
-int frag_fffc1d5a(void *ppi, int t, void* dst);
-int frag_fffc1d5a(void *ppi, int t, void* dst)
+int copy_mrc_input(pei_raminit_ppi *ppi, int bootmode, void* dst);
+int copy_mrc_input(pei_raminit_ppi *ppi, int bootmode, void* dst)
 {
-	void * esi = *(void**)(ppi + 0x15);
-	if (esi == NULL)
+	void *inp = ppi->mrc_input;
+	if (inp == NULL)
 		return 0;
-	if (t == 4)
-		return 0;
-
-	if (crc32(esi + 4, 0xfd0) != *(uint32_t*)esi)
+	if (bootmode == 4)
 		return 0;
 
-	memcpy(dst, esi, 0xfd4);
+	if (crc32(inp + 4, 0xfd0) != *(uint32_t*)inp)
+		return 0;
+
+	memcpy(dst, inp, 0xfd4);
 	return 1;
 }
 
