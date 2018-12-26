@@ -68,7 +68,7 @@ extern fcn_fffbd7da
 extern fcn_fffc6438
 extern fcn_fffc6986
 extern fcn_fffc7720
-extern fcn_fffc83be
+extern rtc_wait
 
 extern frag_fffc1d20
 extern frag_fffc1fc3
@@ -148,7 +148,7 @@ call dword [eax + 0x20] ; LocatePpi
 add esp, 0x20
 lea eax, [ebp - 0x503a]
 mov edx, 0xdd00
-call fcn_fffc83be
+call rtc_wait
 mov ecx, dword [ebp - 0x50bc]
 sub esp, 0xc
 lea edx, [ebp - 0x50a8]
@@ -350,7 +350,7 @@ call dword [eax + 8]  ; ucall
 add esp, 0x20
 lea eax, [ebp - 0x503a]
 mov edx, 0xddfe
-call fcn_fffc83be  ; call 0xfffc83be
+call rtc_wait
 
 ; ReportStatusCode is not used in mrc
 ; mov edx, dword [ebp - 0x50bc]
@@ -445,14 +445,14 @@ add esp, 0x10
 loc_fffc2355:
 lea eax, [ebp - 0x503a]
 mov edx, 0x55
-call fcn_fffc83be  ; call 0xfffc83be
+call rtc_wait
 xor eax, eax
 jmp short loc_fffc23a2  ; jmp 0xfffc23a2
 
 loc_fffc238d:
 mov edx, 0xd5
 lea eax, [ebp - 0x503a]
-call fcn_fffc83be  ; call 0xfffc83be
+call rtc_wait
 
 loc_fffc239d:
 mov eax, 0x80000007

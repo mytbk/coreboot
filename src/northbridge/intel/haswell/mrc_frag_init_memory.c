@@ -6,6 +6,7 @@
 #include <arch/cpu.h>
 #include "pei_ram.h"
 #include <console/console.h>
+#include "mrc_misc.h"
 
 int frag_fffc1d20(void);
 int frag_fffc1d20(void)
@@ -249,7 +250,6 @@ typedef struct _ram_st {
 } __packed ram_st;
 extern ram_st ref_fffcbf28[];
 
-void __attribute((regparm(2))) fcn_fffc83be(void *ram_data, uint32_t tmp);
 int __attribute((regparm(3))) fcn_fffc6438(void *ram_data, u32 a, u32 b);
 void fcn_fffc6986(void);
 
@@ -268,7 +268,7 @@ int frag_fffc2026(void *ram_data)
 		} else {
 			tmp = ref_fffcbf28[i].v1;
 		}
-		fcn_fffc83be(ram_data, tmp);
+		rtc_wait(ram_data, tmp);
 
 		dl = 1;
 		if (ref_fffcbf28[i].func == NULL)
