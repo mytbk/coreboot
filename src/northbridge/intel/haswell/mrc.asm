@@ -38,6 +38,7 @@ extern pei_get_platform_memsize
 extern pei_choose_ranges
 extern crc32
 extern rtc_wait
+extern pci_setup_bridge
 
 ; PEI services
 extern PeiServiceGetBootMode
@@ -313,79 +314,6 @@ pop edi
 pop ebp
 ret
 
-fcn_fffa0172:
-push ebp
-mov edx, eax
-shl edx, 0x14
-mov ebp, esp
-push edi
-xor edi, edi
-push esi
-mov esi, eax
-push ebx
-lea esp, [esp - 0x1c]
-mov dword [ebp - 0x1c], edx
-xor edx, edx
-
-loc_fffa018a:
-mov ecx, dword [0xf0000060]
-mov ebx, edi
-shl ebx, 0xf
-and ecx, 0xfc000000
-add ecx, dword [ebp - 0x1c]
-add ecx, ebx
-mov cx, word [ecx]
-inc cx
-je loc_fffa0236  ; je 0xfffa0236
-mov ecx, dword [0xf0000060]
-add ebx, dword [ebp - 0x1c]
-and ecx, 0xfc000000
-lea ecx, [ebx + ecx + 0xa]
-mov cx, word [ecx]
-cmp cx, 0x604
-jne short loc_fffa0236  ; jne 0xfffa0236
-mov edx, dword [0xf0000060]
-mov ecx, esi
-and edx, 0xfc000000
-inc eax
-lea edx, [ebx + edx + 0x18]
-mov byte [edx], cl
-mov edx, dword [0xf0000060]
-and edx, 0xfc000000
-lea edx, [ebx + edx + 0x19]
-mov byte [edx], al
-mov edx, dword [0xf0000060]
-movzx eax, al
-and edx, 0xfc000000
-mov ecx, eax
-shl ecx, 0x14
-lea edx, [ebx + edx + 0x1a]
-mov byte [edx], 0xff
-mov edx, dword [0xf0000060]
-and edx, 0xfc000000
-add edx, ecx
-mov word [edx], 0
-call fcn_fffa0172  ; call 0xfffa0172
-mov dl, al
-mov eax, dword [0xf0000060]
-and eax, 0xfc000000
-lea eax, [ebx + eax + 0x1a]
-mov byte [eax], dl
-mov al, dl
-
-loc_fffa0236:
-inc edi
-cmp edi, 0x20
-jne loc_fffa018a  ; jne 0xfffa018a
-test dl, dl
-cmovne esi, edx
-lea esp, [esp + 0x1c]
-pop ebx
-mov eax, esi
-pop esi
-pop edi
-pop ebp
-ret
 
 fcn_fffa036f:  ; not directly referenced
 push ebp
@@ -632,7 +560,7 @@ mov edx, dword [0xf0000060]
 and edx, 0xfc000000
 add edx, ecx
 mov word [edx], 0
-call fcn_fffa0172  ; call 0xfffa0172
+call pci_setup_bridge  ; call 0xfffa0172
 mov byte [ebp - 0x40], al
 mov eax, dword [0xf0000060]
 and eax, 0xfc000000
@@ -930,7 +858,7 @@ mov eax, dword [0xf0000060]
 and eax, 0xfc000000
 mov word [eax + 0x100000], 0
 mov eax, 1
-call fcn_fffa0172  ; call 0xfffa0172
+call pci_setup_bridge  ; call 0xfffa0172
 mov byte [ebp - 0x49], al
 mov al, 1
 jmp short loc_fffa0b47  ; jmp 0xfffa0b47
