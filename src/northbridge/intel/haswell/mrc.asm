@@ -172,6 +172,7 @@ extern frag_fffa4507
 global fcn_fffa0516
 extern frag_fffa53b4
 extern frag_fffa536b
+extern frag_fffa549a
 
 ;; mrc_wdt
 
@@ -310,40 +311,6 @@ loc_fffa016c:
 pop ebx
 pop ebx
 pop esi
-pop edi
-pop ebp
-ret
-
-
-fcn_fffa036f:  ; not directly referenced
-push ebp
-mov ebp, esp
-push edi
-push esi
-lea ecx, [ebp - 0xc]
-lea esp, [esp - 0x1c]
-mov eax, dword [0xf0000060]
-and eax, 0xfc000000
-mov esi, dword [eax + 0x48]
-mov edi, dword [eax + 0x4c]
-mov eax, dword [0xff7d7538]
-and esi, 0xfffffffe
-mov edx, dword [eax]
-push ecx
-push 0
-push 0
-push ref_fffcd4e4  ; push 0xfffcd4e4
-push eax
-call dword [edx + 0x20]  ; ucall
-mov eax, dword [esi + 0x5f00]
-or ah, 6
-mov dword [esi + 0x5f00], eax
-mov al, byte [esi + 0x5da8]
-or eax, 3
-mov byte [esi + 0x5da8], al
-lea esp, [ebp - 8]
-pop esi
-xor eax, eax
 pop edi
 pop ebp
 ret
@@ -3041,21 +3008,9 @@ jne short loc_fffa5467  ; jne 0xfffa5467
 lea eax, [ebp - 0x526]
 mov eax, dword [eax + 1]
 mov edx, dword [eax + 4]
-mov eax, dword [edx + 0x5f00]
-or eax, 1
-mov dword [edx + 0x5f00], eax
-mov eax, ref_fffcc904  ; mov eax, 0xfffcc904
-call PeiServiceNotifyPpi
-lea eax, [ebp - 0x5e8]
-call PeiServiceGetBootMode  ; call 0xfffbf908
-test eax, eax
-jne short loc_fffa54e7
-cmp dword [ebp - 0x5e8], 0x11
-jne short loc_fffa54e7
-mov eax, ref_fffcd554  ; mov eax, 0xfffcd554
-call PeiServiceNotifyPpi
-
-loc_fffa54e7:
+push edx
+call frag_fffa549a
+add esp, 4
 
 push dword [ebp - 0x63c]
 push dword [ebp - 0x20c]
@@ -49670,11 +49625,6 @@ dd 0x7ae3ceb7
 dd 0x48fa2ee2
 dd 0x103549aa
 dd 0xbfca83bc
-
-ref_fffcc904:
-dd 0x80000020
-dd gEfiPeiMemoryDiscoveredPpiGuid
-dd fcn_fffa036f
 
 ref_fffcc910:
 dd 0x80000010
