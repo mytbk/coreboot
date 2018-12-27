@@ -141,7 +141,7 @@ PeiServiceNotifyPpi(const EFI_PEI_NOTIFY_DESCRIPTOR *NotifyList)
 
 extern EFI_PEI_CPU_IO_PPI gCpuIoPpi;
 
-void init_pei_svc(EFI_PEI_SERVICES *sv)
+static void init_pei_svc(EFI_PEI_SERVICES *sv)
 {
 	sv->InstallPpi = PeiInstallPpi;
 	sv->LocatePpi = PeiLocatePpi;
@@ -153,6 +153,16 @@ void init_pei_svc(EFI_PEI_SERVICES *sv)
 	sv->CopyMem = memcpy;
 	sv->ReportStatusCode = dummy_func;
 	sv->CpuIo = &gCpuIoPpi;
+}
+
+void init_mrc_pei(MRC_PEI *pei, struct pei_data *pd)
+{
+	pei->sig = PEI_SIGNATURE;
+	init_pei_svc(&pei->peisv);
+	pei->bootmode = pd->boot_mode;
+	pei->nb_installed_ppi = 0;
+	pei->nb_notify_desc = 0;
+	pei->pei_data = pd;
 }
 
 EFI_HOB_DATA * __attribute((regparm(2)))

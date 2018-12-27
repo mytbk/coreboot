@@ -43,7 +43,7 @@ extern pci_setup_bridge
 ; PEI services
 extern PeiServiceGetBootMode
 extern PeiServiceNotifyPpi
-extern init_pei_svc
+extern init_mrc_pei
 
 extern PchMeUmaDesc
 
@@ -2334,22 +2334,17 @@ mov al, dl
 mov edx, dword [ebp - 0x63c]
 rep stosb  ; rep stosb byte es:[edi], al
 mov eax, ebx
-lea edi, [ebp - 0x278]
-mov cl, 0x98
 mov dword [ebp - 0x60e], dummy_func
-rep stosd  ; rep stosd dword es:[edi], eax
-mov eax, dword [edx + 0x3e]
 mov byte [ebp - 0x553], 1
-mov dword [ebp - 0x20c], eax
 mov byte [ebp - 0x62f], 1
 lea eax, [ebp - 0x5d4]
 mov dword [ebp - 0x278], 0xfeadb00b
 mov dword [ebp - 0x200], eax
 
-; fill EFI_PEI_SERVICES struct
-lea eax, [ebp - 0x274]
+push edx
+lea eax, [ebp - 0x278]
 push eax
-call init_pei_svc
+call init_mrc_pei
 pop eax
 
 lea eax, [ebp - 0x526]
@@ -2398,7 +2393,6 @@ mov dword [ebp - 0x180], gPeiBaseMemoryTestPpiGuid
 mov dword [ebp - 0x174], ref_fffcc8bc  ; mov dword [ebp - 0x174], 0xfffcc8bc
 mov dword [ebp - 0x168], gPeiSeCPlatformPolicyPpiGuid
 mov dword [ebp - 0x118], 0xe
-mov dword [ebp - 0x1c], edx
 jne loc_fffa559c  ; jne 0xfffa559c
 sub esp, 0xc
 lea eax, [ebp - 0x62c]

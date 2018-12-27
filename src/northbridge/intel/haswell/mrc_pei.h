@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#include "pei_data.h"
 
 #ifndef EFIAPI
 #define EFIAPI /* __attribute((msabi)) */
@@ -152,7 +153,8 @@ typedef struct {
 	int nb_installed_ppi; // 0x160
 	EFI_PEI_NOTIFY_DESCRIPTOR notify_dsc[20]; // 0x164
 	int nb_notify_desc; // 0x254
-	EFI_HOB *hobList;
+	EFI_HOB *hobList; // 0x258
+	struct pei_data *pei_data; // 0x25c
 } MRC_PEI;
 
 int EFIAPI PeiInstallPpi(const EFI_PEI_SERVICES **PeiServices,
@@ -174,7 +176,7 @@ int __attribute((regparm(1))) PeiServiceGetBootMode(int *BootMode);
 int __attribute((regparm(1)))
 PeiServiceNotifyPpi(const EFI_PEI_NOTIFY_DESCRIPTOR *NotifyList);
 
-void init_pei_svc(EFI_PEI_SERVICES *sv);
+void init_mrc_pei(MRC_PEI *pei, struct pei_data *pd);
 EFI_HOB_DATA * __attribute((regparm(2)))
 locate_hob(EFI_GUID *guid, uint16_t v);
 
