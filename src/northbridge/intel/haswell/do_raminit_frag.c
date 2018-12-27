@@ -817,3 +817,37 @@ void frag_fffa536b(void *edx)
 		}
 	}
 }
+
+static int mem_notify(EFI_PEI_SERVICES **PeiServices,
+  EFI_PEI_NOTIFY_DESCRIPTOR *NotifyDescriptor,
+  void *Ppi)
+{
+	void * mchbar = (void*)pci_read_config32(PCI_DEV(0, 0, 0), 0x48);
+	pci_read_config32(PCI_DEV(0, 0, 0), 0x4c);
+
+	write32(mchbar + 0x5f00, read32(mchbar + 0x5f00) | 0x0600);
+	write8(mchbar + 0x5da8, read8(mchbar + 0x5da8) | 3);
+	return 0;
+}
+
+extern EFI_GUID gEfiPeiMemoryDiscoveredPpiGuid;
+static const EFI_PEI_NOTIFY_DESCRIPTOR mem_discover = {
+	0x80000020, &gEfiPeiMemoryDiscoveredPpiGuid, mem_notify
+};
+
+extern EFI_PEI_NOTIFY_DESCRIPTOR ref_fffcd554;
+
+void frag_fffa549a(void *mchbar);
+void frag_fffa549a(void *mchbar)
+{
+	void *reg_5f00 = mchbar + 0x5f00;
+	write32(reg_5f00, read32(reg_5f00) | 1);
+	PeiServiceNotifyPpi(&mem_discover);
+
+	int bootmode;
+	if (PeiServiceGetBootMode(&bootmode) != 0)
+		return;
+	if (bootmode != 0x11)
+		return;
+	PeiServiceNotifyPpi(&ref_fffcd554);
+}
