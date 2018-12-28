@@ -1,10 +1,20 @@
 // other random frags extracted from mrc
 //
-#include <arch/pci_ops.h>
+#include <device/pci_ops.h>
 #include <southbridge/intel/lynxpoint/pch.h>
 #include <console/console.h>
 #include "mrc_utils.h"
 #include "mrc_pei.h"
+
+void frag_fffa0ff3(void);
+void frag_fffa0ff3(void)
+{
+	pci_update_config16(PCI_DEV(0, 2, 0), 4, 0xfff9, 0);
+	pci_read_config32(PCI_DEV(0, 2, 0), 0x10);
+	pci_write_config32(PCI_DEV(0, 2, 0), 0x10, 0);
+	pci_read_config32(PCI_DEV(0, 2, 0), 0x14);
+	pci_write_config32(PCI_DEV(0, 2, 0), 0x14, 0);
+}
 
 void frag_fffa5d3c(void *bar, uint32_t offset);
 void frag_fffa5d3c(void *bar, uint32_t offset)

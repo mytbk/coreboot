@@ -181,6 +181,7 @@ extern mrc_wdt_ppi
 ;; other frags
 extern frag_fffa5d3c
 extern frag_fffa627c
+extern frag_fffa0ff3
 
 ;;
 
@@ -1252,28 +1253,10 @@ jne short loc_fffa0fc9  ; jne 0xfffa0fc9
 jmp near loc_fffa0ed3  ; jmp 0xfffa0ed3
 
 loc_fffa0ff3:
-mov edx, dword [0xf0000060]
-mov ebx, dword [0xf0000060]
-and ebx, 0xfc000000
-and edx, 0xfc000000
+call frag_fffa0ff3
 mov eax, dword [ebp - 0x34]
 mov ecx, dword [ebp - 0x30]
-mov bx, word [ebx + 0x10004]
-and ebx, 0xfffffff9
-mov word [edx + 0x10004], bx
-mov edx, dword [0xf0000060]
-and edx, 0xfc000000
 mov ebx, dword [ebp - 0x44]
-mov edx, dword [edx + 0x10010]
-mov edx, dword [0xf0000060]
-and edx, 0xfc000000
-mov dword [edx + 0x10010], 0
-mov edx, dword [0xf0000060]
-and edx, 0xfc000000
-mov edx, dword [edx + 0x10014]
-mov edx, dword [0xf0000060]
-and edx, 0xfc000000
-mov dword [edx + 0x10014], 0
 mov edx, dword [ebx + 9]
 cmp byte [edx + 3], 0
 jne short loc_fffa10c0  ; jne 0xfffa10c0
