@@ -527,15 +527,6 @@ void fill_ram_param(pei_ram_param *param, struct pei_data *pd)
 	}
 }
 
-static inline void
-bar_update32(void *bar, uint32_t offset, uint32_t andv, uint32_t orv)
-{
-	u32 tmp = read32(bar + offset);
-	tmp &= andv;
-	tmp |= orv;
-	write32(bar + offset, tmp);
-}
-
 static void frag_fffa40d3(void * dmibar)
 {
 	for (uint32_t i = 0xa00; i < 0xa40; i += 0x10) {

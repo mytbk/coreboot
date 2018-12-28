@@ -183,6 +183,7 @@ extern frag_fffa5d3c
 extern frag_fffa627c
 extern frag_fffa0ff3
 extern frag_fffa1e83
+extern frag_fffa9029
 
 ;;
 
@@ -7246,46 +7247,11 @@ mov eax, dword [edi + 0x103f]
 mov dword [eax + 0x50fc], 0x8f
 cmp byte [edi + 0x102f], 0
 je loc_fffa913e  ; je 0xfffa913e
-mov edx, dword [edi + 0x103b]
-mov eax, dword [edx + 0xa0]
-or eax, 1
-mov dword [edx + 0xa0], eax
-mov edx, dword [edi + 0x103b]
-mov eax, dword [edx + 0xbc]
-or eax, 1
-mov dword [edx + 0xbc], eax
-mov edx, dword [edi + 0x103b]
-mov eax, dword [edx + 0xa8]
-or eax, 1
-mov dword [edx + 0xa8], eax
-mov edx, dword [edi + 0x103b]
-mov eax, dword [edx + 0x90]
-or eax, 1
-mov dword [edx + 0x90], eax
-mov edx, dword [edi + 0x103b]
-mov eax, dword [edx + 0x98]
-or eax, 1
-mov dword [edx + 0x98], eax
-mov edx, dword [edi + 0x103b]
-mov eax, dword [edx + 0x5c]
-or eax, 1
-mov dword [edx + 0x5c], eax
-mov edx, dword [edi + 0x103b]
-mov eax, dword [edx + 0xb0]
-or eax, 1
-mov dword [edx + 0xb0], eax
-mov edx, dword [edi + 0x103b]
-mov eax, dword [edx + 0xb4]
-or eax, 1
-mov dword [edx + 0xb4], eax
-mov edx, dword [edi + 0x103b]
-mov eax, dword [edx + 0x78]
-or ah, 4
-mov dword [edx + 0x78], eax
-mov edx, dword [edi + 0x103b]
-mov eax, dword [edx + 0x50]
-or eax, 1
-mov dword [edx + 0x50], eax
+
+push dword [edi + 0x103b]
+call frag_fffa9029
+add esp, 4
+
 mov ecx, dword [edi + 0x103f]
 movzx edx, byte [edi + 0x107c]
 and edx, 1
