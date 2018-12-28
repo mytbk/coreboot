@@ -182,6 +182,7 @@ extern mrc_wdt_ppi
 extern frag_fffa5d3c
 extern frag_fffa627c
 extern frag_fffa0ff3
+extern frag_fffa1e83
 
 ;;
 
@@ -1430,67 +1431,11 @@ movzx edx, dl
 
 loc_fffa1e83:
 mov byte [ebx + 0x52], dl
-mov eax, dword [esi + 0x4e]
-mov dword [ebx + 0x8b], eax
-mov word [ebx + 0x8f], 0x3e8
-mov byte [ebx + 0x54], 0
-mov al, byte [esi + 0x2e]
-mov byte [ebx + 0x57], al
-mov al, byte [esi + 0x2f]
-mov byte [ebx + 0x6d8], al
-mov al, byte [esi + 0x30]
-mov byte [ebx + 0x6d9], al
-mov al, byte [esi + 0x31]
-mov byte [ebx + 0x6da], al
-mov al, byte [esi + 0x6b]
-mov byte [ebx + 0x6db], al
-mov al, byte [ebx + 0x6dc]
-mov dl, byte [esi + 0x32]
-and eax, 0xfffffffe
-and edx, 1
-or eax, edx
-mov byte [ebx + 0x6dc], al
-mov dl, byte [esi + 0x33]
-and edx, 1
-and eax, 0xfffffffd
-add edx, edx
-or eax, edx
-mov byte [ebx + 0x6dc], al
-mov dl, byte [esi + 0x34]
-and edx, 1
-and eax, 0xfffffffb
-shl edx, 2
-or eax, edx
-mov byte [ebx + 0x6dc], al
-mov dl, byte [esi + 0x35]
-and edx, 1
-and eax, 0xfffffff7
-shl edx, 3
-or eax, edx
-mov byte [ebx + 0x6dc], al
-mov dl, byte [esi + 0x36]
-and edx, 1
-and eax, 0xffffffef
-shl edx, 4
-or eax, edx
-mov byte [ebx + 0x6dc], al
-mov dl, byte [esi + 0x37]
-and edx, 1
-and eax, 0xffffffdf
-shl edx, 5
-or eax, edx
-mov byte [ebx + 0x6dc], al
-mov dl, byte [esi + 0x38]
-and edx, 1
-and eax, 0xffffffbf
-shl edx, 6
-or eax, edx
-mov byte [ebx + 0x6dc], al
-mov dl, byte [esi + 0x39]
-shl edx, 7
-and eax, 0x7f
-or eax, edx
-mov byte [ebx + 0x6dc], al
+push esi
+push ebx
+call frag_fffa1e83
+add esp, 8
+
 mov al, byte [ebx + 0x6dd]
 mov dl, byte [esi + 0x3a]
 and eax, 0xfffffffe
