@@ -16,6 +16,66 @@ void frag_fffa0ff3(void)
 	pci_write_config32(PCI_DEV(0, 2, 0), 0x14, 0);
 }
 
+static inline u8 shupd(u8 a, u8 b, int sh)
+{
+	a &= (0xff - (1 << sh));
+	a |= ((b & 1) << sh);
+	return a;
+}
+
+void frag_fffa1e83(void *ebx, void *esi, uint8_t v);
+void frag_fffa1e83(void *ebx, void *esi, uint8_t v)
+{
+#ifndef T8
+#undef T8
+#endif
+#define T8(d,s) do { *(u8*)(ebx + d) = *(u8*)(esi + s); } while (0);
+
+	u8 tmp;
+
+	*(u32*)(ebx + 0x8b) = *(u32*)(esi + 0x4e);
+	*(u16*)(ebx + 0x8f) = 0x3e8;
+	*(u8*)(ebx + 0x54) = 0;
+	T8(0x57, 0x2e);
+	T8(0x6d8, 0x2f); T8(0x6d9, 0x30); T8(0x6da, 0x31);
+	T8(0x6db, 0x6b);
+
+	tmp = *(u8*)(ebx + 0x6dc);
+	for (int i = 0; i < 8; i++) {
+		tmp = shupd(tmp, *(u8*)(esi + 0x32 + i), i);
+	}
+	*(u8*)(ebx + 0x6dc) = tmp;
+
+	tmp = *(u8*)(ebx + 0x6dd);
+	for (int i = 0; i < 8; i++) {
+		if (i == 3) continue;
+		tmp = shupd(tmp, *(u8*)(esi + 0x3a + i), i);
+	}
+	*(u8*)(ebx + 0x6dd) = tmp;
+
+	tmp = *(u8*)(ebx + 0x6de);
+	tmp = shupd(tmp, *(u8*)(esi + 0x42), 0);
+	tmp = shupd(tmp, *(u8*)(esi + 0x43), 2);
+	tmp = shupd(tmp, *(u8*)(esi + 0x44), 3);
+	tmp = shupd(tmp, *(u8*)(esi + 0x47), 6);
+	tmp = shupd(tmp, *(u8*)(esi + 0x48), 7);
+	*(u8*)(ebx + 0x6de) = tmp;
+
+	tmp = *(u8*)(ebx + 0x6df);
+	tmp = shupd(tmp, *(u8*)(esi + 0x49), 0);
+	tmp = shupd(tmp, *(u8*)(esi + 0x4a), 1);
+	tmp = shupd(tmp, *(u8*)(esi + 0x4b), 2);
+
+	if (v > 1) {
+		tmp = shupd(tmp, *(u8*)(esi + 0x58), 3);
+		tmp = shupd(tmp, *(u8*)(esi + 0x59), 4);
+		tmp = shupd(tmp, *(u8*)(esi + 0x5a), 5);
+	} else {
+		tmp = (tmp & 0xe7) | 0x20;
+	}
+	*(u8*)(ebx + 0x6df) = tmp;
+}
+
 void frag_fffa5d3c(void *bar, uint32_t offset);
 void frag_fffa5d3c(void *bar, uint32_t offset)
 {
