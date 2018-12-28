@@ -7285,7 +7285,7 @@ push edx
 mov edx, 0x5d10
 push eax
 mov eax, edi
-call fcn_fffb210b  ; call 0xfffb210b
+call MCHBAR_WRITE64
 lea esp, [ebp - 0xc]
 xor eax, eax
 pop ebx
@@ -9114,7 +9114,7 @@ push edx
 mov edx, ecx
 push eax
 mov eax, ebx
-call fcn_fffb210b  ; call 0xfffb210b
+call MCHBAR_WRITE64
 mov eax, dword [ebx + 0x1005]
 add esp, 0x10
 cmp eax, HASWELL_FAMILY_MOBILE
@@ -9500,7 +9500,7 @@ push edx
 mov edx, ecx
 push eax
 mov eax, ebx
-call fcn_fffb210b  ; call 0xfffb210b
+call MCHBAR_WRITE64
 mov eax, dword [ebx + 0x103f]
 and dword [ebp - 0x6c], 0xffff7f24
 add eax, edi
@@ -12684,7 +12684,7 @@ push edx
 mov edx, 0x4910
 push eax
 mov eax, ebx
-call fcn_fffb210b  ; call 0xfffb210b
+call MCHBAR_WRITE64
 mov eax, dword [ebx + 0x103f]
 mov edx, 0x48d8
 mov dword [eax + 0x4198], 0x2c08
@@ -12695,14 +12695,14 @@ pop esi
 pop edi
 push 0
 push 0
-call fcn_fffb210b  ; call 0xfffb210b
+call MCHBAR_WRITE64
 pop eax
 pop edx
 mov eax, ebx
 mov edx, 0x48e8
 push 0
 push 0x3f8
-call fcn_fffb210b  ; call 0xfffb210b
+call MCHBAR_WRITE64
 add esp, 0x10
 
 loc_fffad9a0:  ; not directly referenced
@@ -12723,7 +12723,7 @@ push edx
 mov edx, 0x4918
 push eax
 mov eax, ebx
-call fcn_fffb210b  ; call 0xfffb210b
+call MCHBAR_WRITE64
 mov eax, dword [ebx + 0x103f]
 mov edx, 0x48e0
 mov dword [eax + 0x4598], 0x2c08
@@ -12734,14 +12734,14 @@ pop esi
 pop edi
 push 0
 push 0
-call fcn_fffb210b  ; call 0xfffb210b
+call MCHBAR_WRITE64
 pop eax
 pop edx
 mov eax, ebx
 mov edx, 0x48f0
 push 0
 push 0x3f8
-call fcn_fffb210b  ; call 0xfffb210b
+call MCHBAR_WRITE64
 add esp, 0x10
 
 loc_fffada2e:  ; not directly referenced
@@ -14731,7 +14731,7 @@ jmp short loc_fffb015f  ; jmp 0xfffb015f
 
 loc_fffb0132:  ; not directly referenced
 mov eax, esi
-call fcn_fffb20e4  ; call 0xfffb20e4
+call MCHBAR64
 mov eax, dword [esi + 0x103f]
 and edx, 0x7000000
 movzx ecx, bl
@@ -17153,7 +17153,7 @@ pop edi
 pop ebp
 ret
 
-fcn_fffb20e4:  ; not directly referenced
+MCHBAR64:
 push ebp
 mov ebp, esp
 lea esp, [esp - 0x10]
@@ -17168,7 +17168,7 @@ mov edx, dword [ebp - 0xc]
 leave
 ret
 
-fcn_fffb210b:  ; not directly referenced
+MCHBAR_WRITE64:
 push ebp
 mov ebp, esp
 push esi
@@ -17873,7 +17873,7 @@ lea ecx, [ebx + ebx - 0x4a18]
 mov edx, ecx
 push eax
 mov eax, edi
-call fcn_fffb210b  ; call 0xfffb210b
+call MCHBAR_WRITE64
 mov eax, dword [edi + 0x103f]
 add esp, 0x10
 lea eax, [ebx + eax - 0xa8]
@@ -18107,7 +18107,7 @@ push eax
 mov eax, edi
 push 0
 push 0
-call fcn_fffb210b  ; call 0xfffb210b
+call MCHBAR_WRITE64
 mov eax, dword [edi + 0x103f]
 add esp, 0x10
 lea eax, [esi + eax + 0x5c]
@@ -27150,7 +27150,7 @@ add ecx, 0x41c0
 push eax
 mov edx, ecx
 mov eax, ebx
-call fcn_fffb210b  ; call 0xfffb210b
+call MCHBAR_WRITE64
 inc byte [ebp - 0x1d]
 add esp, 0x10
 
@@ -39756,7 +39756,7 @@ or eax, ecx
 mov edx, dword [ebp - 0x2c]
 push eax
 mov eax, ebx
-call fcn_fffb210b  ; call 0xfffb210b
+call MCHBAR_WRITE64
 add esp, 0x10
 
 loc_fffc3e19:  ; not directly referenced
@@ -39796,7 +39796,7 @@ or eax, ecx
 mov edx, dword [ebp - 0x44]
 push eax
 mov eax, ebx
-call fcn_fffb210b  ; call 0xfffb210b
+call MCHBAR_WRITE64
 add esp, 0x10
 
 loc_fffc3e8b:  ; not directly referenced
@@ -39967,7 +39967,7 @@ loc_fffc404c:  ; not directly referenced
 mov edx, dword [ebp - 0x24]
 mov eax, ebx
 mov byte [ebp - 0x48], cl
-call fcn_fffb20e4  ; call 0xfffb20e4
+call MCHBAR64
 mov cl, byte [ebp - 0x48]
 mov esi, eax
 test cl, cl
@@ -40097,7 +40097,7 @@ pop ebx
 pop esi
 pop edi
 pop ebp
-jmp near fcn_fffb210b  ; jmp 0xfffb210b
+jmp near MCHBAR_WRITE64  ; jmp 0xfffb210b
 
 loc_fffc41b3:  ; not directly referenced
 lea esp, [ebp - 0xc]
@@ -40261,7 +40261,7 @@ push eax
 push dword [ebp - 0x1c]
 push dword [ebp - 0x20]
 mov eax, esi
-call fcn_fffb210b  ; call 0xfffb210b
+call MCHBAR_WRITE64
 inc byte [ebp - 0x38]
 add esp, 0x10
 cmp byte [ebp - 0x38], 8
@@ -46171,7 +46171,7 @@ or edi, edx
 mov edx, dword [ebp - 0x28]
 push edi
 push esi
-call fcn_fffb210b  ; call 0xfffb210b
+call MCHBAR_WRITE64
 inc dword [ebp - 0x20]
 add dword [ebp - 0x1c], 0xc
 add esp, 0x10
@@ -46346,7 +46346,7 @@ push edx
 mov edx, dword [ebp - 0x2c]
 push eax
 mov eax, ebx
-call fcn_fffb210b  ; call 0xfffb210b
+call MCHBAR_WRITE64
 add esp, 0x10
 cmp esi, 2
 jne short loc_fffc96c2  ; jne 0xfffc96c2
@@ -46367,7 +46367,7 @@ mov eax, dword [eax + 0x4800]
 je short loc_fffc9799  ; je 0xfffc9799
 mov edx, 0x48a8
 mov eax, ebx
-call fcn_fffb20e4  ; call 0xfffb20e4
+call MCHBAR64
 push esi
 and ah, 0xf7
 push esi
@@ -46375,7 +46375,7 @@ push edx
 mov edx, 0x48a8
 push eax
 mov eax, ebx
-call fcn_fffb210b  ; call 0xfffb210b
+call MCHBAR_WRITE64
 add esp, 0x10
 
 loc_fffc9799:  ; not directly referenced
@@ -46383,7 +46383,7 @@ and edi, 2
 je short loc_fffc97c0  ; je 0xfffc97c0
 mov edx, 0x48b0
 mov eax, ebx
-call fcn_fffb20e4  ; call 0xfffb20e4
+call MCHBAR64
 push ecx
 and ah, 0xf7
 push ecx
@@ -46391,7 +46391,7 @@ push edx
 mov edx, 0x48b0
 push eax
 mov eax, ebx
-call fcn_fffb210b  ; call 0xfffb210b
+call MCHBAR_WRITE64
 add esp, 0x10
 
 loc_fffc97c0:  ; not directly referenced
