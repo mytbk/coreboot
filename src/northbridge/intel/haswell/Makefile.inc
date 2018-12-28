@@ -57,6 +57,7 @@ romstage-y += do_raminit_frag.c
 romstage-y += mrc_frag_init_memory.c
 romstage-y += mrc_wdt.c
 romstage-y += pei_smbus.c
+romstage-y += mrc_frags.c
 
 postcar-y += ram_calc.c
 

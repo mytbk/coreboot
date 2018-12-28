@@ -178,6 +178,10 @@ extern frag_fffa549a
 
 extern mrc_wdt_ppi
 
+;; other frags
+extern frag_fffa5d3c
+extern frag_fffa627c
+
 ;;
 
 mrc_entry:
@@ -3538,19 +3542,13 @@ jne short loc_fffa5d22  ; jne 0xfffa5d22
 jmp near loc_fffa5e1e  ; jmp 0xfffa5e1e
 
 loc_fffa5d3c:  ; not directly referenced
-mov edx, dword [ebx + 0x103f]
 mov dword [ebp - 0x84], 0
-add edx, eax
-mov dword [edx], 0x200c040
-mov edx, dword [ebx + 0x103f]
-lea edx, [eax + edx + 0x10]
-mov dword [edx], 0x88888888
-mov edx, dword [ebx + 0x103f]
-lea edx, [eax + edx + 0x20]
-mov dword [edx], 0x3b08060
-mov edx, dword [ebx + 0x103f]
-lea edx, [eax + edx + 0x30]
-mov dword [edx], 0x88888888
+
+push eax
+push dword [ebx + 0x103f]
+call frag_fffa5d3c
+add esp, 8
+
 imul edx, edi, 0x12
 add edx, 0x220
 mov dword [ebp - 0x7c], edx
@@ -3878,28 +3876,13 @@ add ecx, dword [ebx + 0x103f]
 mov byte [ecx], 0x60
 
 loc_fffa627c:  ; not directly referenced
-mov ecx, dword [ebx + 0x103f]
-add ecx, eax
-mov dword [ecx], 0xc183060
-mov ecx, dword [ebx + 0x103f]
-lea ecx, [eax + ecx + 0x2210]
-mov dword [ecx], 0x8102040
-mov ecx, dword [ebx + 0x103f]
-lea ecx, [eax + ecx + 0x604]
-mov dword [ecx], 0x8102040
-mov byte [edx + 0x2fd], 0x40
-mov byte [edx + 0x2fe], 0x40
-mov byte [edx + 0x2ff], 0x40
-mov byte [edx + 0x300], 0x40
-mov edx, dword [ebx + 0x103f]
-lea edx, [eax + edx + 0x1ffc]
-mov dword [edx], 0
-mov edx, dword [ebx + 0x103f]
-lea edx, [eax + edx + 0x220c]
-mov dword [edx], 0
-mov edx, dword [ebx + 0x103f]
-lea edx, [eax + edx + 0x600]
-mov dword [edx], 0
+push eax ; save it
+push edx
+push eax
+push dword [ebx + 0x103f]
+call frag_fffa627c
+add esp, 12
+pop eax
 
 loc_fffa6305:  ; not directly referenced
 inc dword [ebp - 0x78]
