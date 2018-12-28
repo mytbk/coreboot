@@ -184,6 +184,7 @@ extern frag_fffa627c
 extern frag_fffa0ff3
 extern frag_fffa1e83
 extern frag_fffa9029
+extern frag_fffba1df
 
 ;;
 
@@ -28307,88 +28308,10 @@ add esp, 0x10
 
 loc_fffba1df:
 mov edx, dword [ebp - 0x28]
-mov eax, dword [0xf0000060]
-and eax, 0xfc000000
-movzx ecx, byte [edx + 1]
-shl ecx, 0x14
-add eax, ecx
-mov ecx, dword [0xf0000060]
-mov ecx, dword [edx + 0xe]
-mov esi, dword [ecx]
-mov ecx, dword [edx + 0x26]
-mov ecx, dword [ecx + 1]
-mov dword [eax + 0xfe040], ecx
-mov dword [eax + 0xfe044], 0
-mov ebx, dword [eax + 0xfe040]
-or ebx, 1
-mov dword [eax + 0xfe040], ebx
-mov word [ecx + 0x10], 0x154
-mov byte [ecx + 6], 0xff
-mov byte [ecx + 0x80], 0xff
-mov byte [ecx + 0x84], 0
-mov byte [ecx + 0x82], 0
-mov ebx, dword [0xf0000060]
-and ebx, 0xfc000000
-mov ebx, dword [ebx + 0xf80f0]
-and ebx, 0xfffffffe
-mov ebx, dword [ebx + 0x38b0]
-mov edi, dword [0xf0000060]
-and edi, 0xfc000000
-and ebx, 0xffff8003
-or ebx, 0x403c
-mov edi, dword [edi + 0xf80f0]
-and edi, 0xfffffffe
-mov dword [edi + 0x38b0], ebx
-mov ebx, dword [0xf0000060]
-and ebx, 0xfc000000
-mov ebx, dword [ebx + 0xf80f0]
-and ebx, 0xfffffffe
-mov ebx, dword [ebx + 0x38b4]
-and bh, 0x40
-je short loc_fffba2aa  ; je 0xfffba2aa
-mov byte [ecx + 0xa], 1
 
-loc_fffba2aa:
-mov ecx, dword [eax + 0xfe040]
-and ecx, 0xfffffffe
-mov dword [eax + 0xfe040], ecx
-mov dword [eax + 0xfe040], 0
-test byte [esi], 1
-je short loc_fffba341  ; je 0xfffba341
-mov bl, byte [esi + 1]
-mov cl, byte [esi + 2]
-mov eax, ebx
-shl eax, 0x1e
-and eax, 0x40000000
-mov edi, eax
-or edi, 0x80000000
-test cl, 1
-cmovne eax, edi
-mov edi, eax
-or edi, 0x4000
-and bl, 2
-cmovne eax, edi
-mov ebx, eax
-or bh, 0x80
-and cl, 2
-cmovne eax, ebx
-mov ebx, dword [edx + 2]
-mov ecx, dword [ebx + 0x33d4]
-and ecx, 0xfff0fff
-or eax, ecx
-mov dword [ebx + 0x33d4], eax
-mov al, byte [esi + 1]
-shl eax, 8
-and eax, 0x400
-mov ecx, eax
-or ch, 8
-test byte [esi + 2], 4
-cmovne eax, ecx
-mov ecx, dword [edx + 2]
-mov edx, dword [ecx + 0x33c8]
-and dh, 0xf0
-or eax, edx
-mov dword [ecx + 0x33c8], eax
+push edx
+call frag_fffba1df
+add esp, 4
 
 loc_fffba341:
 mov eax, dword [ebp - 0x28]
