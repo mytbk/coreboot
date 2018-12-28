@@ -185,6 +185,7 @@ extern frag_fffa0ff3
 extern frag_fffa1e83
 extern frag_fffa9029
 extern frag_fffba1df
+extern frag_fffba341
 
 ;; misc
 extern fcn_fffbd29a
@@ -28320,51 +28321,11 @@ loc_fffba341:
 mov eax, dword [ebp - 0x28]
 mov esi, dword [eax + 0x22]
 mov ebx, dword [eax + 2]
-mov al, byte [ebx + 0x31fe]
-cmp byte [esi + 1], al
-je short loc_fffba37c  ; je 0xfffba37c
-mov ax, word [ebx + 0x31fe]
-and ah, 0xfe
-mov word [ebx + 0x31fe], ax
-movzx edx, byte [esi + 1]
-mov ax, word [ebx + 0x31fe]
-xor al, al
-or eax, edx
-mov word [ebx + 0x31fe], ax
 
-loc_fffba37c:
-mov ax, word [ebx + 0x31fe]
-or ah, 1
-mov word [ebx + 0x31fe], ax
-mov ax, word [ebx + 0x31fe]
-movzx edx, byte [ebx + 0x31fe]
-shl edx, 0xc
-mov ecx, edx
-or ecx, 0xfec00000
-mov byte [ecx], 0
-movzx eax, byte [esi]
-or edx, 0xfec00010
-mov byte [ebp - 0x30], al
-mov edi, dword [edx]
-shr edi, 0x18
-cmp eax, edi
-je short loc_fffba3cf  ; je 0xfffba3cf
-cmp byte [ebp - 0x30], 0xf
-ja short loc_fffba3cf  ; ja 0xfffba3cf
-mov byte [ecx], 0
-movzx eax, byte [esi]
-shl eax, 0x18
-mov dword [edx], eax
-
-loc_fffba3cf:
-call mrc_sku_type
-cmp eax, 2
-jne short loc_fffba3f0  ; jne 0xfffba3f0
-test byte [esi + 2], 1
-jne short loc_fffba3f0  ; jne 0xfffba3f0
-mov ax, word [ebx + 0x31fe]
-or ah, 8
-mov word [ebx + 0x31fe], ax
+push esi
+push ebx
+call frag_fffba341
+add esp, 8
 
 loc_fffba3f0:
 mov edx, dword [ebp + 8]
