@@ -23,8 +23,8 @@ static inline u8 shupd(u8 a, u8 b, int sh)
 	return a;
 }
 
-void frag_fffa1e83(void *ebx, void *esi);
-void frag_fffa1e83(void *ebx, void *esi)
+void frag_fffa1e83(void *ebx, void *esi, uint8_t v);
+void frag_fffa1e83(void *ebx, void *esi, uint8_t v)
 {
 #ifndef T8
 #undef T8
@@ -45,6 +45,35 @@ void frag_fffa1e83(void *ebx, void *esi)
 		tmp = shupd(tmp, *(u8*)(esi + 0x32 + i), i);
 	}
 	*(u8*)(ebx + 0x6dc) = tmp;
+
+	tmp = *(u8*)(ebx + 0x6dd);
+	for (int i = 0; i < 8; i++) {
+		if (i == 3) continue;
+		tmp = shupd(tmp, *(u8*)(esi + 0x3a + i), i);
+	}
+	*(u8*)(ebx + 0x6dd) = tmp;
+
+	tmp = *(u8*)(ebx + 0x6de);
+	tmp = shupd(tmp, *(u8*)(esi + 0x42), 0);
+	tmp = shupd(tmp, *(u8*)(esi + 0x43), 2);
+	tmp = shupd(tmp, *(u8*)(esi + 0x44), 3);
+	tmp = shupd(tmp, *(u8*)(esi + 0x47), 6);
+	tmp = shupd(tmp, *(u8*)(esi + 0x48), 7);
+	*(u8*)(ebx + 0x6de) = tmp;
+
+	tmp = *(u8*)(ebx + 0x6df);
+	tmp = shupd(tmp, *(u8*)(esi + 0x49), 0);
+	tmp = shupd(tmp, *(u8*)(esi + 0x4a), 1);
+	tmp = shupd(tmp, *(u8*)(esi + 0x4b), 2);
+
+	if (v > 1) {
+		tmp = shupd(tmp, *(u8*)(esi + 0x58), 3);
+		tmp = shupd(tmp, *(u8*)(esi + 0x59), 4);
+		tmp = shupd(tmp, *(u8*)(esi + 0x5a), 5);
+	} else {
+		tmp = (tmp & 0xe7) | 0x20;
+	}
+	*(u8*)(ebx + 0x6df) = tmp;
 }
 
 void frag_fffa5d3c(void *bar, uint32_t offset);
