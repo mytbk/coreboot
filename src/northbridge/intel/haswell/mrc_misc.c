@@ -59,3 +59,31 @@ uint8_t __attribute((regparm(1))) pci_setup_bridge(uint8_t bus)
 	}
 	return (r == 0)?bus:r;
 }
+
+int fcn_fffbd29a(u32 a0, void * a1, void * a2);
+int fcn_fffbd29a(u32 a0, void * a1, void * a2)
+{
+	u32 b1 = (*(u8*)(a1 + 5) >> 3) & 7;
+	u32 *wb = (u32*)(a2 + 0xd5);
+
+	switch (b1) {
+		case 0:
+			*wb = 0x1000;
+			return 1;
+		case 1:
+			*wb = 0x2000;
+			return 1;
+		case 2:
+			*wb = 0x4000;
+			return 1;
+		case 3:
+			*wb = 0x8000;
+			return 1;
+		case 4:
+			*wb = 0x10000;
+			return 1;
+		default:
+			*wb = 0;
+			return 0;
+	}
+}

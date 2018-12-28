@@ -186,6 +186,9 @@ extern frag_fffa1e83
 extern frag_fffa9029
 extern frag_fffba1df
 
+;; misc
+extern fcn_fffbd29a
+
 ;;
 
 mrc_entry:
@@ -32110,50 +32113,6 @@ pop ebx
 pop ebp
 ret
 
-fcn_fffbd29a:  ; not directly referenced
-push ebp
-mov ebp, esp
-mov edx, dword [ebp + 0xc]
-mov eax, dword [ebp + 0x10]
-mov dl, byte [edx + 5]
-shr dl, 3
-and edx, 7
-cmp dl, 4
-ja short loc_fffbd2fc  ; ja 0xfffbd2fc
-movzx edx, dl
-jmp dword [edx*4 + ref_fffcbe3c]  ; ujmp: jmp dword [edx*4 - 0x341c4]
-
-loc_fffbd2bb:  ; not directly referenced
-mov dword [eax + 0xd5], 0x1000
-jmp short loc_fffbd2d1  ; jmp 0xfffbd2d1
-
-loc_fffbd2c7:  ; not directly referenced
-mov dword [eax + 0xd5], 0x2000
-
-loc_fffbd2d1:  ; not directly referenced
-mov eax, 1
-jmp short loc_fffbd308  ; jmp 0xfffbd308
-
-loc_fffbd2d8:  ; not directly referenced
-mov dword [eax + 0xd5], 0x4000
-jmp short loc_fffbd2d1  ; jmp 0xfffbd2d1
-
-loc_fffbd2e4:  ; not directly referenced
-mov dword [eax + 0xd5], 0x8000
-jmp short loc_fffbd2d1  ; jmp 0xfffbd2d1
-
-loc_fffbd2f0:  ; not directly referenced
-mov dword [eax + 0xd5], 0x10000
-jmp short loc_fffbd2d1  ; jmp 0xfffbd2d1
-
-loc_fffbd2fc:  ; not directly referenced
-mov dword [eax + 0xd5], 0
-xor eax, eax
-
-loc_fffbd308:  ; not directly referenced
-pop ebp
-ret
-
 fcn_fffbd30a:  ; not directly referenced
 push ebp
 mov ebp, esp
@@ -49054,13 +49013,6 @@ dd 0x00000200
 dd 0x00000400
 dd 0x00000800
 dd 0x00001000
-
-ref_fffcbe3c:
-dd loc_fffbd2bb
-dd loc_fffbd2c7
-dd loc_fffbd2d8
-dd loc_fffbd2e4
-dd loc_fffbd2f0
 
 ref_fffcbe50:
 dd 0x04030201
