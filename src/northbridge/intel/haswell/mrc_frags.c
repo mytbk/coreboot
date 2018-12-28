@@ -108,3 +108,22 @@ void frag_fffa627c(void *mchbar, uint32_t eax, void * edx)
 	write32(mchbar + eax + 0x220c, 0);
 	write32(mchbar + eax + 0x600, 0);
 }
+
+void frag_fffa9029(void *bar);
+void frag_fffa9029(void *bar)
+{
+	/* bar is 0xf0000000 (PCIEXBAR)
+	printk(BIOS_DEBUG, "[edi + 0x103b] is 0x%08x.\n", (u32)bar);
+	*/
+
+	bar_or32(bar, 0xa0, 1);
+	bar_or32(bar, 0xbc, 1);
+	bar_or32(bar, 0xa8, 1);
+	bar_or32(bar, 0x90, 1);
+	bar_or32(bar, 0x98, 1);
+	bar_or32(bar, 0x5c, 1);
+	bar_or32(bar, 0xb0, 1);
+	bar_or32(bar, 0xb4, 1);
+	bar_or32(bar, 0x78, 0x0400);
+	bar_or32(bar, 0x50, 1);
+}
