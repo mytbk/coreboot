@@ -5,6 +5,7 @@
 #include <console/console.h>
 #include "mrc_utils.h"
 #include "mrc_pei.h"
+#include "mrc_sku.h"
 
 void frag_fffa0ff3(void);
 void frag_fffa0ff3(void)
@@ -181,4 +182,48 @@ void frag_fffba1df(void *edx)
 	tmp = ((u32)pp[1] << 8) & 0x400;
 	if (pp[2] & 4) tmp |= 0x0800;
 	bar_update32(bar1, 0x33c8, 0xfffff0ff, tmp);
+}
+
+void frag_fffba341(void *rcba, u8 *data);
+void frag_fffba341(void *rcba, u8 *data)
+{
+	u16 tmp;
+
+	/* rcba = fed1c000, data = ff7ff98b (stack)
+	printk(BIOS_DEBUG, "frag_fffba341 rcba = %p, data = %p.\n", rcba, data);
+	*/
+
+	if (read8(rcba + 0x31fe) != data[1]) {
+		tmp = read16(rcba + 0x31fe);
+		tmp &= 0xfeff;
+		write16(rcba + 0x31fe, tmp);
+
+		u32 t2 = data[1];
+		tmp = read16(rcba + 0x31fe);
+		tmp &= 0xff00;
+		tmp |= t2;
+		write16(rcba + 0x31fe, tmp);
+	}
+	tmp = read16(rcba + 0x31fe);
+	tmp |= 0x0100;
+	write16(rcba + 0x31fe, tmp);
+
+	tmp = read16(rcba + 0x31fe);
+
+	u32 t3 = read8(rcba + 0x31fe) << 0xc;
+	void *r = (void*)(t3 | 0xfec00000);
+	write8(r, 0);
+	tmp = data[0];
+	void *r2 = (void*)(t3 | 0xfec00010);
+	u32 tmp2 = read32(r2) >> 0x18;
+	if (tmp != tmp2 && tmp <= 0xf) {
+		write8(r, 0);
+		write32(r2, ((u32)data[0]) << 0x18);
+	}
+
+	if (mrc_sku_type() == 2 && (data[2] & 1) == 0) {
+		tmp = read16(rcba + 0x31fe);
+		tmp |= 0x0800;
+		write16(rcba + 0x31fe, tmp);
+	}
 }
