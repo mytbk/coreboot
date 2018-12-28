@@ -127,3 +127,58 @@ void frag_fffa9029(void *bar)
 	bar_or32(bar, 0x78, 0x0400);
 	bar_or32(bar, 0x50, 1);
 }
+
+void frag_fffba1df(void *edx);
+void frag_fffba1df(void *edx)
+{
+	uint32_t pciexbar = read32((void*)0xf0000060) & 0xfc000000;
+	uint32_t bus = *(uint8_t*)(edx + 1);
+
+	/* well, bus is just 0...
+	printk(BIOS_DEBUG, "frag_fffba1df: bus = %d.\n", bus);
+	*/
+
+	void * bbar = (void*)(pciexbar + (bus << 20));
+	read32((void*)0xf0000060);
+	void *p1 = *(void**)(edx + 0xe);
+	uint8_t *pp = *(uint8_t**)p1;
+	p1 = *(void**)(edx + 0x26);
+	void *p2 = *(void**)(p1 + 1);
+	write32(bbar + 0xfe040, (u32)p2);
+	write32(bbar + 0xfe044, 0);
+	u32 tmp = read32(bbar + 0xfe040);
+	tmp |= 1;
+	write32(bbar + 0xfe040, tmp);
+	write16(p2 + 0x10, 0x154);
+	write8(p2 + 6, 0xff);
+	write8(p2 + 0x80, 0xff);
+	write8(p2 + 0x84, 0);
+	write8(p2 + 0x82, 0);
+
+	RCBA32_AND_OR(0x38b0, 0xffff8003, 0x403c);
+	tmp = RCBA32(0x38b4);
+	tmp &= 0xffff40ff;
+	if (tmp != 0) {
+		*(u8*)(p2 + 0xa) = 1;
+	}
+	tmp = read32(bbar + 0xfe040);
+	tmp &= 0xfffffffe;
+	write32(bbar + 0xfe040, tmp);
+	write32(bbar + 0xfe040, 0);
+
+	if ((pp[0] & 1) == 0)
+		return;
+
+	u8 bl = pp[1]; u8 cl = pp[2];
+	tmp = (u32)bl << 30;
+	tmp &= 0x40000000;
+	if (cl & 1) tmp |= 0x80000000;
+	if (bl & 2) tmp |= 0x4000;
+	if (cl & 2) tmp |= 0x8000;
+
+	void *bar1 = *(void**)(edx + 2);
+	bar_update32(bar1, 0x33d4, 0x0fff0fff, tmp);
+	tmp = ((u32)pp[1] << 8) & 0x400;
+	if (pp[2] & 4) tmp |= 0x0800;
+	bar_update32(bar1, 0x33c8, 0xfffff0ff, tmp);
+}
