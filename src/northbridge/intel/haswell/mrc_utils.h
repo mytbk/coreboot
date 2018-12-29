@@ -22,6 +22,7 @@ void __attribute((regparm(1))) printGuid(const void *g);
 void *__attribute((regparm(1))) mrc_alloc(int n);
 void __attribute((regparm(1))) usleep(int usec);
 uint32_t __attribute((regparm(2))) crc32(uint8_t data[], size_t len);
+void __attribute((regparm(3))) crc16(uint8_t data[], size_t len, u16 *crc);
 
 static inline void
 bar_update32(void *bar, uint32_t offset, uint32_t andv, uint32_t orv)
