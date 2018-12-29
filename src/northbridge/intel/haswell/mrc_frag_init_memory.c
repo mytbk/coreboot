@@ -73,8 +73,7 @@ int haswell_stepping(void);
 #define HASWELL_FAMILY_ULT 0x40650
 #define HASWELL_FAMILY_GT3E 0x40660
 
-void set_cpuid(struct cpu_model_id *mycpu);
-void set_cpuid(struct cpu_model_id *mycpu)
+static void set_cpuid(struct cpu_model_id *mycpu)
 {
 	int model = haswell_family_model();
 	int stepping = haswell_stepping();
@@ -136,8 +135,7 @@ void frag_fffc1c07()
 }
 
 extern EFI_GUID ref_fffcd4a4;
-void * frag_fffc1f53(uint32_t *wb);
-void * frag_fffc1f53(uint32_t *wb)
+static void * frag_fffc1f53(uint32_t *wb)
 {
 	void *hob = locate_hob(&ref_fffcd4a4, 4);
 	if (hob == NULL)
@@ -197,9 +195,7 @@ ppi: [ebp - 0x50a4]
 v50c4: [ebp - 0x50c4]
 return value moved to edi
 */
-int frag_fffc1ea8(void *ram_data, pei_raminit_ppi *ppi,
-		uint32_t v50c4, uint8_t bl);
-int frag_fffc1ea8(void *ram_data, pei_raminit_ppi *ppi,
+static int frag_fffc1ea8(void *ram_data, pei_raminit_ppi *ppi,
 		uint32_t v50c4, uint8_t bl)
 {
 	if (v50c4 - 1 > 1) {
@@ -231,6 +227,22 @@ int frag_fffc1ea8(void *ram_data, pei_raminit_ppi *ppi,
 		return 0;
 	}
 	return 2;
+}
+
+int __attribute((regparm(3))) fcn_fffa1d20(int bootmode, int v, void *addr,
+		EFI_PEI_SERVICES **pps /* not used */, void *raminit_ppi);
+
+int superfrag_fffc1ea8(int bootmode, void *ram_data, pei_raminit_ppi *ppi,
+		uint32_t v50c4, uint8_t bl);
+int superfrag_fffc1ea8(int bootmode, void *ram_data, pei_raminit_ppi *ppi,
+		uint32_t v50c4, uint8_t bl)
+{
+	set_cpuid(ram_data + 0x1001);
+	int ret = frag_fffc1ea8(ram_data, ppi, v50c4, bl);
+	frag_fffc1f53(ram_data + 0x105f);
+	*(u32*)(ram_data + 0x1025) = fcn_fffa1d20(bootmode, ret, ram_data + 0xfd8, NULL, ppi);
+	*(u32*)(ram_data + 0x104f) = 0;
+	return ret;
 }
 
 #ifndef __packed
