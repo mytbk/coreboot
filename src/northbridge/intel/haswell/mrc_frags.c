@@ -246,3 +246,23 @@ void frag_fffba341(void *rcba, u8 *data)
 		write16(rcba + 0x31fe, tmp);
 	}
 }
+
+int freq_sel(int freq);
+int freq_sel(int freq)
+{
+	if (freq <= 800)
+		return 10;
+	if (freq <= 1067)
+		return 13;
+	if (freq <= 1333)
+		return 16;
+	if (freq <= 1600)
+		return 20;
+	if (freq <= 1867)
+		return 23;
+	if (freq <= 2133)
+		return 26;
+	if (freq < 2401)
+		return 29;
+	return 32;
+}

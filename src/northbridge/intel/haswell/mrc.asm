@@ -186,6 +186,7 @@ extern frag_fffa1e83
 extern frag_fffa9029
 extern frag_fffba1df
 extern frag_fffba341
+extern freq_sel
 
 ;; misc
 extern fcn_fffbd29a
@@ -4436,7 +4437,6 @@ or eax, edx
 mov edx, dword [ebx + 0x103f]
 or eax, esi
 mov esi, dword [ebp - 0x78]
-mov ecx, 0xa
 lea edx, [edi + edx + 0x40d0]
 mov byte [edx], al
 imul eax, dword [ebp - 0x6c], 0x1347
@@ -4446,29 +4446,16 @@ lea edi, [esi + eax + 0x16]
 mov eax, dword [ebx + 0x1749]
 mov dword [ebp - 0x7c], eax
 mov eax, dword [ebx + 0x16c6]
-cmp eax, 0x320
-jbe short loc_fffa6e30  ; jbe 0xfffa6e30
-cmp eax, 0x42b
-mov cl, 0xd
-jbe short loc_fffa6e30  ; jbe 0xfffa6e30
-cmp eax, 0x535
-mov cl, 0x10
-jbe short loc_fffa6e30  ; jbe 0xfffa6e30
-cmp eax, 0x640
-mov cl, 0x14
-jbe short loc_fffa6e30  ; jbe 0xfffa6e30
-cmp eax, 0x74b
-mov cl, 0x17
-jbe short loc_fffa6e30  ; jbe 0xfffa6e30
-cmp eax, 0x855
-mov cl, 0x1a
-jbe short loc_fffa6e30  ; jbe 0xfffa6e30
-cmp eax, 0x961
-sbb ecx, ecx
-and ecx, 0xfffffffd
-add ecx, 0x20
 
-loc_fffa6e30:  ; not directly referenced
+push ebx
+mov ebx, eax ; save eax first
+push eax
+call freq_sel
+mov ecx, eax
+add esp, 4
+mov eax, ebx
+pop ebx
+
 cmp ecx, 0x3f
 mov edx, 0x3f
 cmova ecx, edx
