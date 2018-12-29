@@ -75,6 +75,25 @@ void frag_fffa1e83(void *ebx, void *esi, uint8_t v)
 		tmp = (tmp & 0xe7) | 0x20;
 	}
 	*(u8*)(ebx + 0x6df) = tmp;
+
+	tmp = *(u8*)(ebx + 0x6de);
+	if (v > 3) {
+		tmp = shupd(tmp, *(u8*)(esi + 0x5c), 1);
+		*(u8*)(ebx + 0x6de) = tmp;
+
+		for (int i = 0; i < 7; i++) {
+			T8(0x91 + i, 0x5d + i);
+		}
+	} else {
+		*(u8*)(ebx + 0x6de) = tmp | 2;
+		*(u8*)(ebx + 0x91) = 0xff;
+		*(u8*)(ebx + 0x92) = 0x40;
+		*(u8*)(ebx + 0x93) = 1;
+		*(u8*)(ebx + 0x94) = 1;
+		*(u8*)(ebx + 0x95) = 0;
+		*(u8*)(ebx + 0x96) = 7;
+		*(u8*)(ebx + 0x97) = 0;
+	}
 }
 
 void frag_fffa5d3c(void *bar, uint32_t offset);

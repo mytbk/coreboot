@@ -1444,43 +1444,6 @@ push ebx
 call frag_fffa1e83
 add esp, 12
 
-cmp byte [edi], 3
-mov al, byte [ebx + 0x6de]
-jbe short loc_fffa213a  ; jbe 0xfffa213a
-mov dl, byte [esi + 0x5c]
-and eax, 0xfffffffd
-and edx, 1
-add edx, edx
-or eax, edx
-mov byte [ebx + 0x6de], al
-mov al, byte [esi + 0x5d]
-mov byte [ebx + 0x91], al
-mov al, byte [esi + 0x5e]
-mov byte [ebx + 0x92], al
-mov al, byte [esi + 0x5f]
-mov byte [ebx + 0x93], al
-mov al, byte [esi + 0x60]
-mov byte [ebx + 0x94], al
-mov al, byte [esi + 0x61]
-mov byte [ebx + 0x95], al
-mov al, byte [esi + 0x62]
-mov byte [ebx + 0x96], al
-mov al, byte [esi + 0x63]
-mov byte [ebx + 0x97], al
-jmp short loc_fffa2174  ; jmp 0xfffa2174
-
-loc_fffa213a:
-or eax, 2
-mov byte [ebx + 0x91], 0xff
-mov byte [ebx + 0x6de], al
-mov byte [ebx + 0x92], 0x40
-mov byte [ebx + 0x93], 1
-mov byte [ebx + 0x94], 1
-mov byte [ebx + 0x95], 0
-mov byte [ebx + 0x96], 7
-mov byte [ebx + 0x97], 0
-
-loc_fffa2174:
 cmp byte [edi], 4
 jbe short loc_fffa219c  ; jbe 0xfffa219c
 mov eax, dword [esi + 0x64]
