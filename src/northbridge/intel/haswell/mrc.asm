@@ -73,7 +73,6 @@ extern locate_hob
 global fcn_fffa1d20
 global fcn_fffa56ac
 global fcn_fffa782c
-global fcn_fffa7899
 global fcn_fffa78a0
 global fcn_fffa7a1c
 global fcn_fffa7e71
@@ -5301,13 +5300,6 @@ mov dl, byte [eax + 0x16b1]
 loc_fffa788f:  ; not directly referenced
 mov byte [eax + 0x173d], dl
 xor eax, eax
-pop ebp
-ret
-
-fcn_fffa7899:  ; not directly referenced
-push ebp
-xor eax, eax
-mov ebp, esp
 pop ebp
 ret
 

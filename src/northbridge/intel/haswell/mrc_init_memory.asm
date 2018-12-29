@@ -81,6 +81,7 @@ extern superfrag_fffc1ea8
 extern frag_fffc2026
 global ref_fffcbf28
 extern memcpy
+extern dummy_func
 
 initialize_txt:
 push ebx
@@ -467,7 +468,7 @@ dd 0xff320000
 dd fcn_fffaa6af
 dd 0x0001dd1c
 dd 0xff3e0000
-dd fcn_fffa7899
+dd dummy_func
 dd 0x0004dd1e
 dd 0xff3f0000
 dd fcn_fffa78a0
