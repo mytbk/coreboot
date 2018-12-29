@@ -167,3 +167,63 @@ int fcn_fffa782c(void *ram_data)
 
 	return 0;
 }
+
+void __attribute((regparm(2))) fcn_fffb2d76(void *, int);
+void __attribute((regparm(3))) fcn_fffb1d24(void *, u32, u32, u32, u32);
+void __attribute((regparm(2))) fcn_fffb2062(void *, u8*);
+
+static const u32 gdata1[9] = {
+	0x86186186,
+	0x18618618,
+	0x30c30c30,
+	0xa28a28a2,
+	0x8a28a28a,
+	0x14514514,
+	0x28a28a28,
+	0x92492492,
+	0x24924924
+};
+static const uint8_t gdata2[12] = {
+	0xa1, 0x0c, 0xa1, 0x00, 0x08, 0x0d, 0xef, 0x00, 0x1e, 0x0a, 0xad, 0x00
+};
+
+int fcn_fffb8c0b(void *ram_data);
+int fcn_fffb8c0b(void *ram_data)
+{
+	u32 data1[9]; // ebp - 0x3c
+	u8 data2[12]; // ebp - 0x48
+
+	/* fcn_fffb8c0b : bar is fed10000. (MCHBAR)
+	   printk(BIOS_DEBUG, "%s : bar is %p.\n", __func__, *((void**) (ram_data + 0x103f)));
+	   */
+
+	if (*((int32_t*) (ram_data + 0x297c)) == 2 &&
+			*((int8_t*) (ram_data + 0x1740)) == 1) {
+		void *bar = *((void**) (ram_data + 0x103f));
+		bar_update32(bar, 0x5004, 0xfcffffff, 0x1000000);
+		fcn_fffb2d76 (ram_data, 0x3c);
+	}
+	if (*((int32_t*) (ram_data + 0x3cc3)) == 2 &&
+			*((int8_t*) (ram_data + 0x1740)) == 1) {
+		void *bar = *((void**) (ram_data + 0x103f));
+		bar_update32(bar, 0x5008, 0xfcffffff, 0x1000000);
+		fcn_fffb2d76 (ram_data, 0x3c);
+	}
+	memcpy(data1, gdata1, 36);
+	memcpy(data2, gdata2, 12);
+
+	fcn_fffb1d24 (ram_data, 0, 0x1010101, 8, 0);
+	for (int i = 0; i < 9; i++) {
+		fcn_fffb1d24 (ram_data, data1[i], 0x41041041, 6, 8 + i * 6);
+	}
+	fcn_fffb2062 (ram_data, data2);
+	if (*((int32_t*) (ram_data + 0x297c)) == 2) {
+		void *bar = *((void**) (ram_data + 0x103f));
+		write32(bar + 0x4078, 0xa010102);
+	}
+	if (*((int32_t*) (ram_data + 0x3cc3)) == 2) {
+		void *bar = *((void**) (ram_data + 0x103f));
+		write32(bar + 0x4478, 0xa010102);
+	}
+	return 0;
+}

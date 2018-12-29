@@ -115,7 +115,6 @@ global fcn_fffb85ca
 global fcn_fffb8625
 global fcn_fffb8689
 global fcn_fffb89f8
-global fcn_fffb8c0b
 global fcn_fffb8d2d
 global fcn_fffba408
 global fcn_fffbb819
@@ -189,6 +188,9 @@ extern freq_sel
 
 ;; misc
 extern fcn_fffbd29a
+global fcn_fffb2d76
+global fcn_fffb1d24
+global fcn_fffb2062
 
 ;;
 
@@ -26120,99 +26122,6 @@ pop edi
 pop ebp
 ret
 
-fcn_fffb8c0b:  ; not directly referenced
-push ebp
-mov ebp, esp
-push edi
-push esi
-push ebx
-lea esp, [esp - 0x3c]
-mov ebx, dword [ebp + 8]
-cmp dword [ebx + 0x297c], 2
-jne short loc_fffb8c52  ; jne 0xfffb8c52
-cmp byte [ebx + 0x1740], 1
-jne short loc_fffb8c52  ; jne 0xfffb8c52
-mov edx, dword [ebx + 0x103f]
-mov eax, dword [edx + 0x5004]
-and eax, 0xfcffffff
-or eax, 0x1000000
-mov dword [edx + 0x5004], eax
-mov edx, 0x3c
-mov eax, ebx
-call fcn_fffb2d76  ; call 0xfffb2d76
-
-loc_fffb8c52:  ; not directly referenced
-cmp dword [ebx + 0x3cc3], 2
-jne short loc_fffb8c8c  ; jne 0xfffb8c8c
-cmp byte [ebx + 0x1740], 1
-jne short loc_fffb8c8c  ; jne 0xfffb8c8c
-mov edx, dword [ebx + 0x103f]
-mov eax, dword [edx + 0x5008]
-and eax, 0xfcffffff
-or eax, 0x1000000
-mov dword [edx + 0x5008], eax
-mov edx, 0x3c
-mov eax, ebx
-call fcn_fffb2d76  ; call 0xfffb2d76
-
-loc_fffb8c8c:  ; not directly referenced
-lea edi, [ebp - 0x3c]
-mov esi, ref_fffcbca0  ; mov esi, 0xfffcbca0
-mov ecx, 9
-mov eax, ebx
-rep movsd  ; rep movsd dword es:[edi], dword ptr [esi]
-lea edi, [ebp - 0x48]
-mov esi, ref_fffcbcc4  ; mov esi, 0xfffcbcc4
-mov cl, 3
-rep movsd  ; rep movsd dword es:[edi], dword ptr [esi]
-push edx
-mov ecx, 0x1010101
-lea edi, [ebp - 0x3c]
-push edx
-xor edx, edx
-mov esi, 8
-push 0
-push 8
-call fcn_fffb1d24  ; call 0xfffb1d24
-add esp, 0x10
-
-loc_fffb8cc6:  ; not directly referenced
-push eax
-mov ecx, 0x41041041
-push eax
-mov eax, ebx
-push esi
-add esi, 6
-push 6
-mov edx, dword [edi]
-add edi, 4
-call fcn_fffb1d24  ; call 0xfffb1d24
-add esp, 0x10
-cmp esi, 0x3e
-jne short loc_fffb8cc6  ; jne 0xfffb8cc6
-lea edx, [ebp - 0x48]
-mov eax, ebx
-call fcn_fffb2062  ; call 0xfffb2062
-cmp dword [ebx + 0x297c], 2
-jne short loc_fffb8d0a  ; jne 0xfffb8d0a
-mov eax, dword [ebx + 0x103f]
-mov dword [eax + 0x4078], 0xa010102
-
-loc_fffb8d0a:  ; not directly referenced
-cmp dword [ebx + 0x3cc3], 2
-jne short loc_fffb8d23  ; jne 0xfffb8d23
-mov eax, dword [ebx + 0x103f]
-mov dword [eax + 0x4478], 0xa010102
-
-loc_fffb8d23:  ; not directly referenced
-lea esp, [ebp - 0xc]
-xor eax, eax
-pop ebx
-pop esi
-pop edi
-pop ebp
-ret
-
 fcn_fffb8d2d:  ; not directly referenced
 push ebp
 mov ebp, esp
@@ -48607,22 +48516,6 @@ ref_fffcbc9d:
 db 0x01
 db 0x03
 db 0x00
-
-ref_fffcbca0:
-dd 0x86186186
-dd 0x18618618
-dd 0x30c30c30
-dd 0xa28a28a2
-dd 0x8a28a28a
-dd 0x14514514
-dd 0x28a28a28
-dd 0x92492492
-dd 0x24924924
-
-ref_fffcbcc4:
-dd 0x00a10ca1
-dd 0x00ef0d08
-dd 0x00ad0a1e
 
 ref_fffcbcd0:
 dd loc_fffb9240
