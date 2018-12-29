@@ -3,6 +3,7 @@
 #include "mrc_misc.h"
 #include <arch/io.h>
 #include <arch/pci_ops.h>
+#include <console/console.h>
 
 int dummy_func(void)
 {
@@ -86,4 +87,44 @@ int fcn_fffbd29a(u32 a0, void * a1, void * a2)
 			*wb = 0;
 			return 0;
 	}
+}
+
+void __attribute((regparm(3))) fcn_fffb8646(void *, int, u16*);
+
+int fcn_fffaa884(void *ram_data);
+int fcn_fffaa884(void *ram_data)
+{
+	void *bar = *(void**)(ram_data + 0x103b);
+
+	/* this function is not called!!! */
+	printk(BIOS_DEBUG, "fcn_fffaa884: bar is %p.\n", bar);
+
+	u32 reg_e4 = read32(bar + 0xe4);
+	u32 reg_e8 = read32(bar + 0xe8);
+	if (reg_e8 != *(u32*)(ram_data + 0xc))
+		return 0x17;
+
+	if (reg_e4 != *(u32*)(ram_data + 8))
+		return 0x17;
+
+	void *base = ram_data + 8;
+	u16 tmp;
+
+	for (int i = 0; i < 2; i++) {
+		int i1 = i * 0x2e6;
+		int i2 = i * 0x2fa;
+		for (int j = 0; j < 2; j++) {
+			void * local_2ch = base + j * 0xfb + i1 + 0xa80 + 0x13;
+			int idx2 = j * 0x14f + i2;
+			if (*(u32*)((ram_data + idx2 + 0x10c4)) == 1) {
+				tmp = 0;
+			} else {
+				fcn_fffb8646 (ram_data + idx2 + 0x115d, 0xb, &tmp);
+			}
+			if (tmp != *(u16*)(local_2ch + 0xdb))
+				return 0x17;
+		}
+	}
+	*(u8*)(ram_data + 0x1742) = 1;
+	return 0;
 }

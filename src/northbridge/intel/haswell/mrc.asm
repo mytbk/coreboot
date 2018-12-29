@@ -8862,84 +8862,6 @@ pop edi
 pop ebp
 ret
 
-fcn_fffaa884:  ; not directly referenced
-push ebp
-mov ebp, esp
-push edi
-push esi
-push ebx
-lea esp, [esp - 0x2c]
-mov ebx, dword [ebp + 8]
-mov eax, dword [ebx + 0x103b]
-mov edx, dword [eax + 0xe4]
-mov eax, dword [eax + 0xe8]
-cmp eax, dword [ebx + 0xc]
-jne short loc_fffaa8ad  ; jne 0xfffaa8ad
-cmp edx, dword [ebx + 8]
-je short loc_fffaa91e  ; je 0xfffaa91e
-
-loc_fffaa8ad:  ; not directly referenced
-mov eax, 0x17
-jmp near loc_fffaa948  ; jmp 0xfffaa948
-
-loc_fffaa8b7:  ; not directly referenced
-imul eax, edi, 0xfb
-mov edx, dword [ebp - 0x30]
-lea eax, [eax + edx + 0xa80]
-mov edx, dword [ebp - 0x38]
-lea eax, [edx + eax + 0x13]
-mov dword [ebp - 0x2c], eax
-imul eax, edi, 0x14f
-add eax, dword [ebp - 0x34]
-cmp dword [ebx + eax + 0x10c4], 1
-jne short loc_fffaa8ec  ; jne 0xfffaa8ec
-mov word [ebp - 0x1a], 0
-jmp short loc_fffaa900  ; jmp 0xfffaa900
-
-loc_fffaa8ec:  ; not directly referenced
-lea eax, [ebx + eax + 0x115d]
-lea ecx, [ebp - 0x1a]
-mov edx, 0xb
-call fcn_fffb8646  ; call 0xfffb8646
-
-loc_fffaa900:  ; not directly referenced
-mov eax, dword [ebp - 0x2c]
-mov ax, word [eax + 0xdb]
-cmp word [ebp - 0x1a], ax
-jne short loc_fffaa8ad  ; jne 0xfffaa8ad
-inc edi
-cmp edi, 2
-jne short loc_fffaa8b7  ; jne 0xfffaa8b7
-inc esi
-cmp esi, 2
-je short loc_fffaa93f  ; je 0xfffaa93f
-jmp short loc_fffaa926  ; jmp 0xfffaa926
-
-loc_fffaa91e:  ; not directly referenced
-lea edx, [ebx + 8]
-xor esi, esi
-mov dword [ebp - 0x38], edx
-
-loc_fffaa926:  ; not directly referenced
-imul eax, esi, 0x2e6
-imul edx, esi, 0x2fa
-xor edi, edi
-mov dword [ebp - 0x30], eax
-mov dword [ebp - 0x34], edx
-jmp near loc_fffaa8b7  ; jmp 0xfffaa8b7
-
-loc_fffaa93f:  ; not directly referenced
-mov byte [ebx + 0x1742], 1
-xor eax, eax
-
-loc_fffaa948:  ; not directly referenced
-lea esp, [esp + 0x2c]
-pop ebx
-pop esi
-pop edi
-pop ebp
-ret
-
 fcn_fffaa951:  ; not directly referenced
 push ebp
 mov ebp, esp
@@ -25806,6 +25728,8 @@ push 1
 call fcn_fffb03ba  ; call 0xfffb03ba
 leave
 ret
+
+global fcn_fffb8646
 
 fcn_fffb8646:  ; not directly referenced
 push ebp
