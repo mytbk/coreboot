@@ -74,12 +74,10 @@ extern frag_fffc1d20
 extern frag_fffc1fc3
 extern create_raminit_hob
 extern frag_fffc1c07
-extern set_cpuid
 extern test_memory
-extern frag_fffc1f53
 global initialize_txt
 extern copy_mrc_input
-extern frag_fffc1ea8
+extern superfrag_fffc1ea8
 extern frag_fffc2026
 global ref_fffcbf28
 extern memcpy
@@ -218,46 +216,23 @@ cmp byte [ebp - 0x50aa], 1
 cmove ebx, eax
 
 loc_fffc1e18:
-lea eax, [ebp - 0x4039]
-push eax
-call set_cpuid
-pop eax
-
-loc_fffc1ea8:
 
 push ebx
 push dword [ebp - 0x50c4]
 push dword [ebp - 0x50a4]
 lea eax, [ebp - 0x503a]
 push eax
-call frag_fffc1ea8
+push dword [ebp - 0x509c]
+call superfrag_fffc1ea8
+add esp, 20
 mov edi, eax
-add esp, 16
 
-loc_fffc1f53:
-lea eax, [ebp - 0x3fdb]
-push eax
-call frag_fffc1f53
-add esp, 4
-
-push eax
-lea ecx, [ebp - 0x4062]
-mov edx, edi
-push eax
-push dword [ebp - 0x50a4]
-push dword [ebp - 0x50bc]
-mov eax, dword [ebp - 0x509c]
-call fcn_fffa1d20  ; call 0xfffa1d20
-mov dword [ebp - 0x4015], eax
-mov dword [ebp - 0x3feb], 0
-pop eax
-pop edx
 mov eax, dword [ebp - 0x5098]
 push 0
 push dword [ebp - 0x50bc]
 call dword [eax]  ; ucall
 mov dword [ebp - 0x3feb], eax
-add esp, 0x10
+add esp, 8
 
 loc_fffc1fc3:
 mov ecx, dword [ebp - 0x4015]
