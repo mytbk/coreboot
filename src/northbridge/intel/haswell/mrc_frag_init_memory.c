@@ -322,18 +322,17 @@ int frag_fffc2026(void *ram_data)
 		}
 loc_fffc20ce:
 		tmp = st->v2;
-		if (tmp > 0x3b) {
-loc_fffc20d6:
-			fcn_fffc6986();
-			ret = ref_fffcbf28[i].func(ram_data);
-			fcn_fffc6986();
-			dl = (ret == 0)? 1:0;
-			continue;
-		}
-		if (fcn_fffc6438(ram_data, tmp, 0) == 0) /* maybe 3 reg params */
-			goto loc_fffc20d6;
+		if (tmp <= 0x3b) {
+			if (fcn_fffc6438(ram_data, tmp, 0) != 0) {
 loc_fffc210d:
-		dl = 1;
+				dl = 1;
+				continue;
+			}
+		}
+		fcn_fffc6986();
+		ret = ref_fffcbf28[i].func(ram_data);
+		fcn_fffc6986();
+		dl = (ret == 0)? 1:0;
 	}
 	printk(BIOS_DEBUG, "return from frag_fffc2026 with value 0x%x\n", ret);
 	return ret;
