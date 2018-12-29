@@ -82,6 +82,7 @@ extern copy_mrc_input
 extern frag_fffc1ea8
 extern frag_fffc2026
 global ref_fffcbf28
+extern memcpy
 
 initialize_txt:
 push ebx
@@ -184,7 +185,7 @@ add esp, 12
 
 cmp dword [ebp - 0x509c], 0x11
 jne short loc_fffc1dc2  ; jne 0xfffc1dc2
-test bl, bl
+test al, al
 mov eax, 0x8000000e
 je loc_fffc23a2  ; je 0xfffc23a2
 
@@ -425,17 +426,15 @@ or eax, eax
 jne loc_fffc238d
 
 loc_fffc2311:
-mov ecx, dword [ebp - 0x50bc]
 mov dword [ebp - 0x503a], 0xfd4
 push edx
 lea edx, [ebp - 0x503a]
-mov eax, dword [ecx]
 push 0x5022
 push edx
 mov edx, dword [ebp - 0x50a0]
 add edx, 0x18
 push edx
-call dword [eax + 0x50]  ; ucall
+call memcpy
 mov eax, dword [ebp - 0x50a0]
 mov edx, 1
 add eax, 0x503a
