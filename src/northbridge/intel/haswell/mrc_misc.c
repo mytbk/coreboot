@@ -127,3 +127,43 @@ int fcn_fffaa884(void *ram_data)
 	*(u8*)(ram_data + 0x1742) = 1;
 	return 0;
 }
+
+int fcn_fffa782c(void *ram_data);
+int fcn_fffa782c(void *ram_data)
+{
+	u32 reg;
+	u16 v1, v2;
+	u8 wb;
+
+	*(u8*)(ram_data + 0x173f) = 0;
+	*(u8*)(ram_data + 0x1740) = *(u8*)(ram_data + 0x102b);
+	*(u8*)(ram_data + 0x173c) = *(u8*)(ram_data + 0x16b0);
+
+	void *p1 = *(void**)(ram_data + 0x1047);
+
+	/* p1 is fed84000 (GDXC_BASE_ADDRESS)
+	printk(BIOS_DEBUG, "fcn_fffa782c: p1 is %p.\n", p1);
+	*/
+
+	reg = read32(p1 + 0x18);
+	v1 = reg;
+	v2 = reg >> 16;
+	if (v1 == 0 && v2 > 1) {
+		wb = v2;
+	} else {
+		wb = *(u8*)(ram_data + 0x16b2);
+	}
+	*(u8*)(ram_data + 0x173e) = wb;
+
+	reg = read32(p1 + 0x28);
+	v1 = reg;
+	v2 = reg >> 16;
+	if (v1 == 0 && v2 > 1) {
+		wb = v2;
+	} else {
+		wb = *(u8*)(ram_data+ 0x16b1);
+	}
+	*(u8*)(ram_data + 0x173d) = wb;
+
+	return 0;
+}

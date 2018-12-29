@@ -72,7 +72,6 @@ global ref_fffcd4e4
 extern locate_hob
 global fcn_fffa1d20
 global fcn_fffa56ac
-global fcn_fffa782c
 global fcn_fffa78a0
 global fcn_fffa7a1c
 global fcn_fffa7e71
@@ -5262,46 +5261,6 @@ ret
 
 loc_fffa782b:
 db 0x00
-
-fcn_fffa782c:  ; not directly referenced
-push ebp
-mov ebp, esp
-mov eax, dword [ebp + 8]
-mov dl, byte [eax + 0x102b]
-mov byte [eax + 0x173f], 0
-mov byte [eax + 0x1740], dl
-mov dl, byte [eax + 0x16b0]
-mov byte [eax + 0x173c], dl
-mov edx, dword [eax + 0x1047]
-mov ecx, dword [edx + 0x18]
-test cx, cx
-jne short loc_fffa786a  ; jne 0xfffa786a
-shr ecx, 0x10
-cmp cx, 1
-jbe short loc_fffa786a  ; jbe 0xfffa786a
-jmp short loc_fffa7870  ; jmp 0xfffa7870
-
-loc_fffa786a:  ; not directly referenced
-mov cl, byte [eax + 0x16b2]
-
-loc_fffa7870:  ; not directly referenced
-mov byte [eax + 0x173e], cl
-mov edx, dword [edx + 0x28]
-test dx, dx
-jne short loc_fffa7889  ; jne 0xfffa7889
-shr edx, 0x10
-cmp dx, 1
-jbe short loc_fffa7889  ; jbe 0xfffa7889
-jmp short loc_fffa788f  ; jmp 0xfffa788f
-
-loc_fffa7889:  ; not directly referenced
-mov dl, byte [eax + 0x16b1]
-
-loc_fffa788f:  ; not directly referenced
-mov byte [eax + 0x173d], dl
-xor eax, eax
-pop ebp
-ret
 
 fcn_fffa78a0:  ; not directly referenced
 push ebp
