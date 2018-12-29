@@ -30,6 +30,7 @@ extern mrc_pch_init
 extern dmi_check_link
 extern pei_get_platform_memsize
 extern pei_choose_ranges
+extern get_c3res
 
 ; PEI services
 extern PeiServiceGetBootMode
@@ -2970,7 +2971,7 @@ push 0
 push 0
 push ref_fffcd4e4  ; push 0xfffcd4e4
 push ecx
-call dword [eax + 0x20]  ; ucall
+call dword [eax + 0x20] ; LocatePpi
 mov ebx, dword [ebp - 0x628]
 add esp, 0x20
 call haswell_family_model
@@ -2981,13 +2982,13 @@ xor edx, edx
 mov eax, dword [ebx + 1]
 mov eax, dword [eax + 4]
 or eax, 1
-mov dword [esi + 0x48], eax
+mov dword [esi + 0x48], eax ; pci_write_config32(PCI_DEV(0, 0, 0), 0x48, mchbar | 1)
 mov dword [esi + 0x4c], edx
 mov eax, dword [ebx + 1]
 mov esi, dword [0xf0000060]
 and esi, 0xfc000000
 xor edx, edx
-mov eax, dword [eax + 8]
+mov eax, dword [eax + 8] ; dmibar
 or eax, 1
 mov dword [esi + 0x68], eax
 mov dword [esi + 0x6c], edx
@@ -2995,14 +2996,14 @@ mov eax, dword [ebx + 1]
 mov esi, dword [0xf0000060]
 and esi, 0xfc000000
 xor edx, edx
-mov eax, dword [eax + 0xc]
+mov eax, dword [eax + 0xc] ; epbar
 or eax, 1
 mov dword [esi + 0x40], eax
 mov dword [esi + 0x44], edx
 mov eax, dword [ebx + 1]
 xor edx, edx
 mov esi, dword [eax + 4]
-mov eax, dword [eax + 0x18]
+mov eax, dword [eax + 0x18] ; gdxcbar
 or eax, 1
 cmp ecx, 0x40660
 mov dword [esi + 0x5420], eax
@@ -3011,7 +3012,7 @@ jne short loc_fffa3eec  ; jne 0xfffa3eec
 mov eax, dword [ebx + 1]
 xor edx, edx
 mov ecx, dword [eax + 4]
-mov eax, dword [eax + 0x22]
+mov eax, dword [eax + 0x22] ; edrambar
 or eax, 1
 mov dword [ecx + 0x5408], eax
 mov dword [ecx + 0x540c], edx
@@ -43555,21 +43556,10 @@ mov ebp, esp
 pop ebp
 ret
 
-fcn_fffc5af7:  ; not directly referenced
-push ebp
-mov eax, dword [0xf0000060]
-and eax, 0xfc000000
-mov ebp, esp
-pop ebp
-mov eax, dword [eax + 0xf8040]
-and eax, 0xfffc
-add eax, 0x54
-ret
-
 fcn_fffc5b14:  ; not directly referenced
 push ebp
 mov ebp, esp
-call fcn_fffc5af7  ; call 0xfffc5af7
+call get_c3res
 mov edx, eax
 in eax, dx
 shr eax, 0xe
@@ -43580,7 +43570,7 @@ ret
 fcn_fffc5b27:  ; not directly referenced
 push ebp
 mov ebp, esp
-call fcn_fffc5af7  ; call 0xfffc5af7
+call get_c3res
 mov edx, eax
 in eax, dx
 test eax, 0x3f0000
@@ -43593,12 +43583,12 @@ push ebp
 mov byte [0xff7d7540], 1
 mov ebp, esp
 push ebx
-call fcn_fffc5af7  ; call 0xfffc5af7
+call get_c3res
 mov edx, eax
 in eax, dx
 mov ebx, eax
 and ebx, 0xffbf7fff
-call fcn_fffc5af7  ; call 0xfffc5af7
+call get_c3res
 movzx edx, ax
 mov eax, ebx
 out dx, eax
@@ -43609,7 +43599,7 @@ ret
 fcn_fffc5b65:  ; not directly referenced
 push ebp
 mov ebp, esp
-call fcn_fffc5af7  ; call 0xfffc5af7
+call get_c3res
 mov edx, eax
 in eax, dx
 shr eax, 0x17
@@ -43621,12 +43611,12 @@ fcn_fffc5b78:  ; not directly referenced
 push ebp
 mov ebp, esp
 push ebx
-call fcn_fffc5af7  ; call 0xfffc5af7
+call get_c3res
 mov edx, eax
 in eax, dx
 mov ebx, eax
 and ebx, 0xffbf3fff
-call fcn_fffc5af7  ; call 0xfffc5af7
+call get_c3res
 movzx edx, ax
 mov eax, ebx
 out dx, eax
@@ -43644,7 +43634,7 @@ mov esi, dword [ebp + 8]
 dec esi
 cmp esi, 0x3fe
 ja short loc_fffc5bf2  ; ja 0xfffc5bf2
-call fcn_fffc5af7  ; call 0xfffc5af7
+call get_c3res
 mov edx, eax
 in eax, dx
 mov ebx, eax
@@ -43653,12 +43643,12 @@ or bh, 0xe0
 cmp byte [0xff7d7540], 0
 cmove ebx, eax
 and ebx, 0xfffffc00
-call fcn_fffc5af7  ; call 0xfffc5af7
+call get_c3res
 or ebx, esi
 movzx edx, ax
 mov eax, ebx
 out dx, eax
-call fcn_fffc5af7  ; call 0xfffc5af7
+call get_c3res
 or ebx, 0x80000000
 movzx edx, ax
 mov eax, ebx

@@ -1,4 +1,5 @@
 #include <southbridge/intel/lynxpoint/pch.h>
+#include <device/pci_ops.h>
 #include "mrc_sku.h"
 #include "mrc_misc.h"
 
@@ -16,4 +17,10 @@ void dmi_check_link(void)
 			RCBA8_AND_OR(0x21b0, 0xf0, 2);
 		}
 	}
+}
+
+uint32_t get_c3res(void)
+{
+	uint32_t pmbase = pci_read_config32(PCH_LPC_DEV, PMBASE) & 0xfffc;
+	return pmbase + C3_RES;
 }
