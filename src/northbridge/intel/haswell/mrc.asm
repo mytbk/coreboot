@@ -37,6 +37,7 @@ extern dmi_check_link
 extern pei_get_platform_memsize
 extern pei_choose_ranges
 extern crc32
+extern crc16
 extern rtc_wait
 extern pci_setup_bridge
 
@@ -25729,52 +25730,6 @@ call fcn_fffb03ba  ; call 0xfffb03ba
 leave
 ret
 
-global fcn_fffb8646
-
-fcn_fffb8646:  ; not directly referenced
-push ebp
-mov ebp, esp
-push edi
-push esi
-push ebx
-xor ebx, ebx
-push esi
-xor esi, esi
-jmp short loc_fffb8677  ; jmp 0xfffb8677
-
-loc_fffb8653:  ; not directly referenced
-movzx edi, byte [eax + esi]
-mov byte [ebp - 0xd], 8
-shl edi, 8
-xor ebx, edi
-
-loc_fffb8660:  ; not directly referenced
-test bh, 0x80
-je short loc_fffb866f  ; je 0xfffb866f
-add ebx, ebx
-xor ebx, 0x1021
-jmp short loc_fffb8671  ; jmp 0xfffb8671
-
-loc_fffb866f:  ; not directly referenced
-add ebx, ebx
-
-loc_fffb8671:  ; not directly referenced
-dec byte [ebp - 0xd]
-jne short loc_fffb8660  ; jne 0xfffb8660
-inc esi
-
-loc_fffb8677:  ; not directly referenced
-cmp esi, edx
-jne short loc_fffb8653  ; jne 0xfffb8653
-mov word [ecx], bx
-mov eax, 1
-pop ebx
-pop ebx
-pop esi
-pop edi
-pop ebp
-ret
-
 fcn_fffb8689:  ; not directly referenced
 push ebp
 mov ebp, esp
@@ -25875,7 +25830,7 @@ add esi, ebx
 mov ecx, dword [ebp - 0x84]
 add ecx, 0xdb
 lea eax, [esi + 0xbd]
-call fcn_fffb8646  ; call 0xfffb8646
+call crc16  ; call 0xfffb8646
 cmp dword [esi + 0x24], 1
 jne short loc_fffb8815  ; jne 0xfffb8815
 mov dword [edi + 0x1d], 1

@@ -92,3 +92,19 @@ uint32_t __attribute((regparm(2))) crc32(uint8_t data[], size_t len)
 	}
 	return crc;
 }
+
+void __attribute((regparm(3))) crc16(uint8_t data[], size_t len, u16 *crc)
+{
+	u16 wCRC = 0;
+	for (size_t i = 0; i < len; i++) {
+		wCRC ^= (((u16)data[i]) << 8);
+
+		for (int j = 0; j < 8; j++) {
+			if ((wCRC & 0x8000) != 0)
+				wCRC = ((wCRC << 1) ^ 0x1021);
+			else
+				wCRC <<= 1;
+		}
+	}
+	*crc = wCRC;
+}

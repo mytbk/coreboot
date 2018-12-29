@@ -1,6 +1,7 @@
 #include <southbridge/intel/lynxpoint/pch.h>
 #include "mrc_sku.h"
 #include "mrc_misc.h"
+#include "mrc_utils.h"
 #include <arch/io.h>
 #include <arch/pci_ops.h>
 #include <console/console.h>
@@ -89,8 +90,6 @@ int fcn_fffbd29a(u32 a0, void * a1, void * a2)
 	}
 }
 
-void __attribute((regparm(3))) fcn_fffb8646(void *, int, u16*);
-
 int fcn_fffaa884(void *ram_data);
 int fcn_fffaa884(void *ram_data)
 {
@@ -119,7 +118,7 @@ int fcn_fffaa884(void *ram_data)
 			if (*(u32*)((ram_data + idx2 + 0x10c4)) == 1) {
 				tmp = 0;
 			} else {
-				fcn_fffb8646 (ram_data + idx2 + 0x115d, 0xb, &tmp);
+				crc16(ram_data + idx2 + 0x115d, 0xb, &tmp);
 			}
 			if (tmp != *(u16*)(local_2ch + 0xdb))
 				return 0x17;
