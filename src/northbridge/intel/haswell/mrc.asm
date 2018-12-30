@@ -1446,40 +1446,6 @@ push ebx
 call frag_fffa1e83
 add esp, 12
 
-cmp byte [edi], 4
-jbe short loc_fffa219c  ; jbe 0xfffa219c
-mov eax, dword [esi + 0x64]
-mov edx, 0x5f5e100
-cmp eax, 0x55d4a7f
-jbe short loc_fffa2197  ; jbe 0xfffa2197
-mov ecx, 0xf4240
-xor edx, edx
-div ecx
-imul edx, eax, 0xf4240
-
-loc_fffa2197:
-mov dword [ebx + 0x21], edx
-jmp short loc_fffa21a3  ; jmp 0xfffa21a3
-
-loc_fffa219c:
-mov dword [ebx + 0x21], 0x5f5e100
-
-loc_fffa21a3:
-cmp byte [edi], 5
-mov dl, byte [ebx + 0x6df]
-jbe short loc_fffa21be  ; jbe 0xfffa21be
-mov al, byte [esi + 0x6a]
-and edx, 0xffffffbf
-and eax, 1
-shl eax, 6
-or edx, eax
-jmp short loc_fffa21c1  ; jmp 0xfffa21c1
-
-loc_fffa21be:
-or edx, 0x40
-
-loc_fffa21c1:
-mov byte [ebx + 0x6df], dl
 cmp byte [edi], 8
 jbe short loc_fffa2203  ; jbe 0xfffa2203
 mov eax, dword [edi + 1]

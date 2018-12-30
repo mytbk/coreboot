@@ -94,6 +94,25 @@ void frag_fffa1e83(void *ebx, void *esi, uint8_t v)
 		*(u8*)(ebx + 0x96) = 7;
 		*(u8*)(ebx + 0x97) = 0;
 	}
+
+	if (v > 4) {
+		u32 v64 = *(u32*)(esi + 0x64);
+		if (v64 > 89999999) {
+			*(u32*)(ebx + 0x21) = (v64 / 1000000) * 1000000;
+		} else {
+			*(u32*)(ebx + 0x21) = 100000000;
+		}
+	} else {
+		*(u32*)(ebx + 0x21) = 100000000;
+	}
+
+	tmp = *(u8*)(ebx + 0x6df);
+	if (v > 5) {
+		tmp = shupd(tmp, *(u8*)(esi + 0x6a), 6);
+	} else {
+		tmp |= 0x40;
+	}
+	*(u8*)(ebx + 0x6df) = tmp;
 }
 
 void frag_fffa5d3c(void *bar, uint32_t offset);
