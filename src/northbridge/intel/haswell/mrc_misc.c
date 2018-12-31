@@ -248,6 +248,7 @@ int __attribute((regparm(2))) fcn_fffc6438(void *eax, int vv)
 	void *mchbar = *(void**)(eax + 0x103f);
 	u32 edx, esi, ebx, ecx;
 	u16 tmp16;
+	u32 t32;
 
 	switch (vv) {
 		case 0:
@@ -329,7 +330,6 @@ int __attribute((regparm(2))) fcn_fffc6438(void *eax, int vv)
 		case 37:
 			return (edi == 2)? 1:0;
 		case 44:
-			[bp-0x10] = eax + 0x16be;
 			if (V(0x107d) != 0) {
 				write32(mchbar + 0x5884, ((u32)V(0x107e)) & 7);
 				tmp16 = V(0x1080);
@@ -374,15 +374,76 @@ int __attribute((regparm(2))) fcn_fffc6438(void *eax, int vv)
 			tmp16 = V(0x1099);
 			tmp16 = (tmp16 << 8) | V(0x1098);
 			write32(mchbar + 0x58d8, tmp16);
-			dword [bp-0x14] = 0x4328;
 			tmp16 = V(0x109b);
 			tmp16 = (tmp16 << 8) | V(0x109a);
 			write32(mchbar + 0x58dc, tmp16);
-			edx = eax + 0x109d;
+
+			for (int i = 0; i < 2; i++) {
+				void *ptr1 = eax + 0x16be + 0x1347 * i;
+				u8 *ptr2= eax + 0x109d + 2 * i;
+				u32 offs = 0x4328 + 0x400 * i;
+
+				if (*(u32*)(ptr1 + 0x12be) != 2)
+					continue;
+
+				if (V(0x107d) != 0) {
+					write32(mchbar + (offs - 0x3c),
+							((u16)(ptr2[0] & 0x3f) << 8) | (ptr2[-1] & 0x3f));
+
+					write32(mchbar + (offs - 0x38),
+							((u16)(ptr2[4] & 0x3f) << 8) | (ptr2[3] & 0x3f));
+
+					write32(mchbar + (offs - 0x34),
+							((u16)ptr2[8] << 8) | ptr2[7]);
+
+					write32(mchbar + (offs - 0x30),
+							((u16)ptr2[12] << 8) | ptr2[11]);
+
+					write32(mchbar + (offs - 0x2c),
+							((u16)ptr2[16] << 8) | ptr2[15]);
+				}
+				if (edi == 2) {
+					t32 = V(0x10b5) & 1;
+					t32 <<= 8;
+					t32 |= V(0x10b6);
+				} else {
+					t32 = V(0x10b3) & 1;
+					t32 <<= 8;
+					t32 |= V(0x10b4);
+				}
+				write32(mchbar + offs, t32);
+			}
+
+			t32 = V(0x10b0) & 1;
+			t32 = (t32 << 16) | (*(u16*)(eax + 0x10b1));
+			write32(mchbar + 0x5060, t32);
+
+			t32 = read32(mchbar + 0x5880);
+			t32 &= 0xfffffffc;
+			t32 = t32 | ((V(0x1076) & 1) << 1) | (V(0x1077) & 1);
+			t32 &= 0xffffffe3;
+			t32 = t32 | ((V(0x1075) & 1) << 4) | ((V(0x107a) & 3) << 2);
+
+			if (edi == 2) {
+				t32 &= 0xffffffbf;
+				t32 |= ((V(0x1079) & 1) << 6);
+				if (V(0x1070) != 0) {
+					write32(mchbar + 0x5880, t32);
+					return 0;
+				}
+				t32 &= 0xffffff7f;
+				t32 |= (((V(0x107b) == 0)?1:0) << 7);
+			} else {
+				t32 &= 0xffffffbf;
+				t32 |= ((V(0x1078) & 1) << 6);
+			}
+			write32(mchbar + 0x5880, t32);
+			return 0;
 
 		case 46:
 			return ((V(0x16b6) >> 4) ^ 1) & 1;
 
 		default:
 			return 0;
+	}
 }
