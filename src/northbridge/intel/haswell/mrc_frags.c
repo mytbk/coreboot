@@ -6,6 +6,7 @@
 #include "mrc_utils.h"
 #include "mrc_pei.h"
 #include "mrc_sku.h"
+#include <cpu/intel/haswell/haswell.h>
 
 void frag_fffa0ff3(void);
 void frag_fffa0ff3(void)
@@ -24,15 +25,17 @@ static inline u8 shupd(u8 a, u8 b, int sh)
 	return a;
 }
 
-void frag_fffa1e83(void *ebx, void *esi, uint8_t v);
-void frag_fffa1e83(void *ebx, void *esi, uint8_t v)
+void frag_fffa1e83(void *ebx, void *esi, void *edi);
+void frag_fffa1e83(void *ebx, void *esi, void *edi)
 {
 #ifndef T8
 #undef T8
 #endif
 #define T8(d,s) do { *(u8*)(ebx + d) = *(u8*)(esi + s); } while (0);
+#define SW16(d, s) do { T8(d + 1, s); T8(d, s + 1); } while (0);
 
 	u8 tmp;
+	uint8_t v = *(u8*)edi;
 
 	*(u32*)(ebx + 0x8b) = *(u32*)(esi + 0x4e);
 	*(u16*)(ebx + 0x8f) = 0x3e8;
@@ -113,6 +116,96 @@ void frag_fffa1e83(void *ebx, void *esi, uint8_t v)
 		tmp |= 0x40;
 	}
 	*(u8*)(ebx + 0x6df) = tmp;
+
+	if (v > 8) {
+		void *p1 = *(void**)(edi + 1);
+		*(u32*)(ebx + 0x83) = (*(u32*)(p1 + 0x2b)) >> 0x14;
+		T8(0x98, 0x6c); T8(0x99, 0x6d);
+		*(u16*)(ebx + 0x9a) = *(u16*)(esi + 0x6e);
+		T8(0x9c, 0x70);
+	} else {
+		*(u32*)(ebx + 0x83) = 4;
+		*(u8*)(ebx + 0x98) = 0;
+		*(u8*)(ebx + 0x99) = 1;
+		*(u16*)(ebx + 0x9a) = 0x30ce;
+		*(u8*)(ebx + 0x9c) = 1;
+	}
+
+	if (v > 9) {
+		for (int i = 0; i < 4; i++) {
+			T8(0x9d + i, 0x71 + i);
+		}
+		int is_ult = (*(u32*)(ebx + 0x2d) == HASWELL_FAMILY_ULT);
+		if (is_ult) {
+			T8(0xa1, 0x75);
+		}
+		for (int i = 0; i < 5; i++) {
+			T8(0xa2 + i, 0x76 + i);
+		}
+		T8(0xa8, 0x7b); T8(0xa7, 0x7c);
+		for (int i = 0; i < 5; i++) {
+			T8(0xa9 + i, 0x7d + i);
+		}
+		for (int i = 0; i < 4; i++) {
+			T8(0xaf + i, 0x83 + i);
+		}
+		for (int i = 0; i < 16; i++) {
+			T8(0xb4 + i, 0x88 + i);
+		}
+		/* 0xc4, 0xc5, ..., 0xd6, 0xd7 */
+		for (int i = 0; i < 5; i++) {
+			SW16(0xc4 + i * 4, 0x98 + i * 2);
+			SW16(0xc6 + i * 4, 0xa2 + i * 2);
+		}
+		T8(0xd8, 0xac); T8(0xd9, 0xad);
+		T8(0xdb, 0xaf); T8(0xdc, 0xb0);
+		if (is_ult) {
+			T8(0xdd, 0xb1); T8(0xde, 0xb2);
+		}
+	} else {
+		int is_ult = (*(u32*)(ebx + 0x2d) == HASWELL_FAMILY_ULT);
+		*(u8*)(ebx + 0x9d) = 0;
+		*(u8*)(ebx + 0x9e) = 0;
+		*(u8*)(ebx + 0x9f) = 0;
+		*(u8*)(ebx + 0xa0) = 1;
+		if (is_ult) {
+			*(u8*)(ebx + 0xa1) = 0;
+		}
+		*(u8*)(ebx + 0xa2) = 0;
+		*(u8*)(ebx + 0xa3) = 1;
+		*(u8*)(ebx + 0xa4) = 0;
+		*(u8*)(ebx + 0xa6) = 3;
+		for (int i = 0; i < 5; i++) {
+			*(u8*)(ebx + 0xa9) = 0;
+		}
+		for (int i = 0; i < 4; i++) {
+			*(u8*)(ebx + 0xaf) = 0;
+		}
+		for (int i = 0; i < 2; i++) {
+			u8 *b1 = ebx + i * 2;
+			*(u8*)(ebx + i + 0xa7) = 0;
+			for (int j = 0; j < 4; j++) {
+				*(u8*)(b1 + 0xb4 + j * 4) = 0xff;
+			}
+			for (int j = 0; j < 5; j++) {
+				*(u8*)(b1 + 0xc4 + j * 4) = 0;
+			}
+			for (int j = 0; j < 4; j++) {
+				*(u8*)(b1 + 0xb5 + j * 4) = 0xff;
+			}
+			for (int j = 0; j < 5; j++) {
+				*(u8*)(b1 + 0xc5 + j * 4) = 0;
+			}
+		}
+		*(u8*)(ebx + 0xd8) = 1;
+		*(u16*)(ebx + 0xd9) = 0x200;
+		*(u8*)(ebx + 0xdb) = 0;
+		*(u8*)(ebx + 0xdc) = 0x30;
+		if (is_ult) {
+			*(u8*)(ebx + 0xdd) = 1;
+			*(u8*)(ebx + 0xde) = 0x40;
+		}
+	}
 }
 
 void frag_fffa5d3c(void *bar, uint32_t offset);
