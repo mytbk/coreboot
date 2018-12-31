@@ -41861,175 +41861,178 @@ push ebx
 lea esp, [esp - 8]
 cmp edx, 0x2e
 mov edi, dword [eax + 0x1749]
-ja loc_fffc697d  ; ja 0xfffc697d
+ja loc_fffc697d  ; ja return 0
 jmp dword [edx*4 + ref_fffcc24c]  ; ujmp: jmp dword [edx*4 - 0x33db4]
 
-loc_fffc645b:
+loc_fffc645b: ; case 0
 cmp edi, 2
-je loc_fffc697d  ; je 0xfffc697d
+je loc_fffc697d  ; je return 0
 mov al, byte [eax + 0x16b4]
-jmp near loc_fffc653f  ; jmp 0xfffc653f
+jmp near loc_fffc653f  ; jmp return (returneax)return (~eax)&11
 
-loc_fffc646f:
+loc_fffc646f: ; case 1
 cmp edi, 2
 setne al
 jmp near loc_fffc651d  ; jmp 0xfffc651d
 
-loc_fffc647a:
+loc_fffc647a: ; case 2
 mov al, byte [eax + 0x16b4]
-jmp near loc_fffc65bb  ; jmp 0xfffc65bb
+jmp near loc_fffc65bb  ; jmp sh1xor1
 
-loc_fffc6485:
+loc_fffc6485: ; case 3
 mov al, byte [eax + 0x16b4]
-jmp near loc_fffc65c5  ; jmp 0xfffc65c5
+jmp near loc_fffc65c5  ; jmp sh2xor1
 
-loc_fffc6490:
+loc_fffc6490: ; case 4
 mov al, byte [eax + 0x16b4]
-jmp near loc_fffc655c  ; jmp 0xfffc655c
+jmp near loc_fffc655c  ; jmp sh3xor1
 
-loc_fffc649b:
+loc_fffc649b: ; case 5
 mov al, byte [eax + 0x16b4]
-jmp near loc_fffc65b0  ; jmp 0xfffc65b0
+jmp near loc_fffc65b0  ; jmp sh4xor1
 
-loc_fffc64a6:
+loc_fffc64a6: ; case 6
 mov al, byte [eax + 0x16b4]
-jmp short loc_fffc650f  ; jmp 0xfffc650f
+jmp short loc_fffc650f  ; jmp al shr5 xor 1
 
-loc_fffc64ae:
+loc_fffc64ae: ; case 7
 mov al, byte [eax + 0x16b4]
-jmp near loc_fffc65d0  ; jmp 0xfffc65d0
+jmp near loc_fffc65d0  ; jmp shift6,xor1
 
-loc_fffc64b9:
+loc_fffc64b9: ; case 8
 movsx eax, byte [eax + 0x16b4]
-jmp near loc_fffc6570  ; jmp 0xfffc6570
+jmp near loc_fffc6570  ; jmp sh7xor1
 
-loc_fffc64c5:
+loc_fffc64c5: ; case 10
 mov al, byte [eax + 0x16b5]
-jmp short loc_fffc653f  ; jmp 0xfffc653f
+jmp short loc_fffc653f  ; jmp return (~eax)&1
 
-loc_fffc64cd:
+loc_fffc64cd: ; case 9
 mov al, byte [eax + 0x16b7]
-jmp short loc_fffc650f  ; jmp 0xfffc650f
+jmp short loc_fffc650f  ; jmp al shr5 xor 1
 
-loc_fffc64d5:
+loc_fffc64d5: ; case 13
 mov al, byte [eax + 0x16b7]
-jmp near loc_fffc65b0  ; jmp 0xfffc65b0
+jmp near loc_fffc65b0  ; jmp sh4xor1
 
-loc_fffc64e0:
+loc_fffc64e0: ; case 11
 mov al, byte [eax + 0x16b7]
-jmp short loc_fffc655c  ; jmp 0xfffc655c
+jmp short loc_fffc655c  ; jmp sh3xor1
 
-loc_fffc64e8:
+loc_fffc64e8: ; case 12
 mov al, byte [eax + 0x16b5]
-jmp near loc_fffc65bb  ; jmp 0xfffc65bb
+jmp near loc_fffc65bb  ; jmp sh1xor1
 
-loc_fffc64f3:
+loc_fffc64f3: ; case 14
 mov al, byte [eax + 0x16b5]
-jmp near loc_fffc65c5  ; jmp 0xfffc65c5
+jmp near loc_fffc65c5  ; jmp sh2xor1
 
-loc_fffc64fe:
+loc_fffc64fe: ; case 15
 mov al, byte [eax + 0x16b5]
-jmp near loc_fffc65b0  ; jmp 0xfffc65b0
+jmp near loc_fffc65b0  ; jmp sh4xor1
 
-loc_fffc6509:
+loc_fffc6509: ; case 16
 mov al, byte [eax + 0x16b5]
 
 loc_fffc650f:
 shr al, 5
-jmp near loc_fffc65d3  ; jmp 0xfffc65d3
+jmp near loc_fffc65d3  ; jmp eax xor 1
 
-loc_fffc6517:
+loc_fffc6517: ; case 37
 cmp edi, 2
 sete al
 
 loc_fffc651d:
 movzx eax, al
-jmp near loc_fffc697f  ; jmp 0xfffc697f
+jmp near loc_fffc697f  ; jmp return
 
-loc_fffc6525:
+loc_fffc6525: ; case 17
 mov al, byte [eax + 0x16b5]
-jmp near loc_fffc65d0  ; jmp 0xfffc65d0
+jmp near loc_fffc65d0  ; jmp shift6,xor1
 
-loc_fffc6530:
+loc_fffc6530: ; case 20
 movsx eax, byte [eax + 0x16b5]
-jmp short loc_fffc6570  ; jmp 0xfffc6570
+jmp short loc_fffc6570  ; jmp sh7xor1
 
-loc_fffc6539:
+loc_fffc6539: ; case 21
 mov al, byte [eax + 0x16b6]
 
 loc_fffc653f:
 not eax
-jmp near loc_fffc65d6  ; jmp 0xfffc65d6
+and eax, 1
+jmp near loc_fffc697f  ; jmp return
 
-loc_fffc6546:
+loc_fffc6546: ; case 22
 mov al, byte [eax + 0x16b6]
-jmp short loc_fffc65bb  ; jmp 0xfffc65bb
+jmp short loc_fffc65bb  ; jmp sh1xor1
 
-loc_fffc654e:
+loc_fffc654e: ; case 23
 mov al, byte [eax + 0x16b6]
-jmp short loc_fffc65c5  ; jmp 0xfffc65c5
+jmp short loc_fffc65c5  ; jmp sh2xor1
 
-loc_fffc6556:
+loc_fffc6556: ; case 24
 mov al, byte [eax + 0x16b6]
 
 loc_fffc655c:
 shr al, 3
-jmp short loc_fffc65d3  ; jmp 0xfffc65d3
+jmp short loc_fffc65d3  ; jmp eax xor 1
 
-loc_fffc6561:
+loc_fffc6561: ; case 25
 mov al, byte [eax + 0x16b6]
-jmp short loc_fffc65d0  ; jmp 0xfffc65d0
+jmp short loc_fffc65d0  ; jmp shift6,xor1
 
-loc_fffc6569:
+loc_fffc6569: ; case 26
 movsx eax, byte [eax + 0x16b6]
 
 loc_fffc6570:
 not eax
 shr eax, 0x1f
-jmp near loc_fffc697f  ; jmp 0xfffc697f
+jmp near loc_fffc697f  ; jmp return
 
-loc_fffc657a:
+loc_fffc657a: ; case 27
 test byte [eax + 0x16b7], 1
 jne short loc_fffc658d  ; jne 0xfffc658d
 
 loc_fffc6583:
 mov eax, 1
-jmp near loc_fffc697f  ; jmp 0xfffc697f
+jmp near loc_fffc697f  ; jmp return
 
 loc_fffc658d:
 cmp edi, 2
 je short loc_fffc6583  ; je 0xfffc6583
-jmp near loc_fffc697d  ; jmp 0xfffc697d
+jmp near loc_fffc697d  ; jmp return 0
 
-loc_fffc6597:
+loc_fffc6597: ; case 28
 test byte [eax + 0x16b5], 8
 je short loc_fffc6583  ; je 0xfffc6583
 cmp edi, 2
 jne short loc_fffc6583  ; jne 0xfffc6583
-jmp near loc_fffc697d  ; jmp 0xfffc697d
+jmp near loc_fffc697d  ; jmp return 0
 
-loc_fffc65aa:
+loc_fffc65aa: ; case 46
 mov al, byte [eax + 0x16b6]
 
 loc_fffc65b0:
 shr al, 4
-jmp short loc_fffc65d3  ; jmp 0xfffc65d3
+jmp short loc_fffc65d3  ; jmp eax xor 1
 
-loc_fffc65b5:
+loc_fffc65b5: ; case 30
 mov al, byte [eax + 0x16b7]
 
 loc_fffc65bb:
 shr al, 1
-jmp short loc_fffc65d3  ; jmp 0xfffc65d3
+xor eax, 1
+and eax, 1
+jmp near loc_fffc697f  ; jmp return
 
-loc_fffc65bf:
+loc_fffc65bf: ; case 31
 mov al, byte [eax + 0x16b7]
 
 loc_fffc65c5:
 shr al, 2
-jmp short loc_fffc65d3  ; jmp 0xfffc65d3
+jmp short loc_fffc65d3  ; jmp eax xor 1
 
-loc_fffc65ca:
+loc_fffc65ca: ; case 35
 mov al, byte [eax + 0x16b7]
 
 loc_fffc65d0:
@@ -42040,9 +42043,9 @@ xor eax, 1
 
 loc_fffc65d6:
 and eax, 1
-jmp near loc_fffc697f  ; jmp 0xfffc697f
+jmp near loc_fffc697f  ; jmp return
 
-loc_fffc65de:
+loc_fffc65de: ; case 44
 cmp byte [eax + 0x107d], 0
 lea edx, [eax + 0x16be]
 mov dword [ebp - 0x10], edx
@@ -42229,6 +42232,7 @@ add dword [ebp - 0x14], 0x400
 add edx, 2
 cmp dword [ebp - 0x14], 0x4b28
 jne loc_fffc67c8  ; jne 0xfffc67c8
+
 movzx edx, byte [eax + 0x10b0]
 mov ecx, dword [eax + 0x103f]
 and edx, 1
@@ -42282,7 +42286,7 @@ or edx, eax
 loc_fffc6977:
 mov dword [ecx + 0x5880], edx
 
-loc_fffc697d:
+loc_fffc697d: ;case 18, 19, 29, 32, 33, 34, 36, 38~43, 45
 xor eax, eax
 
 loc_fffc697f:
