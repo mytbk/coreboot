@@ -26,7 +26,6 @@ int frag_fffc1fc3(void)
 	return 0;
 }
 
-static const EFI_PEI_SERVICES ***gpPei = (const EFI_PEI_SERVICES***)0xff7d7538;
 extern EFI_GUID mEfiMemoryRestoreDataGuid;
 
 void *create_raminit_hob(void);

@@ -2,18 +2,6 @@
 #include "mrc_utils.h"
 #include "mrc_misc.h"
 #include <string.h>
-#include <console/console.h>
-
-static const EFI_PEI_SERVICES ***gpPei = (const EFI_PEI_SERVICES***)0xff7d7538;
-
-static inline
-MRC_PEI *PEI_FROM_PEI_SERVICE(const EFI_PEI_SERVICES *ps)
-{
-	MRC_PEI *pei = (MRC_PEI *)((void*)ps - 4);
-	if (pei->sig != PEI_SIGNATURE)
-		die("PEI signature error!\n");
-	return pei;
-}
 
 int EFIAPI
 PeiInstallPpi(const EFI_PEI_SERVICES **PeiServices,
