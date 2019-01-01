@@ -1446,18 +1446,6 @@ push ebx
 call frag_fffa1e83
 add esp, 12
 
-mov eax, dword [edi + 1]
-mov al, byte [eax]
-mov byte [ebx + 0x23a], al
-mov eax, dword [edi + 1]
-mov al, byte [eax + 1]
-mov byte [ebx + 0x389], al
-mov eax, dword [edi + 1]
-mov al, byte [eax + 2]
-mov byte [ebx + 0x534], al
-mov eax, dword [edi + 1]
-mov al, byte [eax + 3]
-mov byte [ebx + 0x683], al
 mov eax, dword [0xff7d7538]
 mov eax, dword [eax]
 cmp dword [eax - 4], 0xfeadb00b
