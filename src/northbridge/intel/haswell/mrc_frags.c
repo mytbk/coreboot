@@ -659,3 +659,32 @@ void frag_usb_fffaf75b(PEI_USB *upd)
 		pch_iobp_update(a1 | a2, (0xe50041 + i) << 8, 0xffff80ff);
 	}
 }
+
+void frag_usb_fffaf7d8(PEI_USB *upd);
+void frag_usb_fffaf7d8(PEI_USB *upd)
+{
+	int sku = mrc_sku_type();
+
+	for (int i = 0; i < nb_usb2_ports(); i++) {
+		if (i <= 7 && (upd->xhci_resume_info[0] & 1)) {
+			if (upd->ehci_settings[i].enable & 1) {
+				pci_or_config8(PCI_DEV(0, 0x1d, 0), 0x64, (1 << i));
+			} else {
+				pci_update_config8(PCI_DEV(0, 0x1d, 0), 0x64, (~(1 << i)), 0);
+			}
+		}
+		/* low power PCH doesn't have 00:1a.0 */
+		if (sku != 1)
+			continue;
+
+		if (i > 0xd) continue;
+		if ((upd->xhci_resume_info[1] & 1) == 0)
+			continue;
+
+		if (upd->ehci_settings[i].enable & 1) {
+			pci_or_config8(PCI_DEV(0, 0x1a, 0), 0x64, 1 << (i - 8));
+		} else {
+			pci_update_config8(PCI_DEV(0, 0x1a, 0), 0x64, ~(1 << (i - 8)), 0);
+		}
+	}
+}
