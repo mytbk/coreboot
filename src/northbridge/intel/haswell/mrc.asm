@@ -181,6 +181,7 @@ extern frag_fffa5d3c
 extern frag_fffa627c
 extern frag_fffa0ff3
 extern frag_fffa1e83
+extern copy_spd
 extern frag_fffa9029
 extern frag_fffba1df
 extern frag_fffba341
@@ -1446,60 +1447,10 @@ push ebx
 call frag_fffa1e83
 add esp, 12
 
-mov eax, dword [0xff7d7538]
-mov eax, dword [eax]
-cmp dword [eax - 4], 0xfeadb00b
-jne short loc_fffa2850  ; jne 0xfffa2850
-mov eax, dword [eax + 0x258]
-xor esi, esi
-add eax, 0xe2
-mov dword [ebp - 0x2c], eax
-jmp short loc_fffa28bb  ; jmp 0xfffa28bb
+push ebx
+call copy_spd
+add esp, 4
 
-loc_fffa2850:
-jmp short loc_fffa2850  ; jmp 0xfffa2850
-
-loc_fffa2852:
-imul eax, dword [ebp - 0x1c], 0x14f
-mov ecx, dword [ebp - 0x28]
-lea edx, [eax + ecx + 0xd0]
-add edx, ebx
-cmp byte [edx + 0x16a], 0xff
-lea eax, [edx + 0x1c]
-mov dword [ebp - 0x20], eax
-jne short loc_fffa28ac  ; jne 0xfffa28ac
-cmp dword [edx + 0x1c], 0
-jne short loc_fffa28ac  ; jne 0xfffa28ac
-push eax
-push dword [ebp - 0x1c]
-mov dword [ebp - 0x30], edx
-push esi
-push ref_fffcc46a  ; push 0xfffcc46a
-call mrc_printk
-mov edx, dword [ebp - 0x30]
-mov ecx, 0x100
-lea eax, [edx + 0x40]
-mov edx, dword [ebp - 0x2c]
-call mrc_memcpy
-mov edx, dword [ebp - 0x20]
-add esp, 0x10
-mov byte [edx + 0x14e], 0
-
-loc_fffa28ac:
-inc dword [ebp - 0x1c]
-cmp dword [ebp - 0x1c], 2
-jne short loc_fffa2852  ; jne 0xfffa2852
-inc esi
-cmp esi, 2
-je short loc_fffa28cd  ; je 0xfffa28cd
-
-loc_fffa28bb:
-imul ecx, esi, 0x2fa
-mov dword [ebp - 0x1c], 0
-mov dword [ebp - 0x28], ecx
-jmp short loc_fffa2852  ; jmp 0xfffa2852
-
-loc_fffa28cd:
 cmp dword [ebp - 0x24], 2
 je short loc_fffa28f8  ; je 0xfffa28f8
 cmp dword [ebp - 0x24], 3
@@ -47960,9 +47911,6 @@ dd loc_fffc8bc5
 dd loc_fffc8bc5
 dd loc_fffc8692
 dd loc_fffc85f0
-
-ref_fffcc46a:
-db 'Copy SPD for Channel %d Dimm %d',0x0a,0x00
 
 ref_fffcc534:
 db 'System Agent: Starting up...',0x0a,0x00
