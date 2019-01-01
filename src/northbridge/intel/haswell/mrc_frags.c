@@ -502,3 +502,87 @@ void frag_usb_fffaed66(PEI_USB *upd, void *xbar)
 		XBAR_OR(0x8188, 0x1000000);
 	}
 }
+
+void frag_usb_fffaeb10(PEI_USB *upd, void *ebar);
+void frag_usb_fffaeb10(PEI_USB *upd, void *ebar)
+{
+	/* low power PCH (sku = 2) only has 00:1d.0,
+	 * and normal PCH also has 00:1a.0
+	 */
+	int sku = mrc_sku_type();
+	int nb_ehci_dev;
+	const int ehci_dev[2] = { 0x1d, 0x1a };
+	u16 cmd;
+	u16 tmp16;
+	uint8_t bar_was_set;
+	u32 edx;
+
+	if (sku == 1)
+		nb_ehci_dev = 2;
+	else if (sku == 2)
+		nb_ehci_dev = 1;
+	else
+		return;
+
+	for (int i = 0; i < nb_ehci_dev; i++) {
+		device_t dev = PCI_DEV(0, ehci_dev[i], 0);
+
+		if ((upd->xhci_resume_info[i] & 1) == 0) {
+			pci_write_config32(dev, 0x10, 0); // MEM_BASE
+			pci_write_config16(dev, 4, 0); // PCI_CMD
+			continue;
+		}
+		if (upd->xhci_resume_info[2] & 0x10) {
+			// reserved register?
+			pci_update_config16(dev, 0x78, 0xfffc, 0);
+		}
+
+		if (pci_read_config32(dev, 0x10) == 0 &&
+				(pci_read_config16(dev, 4) & 2) == 0) {
+			pci_write_config32(dev, 0x10, (u32)ebar);
+			bar_was_set = 0;
+			cmd = 0;
+		} else {
+			ebar = (void*)pci_read_config32(dev, 0x10);
+			cmd = pci_read_config16(dev, 4);
+			bar_was_set = 1;
+		}
+
+		pci_or_config16(dev, 4, 6); /* Bus Master Enable, Memory Space Enable */
+		if (!bar_was_set) {
+			tmp16 = read16(ebar + 0x20);
+			tmp16 |= 2; /* host controller reset */
+			write16(ebar + 0x20, tmp16);
+		}
+		pci_or_config16(dev, 0x80, 1); /* ACCESS_CNTL */
+		write32(ebar + 4, read32(ebar + 4) & 0xffff0fff);
+		if (i != 0) {
+			if (sku != 1 || i != 1 || (upd->v0 & 4) == 0) {
+				edx = 2;
+			} else {
+				edx = 3;
+			}
+		} else {
+			if ((upd->v0 & 2) == 0)
+				edx = 2;
+			else
+				edx = 3;
+		}
+
+		u32 tmp = read32(ebar + 4);
+		tmp &= 0xfffffff0;
+		tmp |= edx;
+		write32(ebar + 4, tmp);
+
+		pci_update_config16(dev, 0x80, 0xfffe, 0);
+		pci_or_config32(dev, 0x78, 4);
+		pci_or_config32(dev, 0x7c, 0x4080);
+		pci_update_config32(dev, 0x8c, 0xfbfff4ff, 0x20400);
+		if (bar_was_set) {
+			pci_write_config16(dev, 4, cmd);
+		} else {
+			pci_update_config16(dev, 4, 0xfff9, 0);
+			pci_write_config32(dev, 0x10, 0);
+		}
+	}
+}
