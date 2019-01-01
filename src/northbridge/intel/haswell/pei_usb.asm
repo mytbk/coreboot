@@ -14,6 +14,7 @@ extern frag_usb_fffaecbe
 extern frag_usb_fffaed46
 extern frag_usb_fffaeb10
 extern set_usb_overcurrent
+extern frag_usb_fffaf75b
 
 mrc_init_usb:
 push ebp
@@ -747,33 +748,11 @@ add esp, 4
 
 loc_fffaf75b:
 mov esi, dword [ebp - 0x30]
-xor ebx, ebx
-jmp short loc_fffaf797  ; jmp 0xfffaf797
 
-loc_fffaf762:
-mov al, byte [esi + 5]
-mov cl, byte [esi + 6]
-and eax, 7
-and ecx, 7
-shl ecx, 0xb
-sub esp, 0xc
-shl eax, 8
-lea edx, [ebx + 0xe50041]
-or eax, ecx
-mov ecx, 0xffff80ff
-push eax
-shl edx, 8
-mov eax, dword [ebp - 0x44]
-call mrc_pch_iobp_update
-inc ebx
-add esi, 6
-add esp, 0x10
+push esi
+call frag_usb_fffaf75b
+add esp, 4
 
-loc_fffaf797:
-call nb_usb2_ports
-movzx eax, al
-cmp ebx, eax
-jb short loc_fffaf762  ; jb 0xfffaf762
 mov ecx, dword [ebp - 0x30]
 test byte [ecx], 1
 je loc_fffaf94f  ; je 0xfffaf94f

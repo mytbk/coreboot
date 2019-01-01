@@ -649,3 +649,13 @@ void set_usb_overcurrent(PEI_USB *upd)
 		pci_write_config32(dev, 0xcc, u3ocm2);
 	}
 }
+
+void frag_usb_fffaf75b(PEI_USB *upd);
+void frag_usb_fffaf75b(PEI_USB *upd)
+{
+	for (int i = 0; i < nb_usb2_ports(); i++) {
+		u32 a1 = (u32)(upd->ehci_settings[i].f4 & 7) << 8;
+		u32 a2 = (u32)(upd->ehci_settings[i].f5 & 7) << 11;
+		pch_iobp_update(a1 | a2, (0xe50041 + i) << 8, 0xffff80ff);
+	}
+}
