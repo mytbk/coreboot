@@ -284,6 +284,28 @@ void frag_fffa1e83(void *ebx, void *esi, void *edi)
 	*(u8*)(ebx + 0x683) = p1[3];
 }
 
+void copy_spd(void *ebx);
+void copy_spd(void *ebx)
+{
+	MRC_PEI *pei = PEI_FROM_PEI_SERVICE(**gpPei);
+	struct pei_data *pd = pei->pei_data;
+
+	for (int i = 0; i < 2; i++) {
+		int idxi = i * 0x2fa;
+		for (int j = 0; j < 2; j++) {
+			void *edx = ebx + (idxi + j * 0x14f + 0xd0);
+			void *ptr = edx + 0x1c;
+			if (*(u8*)(edx + 0x16a) == 0xff &&
+					*(u32*)(edx + 0x1c) == 0) {
+				printk(BIOS_DEBUG, "Copy SPD for Channel %d Dimm %d\n", i, j);
+				/* FIXME: looks like mrc.bin only copies channel 0 slot 0??? */
+				mrc_memcpy(edx + 0x40, pd->spd_data, 0x100);
+				*(u8*)(ptr + 0x14e) = 0;
+			}
+		}
+	}
+}
+
 void frag_fffa5d3c(void *bar, uint32_t offset);
 void frag_fffa5d3c(void *bar, uint32_t offset)
 {
