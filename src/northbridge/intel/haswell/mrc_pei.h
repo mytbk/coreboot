@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include "pei_data.h"
+#include <console/console.h>
 
 #ifndef EFIAPI
 #define EFIAPI /* __attribute((msabi)) */
@@ -179,5 +180,16 @@ PeiServiceNotifyPpi(const EFI_PEI_NOTIFY_DESCRIPTOR *NotifyList);
 void init_mrc_pei(MRC_PEI *pei, struct pei_data *pd);
 EFI_HOB_DATA * __attribute((regparm(2)))
 locate_hob(EFI_GUID *guid, uint16_t v);
+
+#define gpPei ((const EFI_PEI_SERVICES***)0xff7d7538)
+
+static inline
+MRC_PEI *PEI_FROM_PEI_SERVICE(const EFI_PEI_SERVICES *ps)
+{
+	MRC_PEI *pei = (MRC_PEI *)((void*)ps - 4);
+	if (pei->sig != PEI_SIGNATURE)
+		die("PEI signature error!\n");
+	return pei;
+}
 
 #endif

@@ -37,7 +37,6 @@ static void io_fffa3c2e(void)
 	outb(tmp, 0x71);
 }
 
-static const EFI_PEI_SERVICES ***gpPei = (const EFI_PEI_SERVICES***)0xff7d7538;
 void __attribute((regparm(2))) fcn_fffc5bf6(const EFI_PEI_SERVICES **ps, void *);
 void fcn_fffb9720(const EFI_PEI_SERVICES **ps, int, int);
 
