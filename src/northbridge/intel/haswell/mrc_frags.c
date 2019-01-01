@@ -378,3 +378,13 @@ int freq_sel(int freq)
 		return 29;
 	return 32;
 }
+
+void xhci_setup_ss_route(void);
+void xhci_setup_ss_route(void)
+{
+	u32 tmp;
+	tmp = pci_read_config32(PCI_DEV(0, 0x14, 0), 0xdc) & 0x3f;
+	pci_update_config32(PCI_DEV(0, 0x14, 0), 0xd8, 0xffffffc0, tmp); /* USB3 SuperSpeed Enable */
+	tmp = pci_read_config32(PCI_DEV(0, 0x14, 0), 0xd4) & 0x7fff;
+	pci_update_config32(PCI_DEV(0, 0x14, 0), 0xd0, 0xffff8000, tmp); /* USB2 Port Routing */
+}
