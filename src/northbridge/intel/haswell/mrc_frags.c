@@ -7,6 +7,7 @@
 #include "mrc_pei.h"
 #include "mrc_sku.h"
 #include <cpu/intel/haswell/haswell.h>
+#include "mrc_pch.h"
 
 void frag_fffa0ff3(void);
 void frag_fffa0ff3(void)
@@ -387,4 +388,16 @@ void xhci_setup_ss_route(void)
 	pci_update_config32(PCI_DEV(0, 0x14, 0), 0xd8, 0xffffffc0, tmp); /* USB3 SuperSpeed Enable */
 	tmp = pci_read_config32(PCI_DEV(0, 0x14, 0), 0xd4) & 0x7fff;
 	pci_update_config32(PCI_DEV(0, 0x14, 0), 0xd0, 0xffff8000, tmp); /* USB2 Port Routing */
+}
+
+void frag_usb_fffaecbe(void);
+void frag_usb_fffaecbe(void)
+{
+	pch_iobp_update(0xe5007f04, 0, 0x4481);
+	for (int i = 0; i < nb_usb2_ports(); i++)
+		pch_iobp_update(0xe500410f + (i << 8), 0xfffffffe, 0);
+
+	pch_iobp_update(0xe5007f14, ~0, 0x180000);
+	if (mrc_sku_type() == 2)
+		pch_iobp_update(0xe5007f02, 0xff3fffff, 0);
 }

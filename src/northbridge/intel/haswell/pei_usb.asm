@@ -10,6 +10,7 @@ extern ref_fffcb998
 extern ref_fffcb99c
 extern ref_fffcc988
 extern xhci_setup_ss_route
+extern frag_usb_fffaecbe
 
 mrc_init_usb:
 push ebp
@@ -225,50 +226,7 @@ cmp cl, byte [eax + ref_fffcb998]  ; cmp cl, byte [eax - 0x34668]
 jb loc_fffaeb37  ; jb 0xfffaeb37
 
 loc_fffaecbe:
-sub esp, 0xc
-xor ecx, ecx
-push 0x4481
-mov edx, 0xe5007f04
-mov eax, dword [ebp - 0x44]
-call mrc_pch_iobp_update
-xor esi, esi
-add esp, 0x10
-jmp short loc_fffaed00  ; jmp 0xfffaed00
-
-loc_fffaecdc:
-mov edx, esi
-sub esp, 0xc
-movzx eax, dl
-mov ecx, 0xfffffffe
-shl eax, 8
-inc esi
-push 0
-lea edx, [eax - 0x1affbef1]
-mov eax, dword [ebp - 0x44]
-call mrc_pch_iobp_update
-add esp, 0x10
-
-loc_fffaed00:
-call nb_usb2_ports
-mov ecx, esi
-cmp cl, al
-jb short loc_fffaecdc  ; jb 0xfffaecdc
-sub esp, 0xc
-or ecx, 0xffffffff
-push 0x180000
-mov edx, 0xe5007f14
-mov eax, dword [ebp - 0x44]
-call mrc_pch_iobp_update
-add esp, 0x10
-cmp dword [ebp - 0x60], 2
-jne short loc_fffaed46  ; jne 0xfffaed46
-sub esp, 0xc
-mov ecx, 0xff3fffff
-push 0
-mov edx, 0xe5007f02
-mov eax, dword [ebp - 0x44]
-call mrc_pch_iobp_update
-add esp, 0x10
+call frag_usb_fffaecbe
 
 loc_fffaed46:
 mov eax, dword [ebp - 0x30]
