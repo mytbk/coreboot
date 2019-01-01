@@ -9,6 +9,7 @@ extern mrc_sku_type
 extern ref_fffcb998
 extern ref_fffcb99c
 extern ref_fffcc988
+extern xhci_setup_ss_route
 
 mrc_init_usb:
 push ebp
@@ -551,18 +552,7 @@ lea eax, [ebp - 0x1c]
 call PeiServiceGetBootMode
 cmp dword [ebp - 0x1c], 0x11
 jne short loc_fffaf177  ; jne 0xfffaf177
-mov edx, dword [edi + 0xa00dc]
-mov eax, dword [edi + 0xa00d8]
-and eax, 0xffffffc0
-and edx, 0x3f
-or eax, edx
-mov dword [edi + 0xa00d8], eax
-mov edx, dword [edi + 0xa00d4]
-mov eax, dword [edi + 0xa00d0]
-and eax, 0xffff8000
-and edx, 0x7fff
-or eax, edx
-mov dword [edi + 0xa00d0], eax
+call xhci_setup_ss_route
 jmp near loc_fffaf5ea  ; jmp 0xfffaf5ea
 
 loc_fffaf177:
@@ -573,18 +563,7 @@ je short loc_fffaf1cb  ; je 0xfffaf1cb
 mov eax, dword [edx + 0xf80ac]
 test eax, 0x10000
 je short loc_fffaf1cb  ; je 0xfffaf1cb
-mov edx, dword [edi + 0xa00dc]
-mov eax, dword [edi + 0xa00d8]
-and eax, 0xffffffc0
-and edx, 0x3f
-or eax, edx
-mov dword [edi + 0xa00d8], eax
-mov edx, dword [edi + 0xa00d4]
-mov eax, dword [edi + 0xa00d0]
-and eax, 0xffff8000
-and edx, 0x7fff
-or eax, edx
-mov dword [edi + 0xa00d0], eax
+call xhci_setup_ss_route
 
 loc_fffaf1cb:
 mov ecx, dword [ebp - 0x2c]
@@ -1430,18 +1409,7 @@ jmp near loc_fffaef02  ; jmp 0xfffaef02
 loc_fffaf9e7:
 cmp dword [ebp - 0x34], 0
 je loc_fffaf44c  ; je 0xfffaf44c
-mov edx, dword [edi + 0xa00dc]
-mov eax, dword [edi + 0xa00d8]
-and eax, 0xffffffc0
-and edx, 0x3f
-or eax, edx
-mov dword [edi + 0xa00d8], eax
-mov edx, dword [edi + 0xa00d4]
-mov eax, dword [edi + 0xa00d0]
-and eax, 0xffff8000
-and edx, 0x7fff
-or eax, edx
-mov dword [edi + 0xa00d0], eax
+call xhci_setup_ss_route
 
 loc_fffafa2a:
 jmp near loc_fffaf44c  ; jmp 0xfffaf44c
