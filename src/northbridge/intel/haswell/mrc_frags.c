@@ -277,6 +277,11 @@ void frag_fffa1e83(void *ebx, void *esi, void *edi)
 		}
 	}
 
+	u8 *p1 = *(u8**)(edi + 1);
+	*(u8*)(ebx + 0x23a) = p1[0];
+	*(u8*)(ebx + 0x389) = p1[1];
+	*(u8*)(ebx + 0x534) = p1[2];
+	*(u8*)(ebx + 0x683) = p1[3];
 }
 
 void frag_fffa5d3c(void *bar, uint32_t offset);
