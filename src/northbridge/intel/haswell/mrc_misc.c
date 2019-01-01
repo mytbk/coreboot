@@ -5,6 +5,8 @@
 #include <arch/io.h>
 #include <arch/pci_ops.h>
 #include <console/console.h>
+#include "mrc_pei.h"
+#include "pei_ram.h"
 
 int dummy_func(void)
 {
@@ -434,4 +436,101 @@ int __attribute((regparm(2))) fcn_fffc6438(void *ram_data, int vv)
 		default:
 			return 0;
 	}
+}
+
+void __attribute((regparm(3))) fcn_fffc8290(void *, void *, void *,
+		void *, void *, void *);
+void __attribute((regparm(2))) fcn_fffa91af(u32, void *);
+void __attribute((regparm(2))) fcn_fffa0020(void *, void *);
+void frag_fffa1e83(void *ebx, void *esi, void *edi);
+void copy_spd(void *ebx);
+
+int __attribute((regparm(3))) fcn_fffa1d20(int bootmode, int v, void *addr,
+		EFI_PEI_SERVICES **pps /* not used */, pei_raminit_ppi *ppi);
+int __attribute((regparm(3))) fcn_fffa1d20(int bootmode, int v, void *addr,
+		EFI_PEI_SERVICES **pps /* not used */, pei_raminit_ppi *ppi)
+{
+	void *ebx = addr;
+	void *esi = (void*)ppi->ram_param;
+
+	*(u32*)(addr + 0x5f) = 0xc8;
+	*(u32*)(addr + 0x5b) = (u32)ppi->ram_param;
+	*(u32*)(addr + 0x1d) = 0;
+	*(u8*)(addr + 0x1c) = 0;
+	*(u32*)(addr + 0x45) = 0;
+
+	u32 edx = ppi->ram_param->v04;
+	if (edx == 2) {
+		*(u32*)(ebx + 0x49) = (bootmode != 4)? 2:0;
+	} else if (edx == 3) {
+		*(u32*)(ebx + 0x49) = (bootmode != 4)? 3:0;
+	} else if (edx != 1) {
+		*(u32*)(addr + 0x49) = 0;
+	} else {
+		if (bootmode == 4) {
+			*(u32*)(addr + 0x49) = 0;
+		} else {
+			*(u32*)(addr + 0x49) = 1;
+			*(u32*)(addr + 0x1d) = *(u8*)(esi + 0x53);
+			*(u8*)(addr + 0x1c) = *(u8*)(esi + 0x54);
+			*(u32*)(addr + 0x45) = *(u16*)(esi + 0x4c);
+		}
+	}
+
+	*(u32*)(addr + 0x67) = (u32)ppi->ram_data->mchbar;
+	*(u32*)(addr + 0x63) = (u32)ppi->ram_data->pciexbar;
+	*(u32*)(addr + 0x6b) = (u32)ppi->ram_data->smbusbar;
+	*(u32*)(addr + 0x6f) = (u32)ppi->ram_data->gdxcbar;
+	*(u32*)(addr + 0x73) = 0xfed00000;
+	*(u32*)(addr + 0x7b) = *(u16*)(ppi->cfg0);
+	*(u32*)(addr + 0x18) = *(u16*)(esi + 1);
+	*(u32*)(addr + 0x7f) = ppi->ram_data->tseg_size >> 0x14;
+	*(u32*)(addr + 0x35) = *(u16*)(ppi->cfg0 + 2);
+	u32 eax = *(u8*)(ppi->cfg0 + 4);
+	if (eax == 0x11) {
+		*(u32*)(addr + 0x31) = 0x400;
+	} else {
+		*(u32*)(addr + 0x31) = eax << 5;
+	}
+
+	*(u8*)(addr + 0x55) = 0;
+	fcn_fffc8290(addr + 0x39, addr + 0x3a, addr + 0x3b,
+			addr + 0x3c, addr + 0x3d, addr + 0x3e);
+
+	*(u32*)(addr + 0x25) = ppi->ram_data->system_type;
+	u16 ax = pci_read_config32(PCI_DEV(0, 0, 0), 2);
+
+	u8 dl;
+	if (ax == 0xa04 || ax == 0xc04 || ax == 0xa0c || ax == 0xd04) {
+		dl = 1;
+	} else {
+		dl = 0;
+	}
+	*(u8*)(addr + 0x52) = dl;
+
+	frag_fffa1e83(addr, ppi->ram_param, ppi);
+	copy_spd(addr);
+
+	int ret;
+
+	if (v == 2) {
+		ret = 2;
+	} else if (v == 3) {
+		fcn_fffa91af(3, addr); // 2 reg params
+		ret = 3;
+	} else if (v == 1) {
+		ret = 1;
+		if (*(u32*)(addr + 0x49) == 1) {
+			fcn_fffa0020(addr, ppi); // 2 reg params
+			ret = v;
+		}
+		return ret;
+	} else {
+		fcn_fffa91af(v, addr);
+		ret = 0;
+	}
+	if (*(u32*)(addr + 0x49) == 1) {
+		fcn_fffa0020(addr, ppi);
+	}
+	return ret;
 }
