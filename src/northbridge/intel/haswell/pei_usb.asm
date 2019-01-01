@@ -11,6 +11,7 @@ extern ref_fffcb99c
 extern ref_fffcc988
 extern xhci_setup_ss_route
 extern frag_usb_fffaecbe
+extern frag_usb_fffaed66
 
 mrc_init_usb:
 push ebp
@@ -238,157 +239,10 @@ or eax, 6
 mov word [edi + 0xa0004], ax
 
 loc_fffaed66:
-call mrc_sku_type
-mov esi, eax
-call mrc_pch_revision
-mov edx, dword [ebp - 0x30]
-mov dword [ebp - 0x3c], eax
-test byte [edx + 0x57], 3
-je loc_fffaefd0  ; je 0xfffaefd0
-xor eax, eax
-cmp esi, 1
-jne short loc_fffaedb4  ; jne 0xfffaedb4
-mov edx, dword [edi + 0xa00e0]
-mov eax, 0x15000000
-and edx, 0x18
-sub edx, 8
-cmp edx, 0x10
-ja short loc_fffaeda6  ; ja 0xfffaeda6
-mov eax, dword [edx*4 + ref_fffcb9f0]  ; mov eax, dword [edx*4 - 0x34610]
-
-loc_fffaeda6:
-mov edx, dword [ebx + 4]
-and edx, 0xffffff
-or edx, eax
-mov dword [ebx + 4], edx
-
-loc_fffaedb4:
-mov edx, dword [ebx + 0xc]
-and edx, 0xff00
-or edx, 0x200000a
-mov dword [ebx + 0xc], edx
-mov edx, dword [ebx + 0x10]
-and edx, 0xfffff9df
-or dh, 6
-mov dword [ebx + 0x10], edx
-cmp esi, 1
-jne short loc_fffaee00  ; jne 0xfffaee00
-mov edx, dword [ebx + 0x8008]
-and edx, 0xfff7ffff
-mov dword [ebx + 0x8008], edx
-mov edx, dword [ebx + 0x8058]
-and edx, 0xffeefeff
-or edx, 0x110000
-jmp short loc_fffaee17  ; jmp 0xfffaee17
-
-loc_fffaee00:
-cmp esi, 2
-jne short loc_fffaee1d  ; jne 0xfffaee1d
-mov edx, dword [ebx + 0x8058]
-and edx, 0xfffefeff
-or edx, 0x10000
-
-loc_fffaee17:
-mov dword [ebx + 0x8058], edx
-
-loc_fffaee1d:
-mov edx, dword [ebx + 0x8060]
-or edx, 0x2040000
-mov dword [ebx + 0x8060], edx
-mov edx, dword [ebx + 0x8090]
-or dh, 0x41
-mov dword [ebx + 0x8090], edx
-mov edx, dword [ebx + 0x8094]
-or edx, 0xa04000
-mov dword [ebx + 0x8094], edx
-mov edx, dword [ebx + 0x80e0]
-and edx, 0xfffeffbf
-or edx, 0x40
-mov dword [ebx + 0x80e0], edx
-mov edx, dword [ebx + 0x80ec]
-and dh, 0x81
-or dh, 0xc
-mov dword [ebx + 0x80ec], edx
-mov edx, dword [ebx + 0x80f0]
-and edx, 0xffefffff
-mov dword [ebx + 0x80f0], edx
-cmp esi, 2
-jne loc_fffaf9d7  ; jne 0xfffaf9d7
-mov eax, dword [ebx + 0x80fc]
-or eax, 0x2000000
-mov dword [ebx + 0x80fc], eax
-mov eax, dword [ebx + 0x8110]
-and eax, 0xffeff6fb
-or eax, 0x100800
-mov dword [ebx + 0x8110], eax
-mov eax, dword [ebx + 0x8140]
-mov dword [ebx + 0x8140], 0xff00f03c
-mov edx, 0x200000
-mov eax, 0x2000
-jmp short loc_fffaef02  ; jmp 0xfffaef02
-
-loc_fffaeed5:
-mov eax, dword [ebx + 0x8110]
-and eax, 0xffeff7fb
-or eax, 0x100800
-mov dword [ebx + 0x8110], eax
-mov eax, dword [ebx + 0x8140]
-mov dword [ebx + 0x8140], 0xff03c132
-mov edx, 0x202000
-xor eax, eax
-
-loc_fffaef02:
-mov ecx, dword [ebx + 0x8154]
-not edx
-and edx, ecx
-or edx, eax
-mov dword [ebx + 0x8154], edx
-mov eax, dword [ebx + 0x8154]
-and eax, 0xfffffff7
-mov dword [ebx + 0x8154], eax
-cmp esi, 2
-jne short loc_fffaef71  ; jne 0xfffaef71
-mov eax, dword [ebx + 0x8164]
-or eax, 3
-mov dword [ebx + 0x8164], eax
-mov dword [ebx + 0x8174], 0x1400c0a
-mov eax, dword [ebx + 0x817c]
-mov dword [ebx + 0x817c], 0x33200a3
-mov eax, dword [ebx + 0x8180]
-mov dword [ebx + 0x8180], 0xcb0028
-mov eax, dword [ebx + 0x8184]
-mov dword [ebx + 0x8184], 0x64001e
-
-loc_fffaef71:
-mov ax, word [edi + 0xa0044]
-mov cl, byte [ebp - 0x3c]
-or ax, 0xc401
-mov word [edi + 0xa0044], ax
-mov al, byte [edi + 0xa0046]
-or eax, 0xf
-mov byte [edi + 0xa0046], al
-cmp cl, 3
-seta dl
-cmp esi, 2
-sete al
-test dl, al
-je short loc_fffaefb2  ; je 0xfffaefb2
-mov eax, dword [ebx + 0x8188]
-or eax, 0x5000000
-jmp short loc_fffaefca  ; jmp 0xfffaefca
-
-loc_fffaefb2:
-test cl, cl
-setne dl
-dec esi
-sete al
-test dl, al
-je short loc_fffaefd0  ; je 0xfffaefd0
-mov eax, dword [ebx + 0x8188]
-or eax, 0x1000000
-
-loc_fffaefca:
-mov dword [ebx + 0x8188], eax
+push ebx
+push dword [ebp - 0x30]
+call frag_usb_fffaed66
+add esp, 8
 
 loc_fffaefd0:
 call mrc_sku_type
@@ -1358,12 +1212,6 @@ loc_fffaf9ce:
 mov dword [ebp - 0x58], 0x80000002
 jmp short loc_fffafa2f  ; jmp 0xfffafa2f
 
-loc_fffaf9d7:
-cmp esi, 1
-je loc_fffaeed5  ; je 0xfffaeed5
-xor edx, edx
-jmp near loc_fffaef02  ; jmp 0xfffaef02
-
 loc_fffaf9e7:
 cmp dword [ebp - 0x34], 0
 je loc_fffaf44c  ; je 0xfffaf44c
@@ -1392,24 +1240,6 @@ ref_fffcb9e8:
 dd ref_fffcca08
 dd ref_fffcca20
 
-ref_fffcb9f0:
-dd 0x13000000
-dd 0x15000000
-dd 0x15000000
-dd 0x15000000
-dd 0x15000000
-dd 0x15000000
-dd 0x15000000
-dd 0x15000000
-dd 0x11000000
-dd 0x15000000
-dd 0x15000000
-dd 0x15000000
-dd 0x15000000
-dd 0x15000000
-dd 0x15000000
-dd 0x15000000
-dd 0x0f000000
 
 ref_fffcba34:
 db 0x1d

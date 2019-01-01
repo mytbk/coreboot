@@ -8,6 +8,7 @@
 #include "mrc_sku.h"
 #include <cpu/intel/haswell/haswell.h>
 #include "mrc_pch.h"
+#include "pei_usb.h"
 
 void frag_fffa0ff3(void);
 void frag_fffa0ff3(void)
@@ -400,4 +401,104 @@ void frag_usb_fffaecbe(void)
 	pch_iobp_update(0xe5007f14, ~0, 0x180000);
 	if (mrc_sku_type() == 2)
 		pch_iobp_update(0xe5007f02, 0xff3fffff, 0);
+}
+
+static const u32 ref_fffcb9f0[17] = {
+	0x13000000,
+	0x15000000,
+	0x15000000,
+	0x15000000,
+	0x15000000,
+	0x15000000,
+	0x15000000,
+	0x15000000,
+	0x11000000,
+	0x15000000,
+	0x15000000,
+	0x15000000,
+	0x15000000,
+	0x15000000,
+	0x15000000,
+	0x15000000,
+	0x0f000000
+};
+
+void frag_usb_fffaed66(PEI_USB *upd, void *xbar);
+void frag_usb_fffaed66(PEI_USB *upd, void *xbar)
+{
+#define XBAR_AND_OR(a, andv, orv) bar_update32(xbar, a, andv, orv)
+#define XBAR_OR(a, orv) bar_or32(xbar, a, orv)
+#define XBAR_RW32(addr, v) do { \
+	read32(xbar + (addr)); \
+	write32(xbar + (addr), v); \
+} while(0);
+
+	int sku = mrc_sku_type();
+	int rev = mrc_pch_revision();
+	u32 tmp1, tmp2;
+
+	/* XBAR is e8100000
+	printk(BIOS_DEBUG, "XBAR is %p.\n", xbar);
+	*/
+
+	if ((upd->xhci_resume_info[2] & 3) == 0)
+		return;
+
+	tmp1 = 0;
+	if (sku == 1) {
+		tmp2 = (pci_read_config32(PCI_DEV(0, 0x14, 0), 0xe0) & 0x18) - 8;
+		if (tmp2 <= 0x10)
+			tmp1 = ref_fffcb9f0[tmp2];
+		else
+			tmp1 = 0x15000000;
+
+		XBAR_AND_OR(4, 0xffffff, tmp1);
+	}
+	XBAR_AND_OR(0xc, 0xff00, 0x200000a);
+	XBAR_AND_OR(0x10, 0xfffff9df, 0x0600);
+	if (sku == 1) {
+		XBAR_AND_OR(0x8008, 0xfff7ffff, 0);
+		XBAR_AND_OR(0x8058, 0xffeefeff, 0x110000);
+	} else if (sku == 2) {
+		XBAR_AND_OR(0x8058, 0xfffefeff, 0x10000);
+	}
+
+	XBAR_OR(0x8060, 0x2040000);
+	XBAR_OR(0x8090, 0x4100);
+	XBAR_OR(0x8094, 0xa04000);
+	XBAR_AND_OR(0x80e0, 0xfffeffbf, 0x40);
+	XBAR_AND_OR(0x80ec, 0xffff81ff, 0x0c00);
+	XBAR_AND_OR(0x80f0, 0xffefffff, 0);
+	if (sku == 2) {
+		XBAR_OR(0x80fc, 0x2000000);
+		XBAR_AND_OR(0x8110, 0xffeff6fb, 0x100800);
+		read32(xbar + 0x8140);
+		write32(xbar + 0x8140, 0xff00f03c);
+		tmp2 = 0x200000;
+		tmp1 = 0x2000;
+	} else if (sku == 1) {
+		XBAR_AND_OR(0x8110, 0xffeff7fb, 0x100800);
+		read32(xbar + 0x8140);
+		write32(xbar + 0x8140, 0xff03c132);
+		tmp2 = 0x202000;
+		tmp1 = 0;
+	} else {
+		tmp2 = 0;
+	}
+	XBAR_AND_OR(0x8154, ~tmp2, tmp1);
+	XBAR_AND_OR(0x8154, 0xfffffff7, 0);
+	if (sku == 2) {
+		XBAR_OR(0x8164, 3);
+		write32(xbar + 0x8174, 0x1400c0a);
+		XBAR_RW32(0x817c, 0x33200a3);
+		XBAR_RW32(0x8180, 0xcb0028);
+		XBAR_RW32(0x8184, 0x64001e);
+	}
+	pci_or_config16(PCI_DEV(0, 0x14, 0), 0x44, 0xc401);
+	pci_or_config8(PCI_DEV(0, 0x14, 0), 0x46, 0xf);
+	if (rev > 3 && sku == 2) {
+		XBAR_OR(0x8188, 0x5000000);
+	} else if (rev != 0 && sku == 1) {
+		XBAR_OR(0x8188, 0x1000000);
+	}
 }
