@@ -11,7 +11,7 @@ extern ref_fffcb99c
 extern ref_fffcc988
 extern xhci_setup_ss_route
 extern frag_usb_fffaecbe
-extern frag_usb_fffaed66
+extern frag_usb_fffaed46
 extern frag_usb_fffaeb10
 
 mrc_init_usb:
@@ -102,19 +102,9 @@ add esp, 8
 
 call frag_usb_fffaecbe
 
-loc_fffaed46:
-mov eax, dword [ebp - 0x30]
-test byte [eax + 0x57], 3
-je short loc_fffaed66  ; je 0xfffaed66
-mov dword [edi + 0xa0010], ebx
-mov ax, word [edi + 0xa0004]
-or eax, 6
-mov word [edi + 0xa0004], ax
-
-loc_fffaed66:
 push ebx
 push dword [ebp - 0x30]
-call frag_usb_fffaed66
+call frag_usb_fffaed46
 add esp, 8
 
 loc_fffaefd0:

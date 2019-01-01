@@ -423,8 +423,8 @@ static const u32 ref_fffcb9f0[17] = {
 	0x0f000000
 };
 
-void frag_usb_fffaed66(PEI_USB *upd, void *xbar);
-void frag_usb_fffaed66(PEI_USB *upd, void *xbar)
+void frag_usb_fffaed46(PEI_USB *upd, void *xbar);
+void frag_usb_fffaed46(PEI_USB *upd, void *xbar)
 {
 #define XBAR_AND_OR(a, andv, orv) bar_update32(xbar, a, andv, orv)
 #define XBAR_OR(a, orv) bar_or32(xbar, a, orv)
@@ -436,6 +436,7 @@ void frag_usb_fffaed66(PEI_USB *upd, void *xbar)
 	int sku = mrc_sku_type();
 	int rev = mrc_pch_revision();
 	u32 tmp1, tmp2;
+	device_t dev = PCI_DEV(0, 0x14, 0);
 
 	/* XBAR is e8100000
 	printk(BIOS_DEBUG, "XBAR is %p.\n", xbar);
@@ -444,9 +445,12 @@ void frag_usb_fffaed66(PEI_USB *upd, void *xbar)
 	if ((upd->xhci_resume_info[2] & 3) == 0)
 		return;
 
+	pci_write_config32(dev, 0x10, (u32)xbar);
+	pci_or_config32(dev, 4, 6);
+
 	tmp1 = 0;
 	if (sku == 1) {
-		tmp2 = (pci_read_config32(PCI_DEV(0, 0x14, 0), 0xe0) & 0x18) - 8;
+		tmp2 = (pci_read_config32(dev, 0xe0) & 0x18) - 8;
 		if (tmp2 <= 0x10)
 			tmp1 = ref_fffcb9f0[tmp2];
 		else
@@ -494,8 +498,8 @@ void frag_usb_fffaed66(PEI_USB *upd, void *xbar)
 		XBAR_RW32(0x8180, 0xcb0028);
 		XBAR_RW32(0x8184, 0x64001e);
 	}
-	pci_or_config16(PCI_DEV(0, 0x14, 0), 0x44, 0xc401);
-	pci_or_config8(PCI_DEV(0, 0x14, 0), 0x46, 0xf);
+	pci_or_config16(dev, 0x44, 0xc401);
+	pci_or_config8(dev, 0x46, 0xf);
 	if (rev > 3 && sku == 2) {
 		XBAR_OR(0x8188, 0x5000000);
 	} else if (rev != 0 && sku == 1) {
