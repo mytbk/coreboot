@@ -208,6 +208,75 @@ void frag_fffa1e83(void *ebx, void *esi, void *edi)
 			*(u8*)(ebx + 0xde) = 0x40;
 		}
 	}
+
+	if (v > 10) {
+		T8(0x59, 0xc2); T8(0x5a, 0xc3); T8(0x6e5, 0xc4);
+	} else {
+		*(u8*)(ebx + 0x59) = 1;
+		*(u8*)(ebx + 0x5a) = 1;
+		*(u8*)(ebx + 0x6e5) = 0;
+	}
+
+	tmp = *(u8*)(ebx + 0x6dd);
+	if (v > 11) {
+		tmp = shupd(tmp, *(u8*)(esi + 0xc5), 3);
+	} else {
+		tmp |= 8;
+	}
+	*(u8*)(ebx + 0x6dd) = tmp;
+
+	tmp = *(u8*)(ebx + 0x6de);
+	if (v > 0xe) {
+		tmp = shupd(tmp, *(u8*)(esi + 0xc7), 4);
+	} else {
+		tmp = shupd(tmp, 1, 4);
+	}
+	*(u8*)(ebx + 0x6de) = tmp;
+
+	*(u32*)(ebx + 0x41) = 0;
+	*(u8*)(ebx + 0x40) = 0;
+	T8(0x56, 0x11);
+	T8(0x58, 0x2c);
+	T8(0x53, 0);
+	T8(0x6e1, 0x52);
+
+	if (*(u32*)(ebx + 0x2d) == HASWELL_FAMILY_ULT) {
+		*(u8*)(ebx + 0x6e3) = 0;
+		T8(0x6e2, 0x57);
+	}
+
+	void *ptr0 = ebx + 0xdf;
+	*(u8*)(ebx + 0xe3) = 0;
+	for (int i = 0; i < 2; i++) {
+		void *ptr1 = ptr0 + i * 0x2fa;
+		void *ptr2 = ptr1 + 5;
+		tmp = *(u8*)(esi + i + 0x2a);
+		if (tmp == 2) {
+			*(u32*)(ptr2 + 8) = 0;
+			*(u32*)(ptr2 + 0x157) = 1;
+			*(u32*)(ptr1 + 5) = 2;
+			(*(u8*)(ptr0 + 4))++;
+			*(u32*)(ptr2 + 4) = 1;
+		} else if (tmp == 3) {
+			*(u32*)(ptr2 + 8) = 1;
+			*(u32*)(ptr2 + 0x157) = 1;
+			*(u32*)(ptr1 + 5) = 1;
+			*(u32*)(ptr2 + 4) = 0;
+		} else if (tmp != 1) {
+			*(u32*)(ptr2 + 8) = 0;
+			*(u32*)(ptr2 + 0x157) = 0;
+			*(u32*)(ptr1 + 5) = 2;
+			(*(u8*)(ptr0 + 4))++;
+			*(u32*)(ptr2 + 4) = 2;
+		} else { /* tmp == 1 */
+			*(u32*)(ptr2 + 8) = 1;
+			*(u32*)(ptr2 + 0x157) = 0;
+			*(u32*)(ptr1 + 5) = 2;
+			(*(u8*)(ptr0 + 4))++;
+			*(u32*)(ptr2 + 4) = 1;
+		}
+	}
+
 }
 
 void frag_fffa5d3c(void *bar, uint32_t offset);
