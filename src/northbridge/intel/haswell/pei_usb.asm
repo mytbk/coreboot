@@ -13,6 +13,7 @@ extern xhci_setup_ss_route
 extern frag_usb_fffaecbe
 extern frag_usb_fffaed46
 extern frag_usb_fffaeb10
+extern set_usb_overcurrent
 
 mrc_init_usb:
 push ebp
@@ -739,91 +740,10 @@ test byte [eax + 0x57], 3
 jne short loc_fffaf6c2  ; jne 0xfffaf6c2
 jmp near loc_fffaf75b  ; jmp 0xfffaf75b
 
-loc_fffaf684:
-mov edx, dword [ebp - 0x30]
-mov eax, dword [edx + ebx*4 + 0x6c]
-cmp eax, 8
-je short loc_fffaf6bf  ; je 0xfffaf6bf
-cmp ebx, 7
-ja short loc_fffaf6a9  ; ja 0xfffaf6a9
-cmp eax, 3
-ja short loc_fffaf6bf  ; ja 0xfffaf6bf
-lea ecx, [ebx + eax*8]
-mov eax, 1
-shl eax, cl
-or dword [ebp - 0x34], eax
-jmp short loc_fffaf6bf  ; jmp 0xfffaf6bf
-
-loc_fffaf6a9:
-lea edx, [eax - 4]
-cmp edx, 3
-ja short loc_fffaf6bf  ; ja 0xfffaf6bf
-lea ecx, [ebx + eax*8 - 0x28]
-mov eax, 1
-shl eax, cl
-or dword [ebp - 0x38], eax
-
-loc_fffaf6bf:
-inc ebx
-jmp short loc_fffaf6d2  ; jmp 0xfffaf6d2
-
 loc_fffaf6c2:
-mov dword [ebp - 0x38], 0
-mov dword [ebp - 0x34], 0
-xor ebx, ebx
-
-loc_fffaf6d2:
-call nb_usb2_ports
-movzx eax, al
-cmp ebx, eax
-jb short loc_fffaf684  ; jb 0xfffaf684
-xor esi, esi
-mov dword [ebp - 0x2c], 0
-xor ebx, ebx
-jmp short loc_fffaf71c  ; jmp 0xfffaf71c
-
-loc_fffaf6eb:
-mov ecx, dword [ebp - 0x30]
-mov eax, dword [ecx + ebx*4 + 0xa4]
-cmp eax, 8
-je short loc_fffaf71b  ; je 0xfffaf71b
-cmp eax, 3
-ja short loc_fffaf70e  ; ja 0xfffaf70e
-lea ecx, [ebx + eax*8]
-mov eax, 1
-shl eax, cl
-or dword [ebp - 0x2c], eax
-jmp short loc_fffaf71b  ; jmp 0xfffaf71b
-
-loc_fffaf70e:
-lea ecx, [ebx + eax*8 - 0x20]
-mov eax, 1
-shl eax, cl
-or esi, eax
-
-loc_fffaf71b:
-inc ebx
-
-loc_fffaf71c:
-call mrc_sku_type
-dec eax
-xor edx, edx
-cmp eax, 1
-ja short loc_fffaf730  ; ja 0xfffaf730
-movzx edx, byte [eax + ref_fffcb9dc]  ; movzx edx, byte [eax - 0x34624]
-
-loc_fffaf730:
-cmp ebx, edx
-jb short loc_fffaf6eb  ; jb 0xfffaf6eb
-mov edx, dword [ebp - 0x34]
-mov dword [edi + 0xa00c0], edx
-mov edx, dword [ebp - 0x2c]
-mov dword [edi + 0xa00c8], edx
-cmp dword [ebp - 0x3c], 1
-jne short loc_fffaf75b  ; jne 0xfffaf75b
-mov edx, dword [ebp - 0x38]
-mov dword [edi + 0xa00c4], edx
-mov dword [edi + 0xa00cc], esi
+push dword [ebp - 0x30]
+call set_usb_overcurrent
+add esp, 4
 
 loc_fffaf75b:
 mov esi, dword [ebp - 0x30]

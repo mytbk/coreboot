@@ -590,3 +590,62 @@ void frag_usb_fffaeb10(PEI_USB *upd, void *ebar)
 		}
 	}
 }
+
+/* from loc_fffaf684 to loc_fffaf75b */
+void set_usb_overcurrent(PEI_USB *upd);
+void set_usb_overcurrent(PEI_USB *upd)
+{
+	device_t dev = PCI_DEV(0, 0x14, 0);
+
+	u32 u2ocm1 = 0;
+	u32 u2ocm2 = 0;
+	u32 u3ocm2 = 0;
+	u32 u3ocm1 = 0;
+
+	for (int i = 0; i < nb_usb2_ports(); i++) {
+		u32 oc = upd->ehci_oc[i];
+		if (oc == 8) continue;
+		if (i > 7) {
+			if (oc >= 4 && oc <= 7) {
+				u2ocm2 |= (1 << ((oc - 4) * 8 + (i - 8)));
+			}
+		} else {
+			if (oc <= 3) {
+				u2ocm1 |= (1 << (oc * 8 + i));
+			}
+		}
+	}
+
+	int nb_xxx;
+	int sku = mrc_sku_type();
+	if (sku == 1)
+		nb_xxx = 6;
+	else if (sku == 2)
+		nb_xxx = 4;
+	else
+		nb_xxx = 0;
+
+	for (int i = 0; i < nb_xxx; i++) {
+		u32 oc = upd->xhci_oc[i];
+		if (oc == 8) continue;
+		if (oc <= 3) {
+			u3ocm1 |= (1 << (oc * 8 + i));
+		} else {
+			u3ocm2 |= (1 << ((oc - 4) * 8 + i));
+		}
+	}
+
+	/* U2OCM1: XHCI USB2 Overcurrent Mapping Register1
+	 * OC 0~3 */
+	pci_write_config32(dev, 0xc0, u2ocm1);
+	/* U3OCM1: XHCI USB3 Overcurrent Mapping Register1
+	 * OC 0~3 */
+	pci_write_config32(dev, 0xc8, u3ocm1);
+
+	if (sku == 1) {
+		/* U2OCM2: OC 4~7 */
+		pci_write_config32(dev, 0xc4, u2ocm2);
+		/* U3OCM2: OC 4~7 */
+		pci_write_config32(dev, 0xcc, u3ocm2);
+	}
+}
