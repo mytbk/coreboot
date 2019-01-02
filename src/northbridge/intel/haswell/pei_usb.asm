@@ -19,6 +19,7 @@ extern frag_usb_fffaf7d8
 extern frag_usb_fffaf210
 extern frag_usb_loop2
 extern frag_usb_loop3
+extern frag_usb_loop4
 
 mrc_init_usb:
 push ebp
@@ -434,28 +435,11 @@ push ebx
 call frag_usb_fffaf210
 add esp, 12
 
-mov dword [ebp - 0x2c], 0xa
-
-loc_fffaf41f:
-xor ecx, ecx
-xor eax, eax
-
-loc_fffaf423:
-mov edx, dword [esi + eax*4]
-inc eax
-add edx, ebx
-mov edx, dword [edx]
-or ecx, edx
-cmp eax, dword [ebp - 0x34]
-jb short loc_fffaf423  ; jb 0xfffaf423
-mov eax, 0x2710
-mov dword [ebp - 0x70], ecx
-call usleep
-mov ecx, dword [ebp - 0x70]
-and cl, 0x10
-je short loc_fffaf44c  ; je 0xfffaf44c
-dec dword [ebp - 0x2c]
-jne short loc_fffaf41f  ; jne 0xfffaf41f
+push dword [ebp - 0x34]
+push esi
+push ebx
+call frag_usb_loop4
+add esp, 12
 
 loc_fffaf44c:
 mov eax, dword [ebp - 0x30]
@@ -468,27 +452,11 @@ push ebx
 call frag_usb_loop3
 add esp, 12
 
-mov dword [ebp - 0x2c], 0xa
-
-loc_fffaf480:
-mov dword [ebp - 0x60], 0
-xor eax, eax
-
-loc_fffaf489:
-mov edx, dword [ebp - 0x3c]
-mov ecx, dword [edx + eax*4]
-inc eax
-add ecx, ebx
-mov edx, dword [ecx]
-or dword [ebp - 0x60], edx
-cmp eax, dword [ebp - 0x38]
-jb short loc_fffaf489  ; jb 0xfffaf489
-mov eax, 0x2710
-call usleep
-test byte [ebp - 0x60], 0x10
-je short loc_fffaf4b1  ; je 0xfffaf4b1
-dec dword [ebp - 0x2c]
-jne short loc_fffaf480  ; jne 0xfffaf480
+push dword [ebp - 0x38]
+push dword [ebp - 0x3c]
+push ebx
+call frag_usb_loop4
+add esp, 12
 
 loc_fffaf4b1:
 xor eax, eax
@@ -566,33 +534,19 @@ and edx, 0xffffffc0
 or edx, eax
 mov dword [edi + 0xa00d8], edx
 mov ecx, dword [ebp - 0x34]
-mov dword [ebp - 0x38], 0xa
 lea ecx, [esi + ecx*4]
 mov dword [ebp - 0x2c], ecx
 
-loc_fffaf57b:
-mov eax, esi
-xor edx, edx
-jmp short loc_fffaf58c  ; jmp 0xfffaf58c
+; count = ([ebp - 0x2c] - esi)/4
+mov eax, dword [ebp - 0x2c]
+sub eax, esi
+shr eax, 2
+push eax
+push esi
+push ebx
+call frag_usb_loop4
+add esp, 12
 
-loc_fffaf581:
-mov ecx, dword [eax]
-add eax, 4
-add ecx, ebx
-mov ecx, dword [ecx]
-or edx, ecx
-
-loc_fffaf58c:
-cmp eax, dword [ebp - 0x2c]
-jne short loc_fffaf581  ; jne 0xfffaf581
-mov eax, 0x2710
-mov dword [ebp - 0x70], edx
-call usleep
-mov edx, dword [ebp - 0x70]
-and dl, 0x10
-je short loc_fffaf5c5  ; je 0xfffaf5c5
-dec dword [ebp - 0x38]
-jne short loc_fffaf57b  ; jne 0xfffaf57b
 jmp short loc_fffaf5c5  ; jmp 0xfffaf5c5
 
 loc_fffaf5ad:

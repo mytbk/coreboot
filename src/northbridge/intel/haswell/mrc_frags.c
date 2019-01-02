@@ -699,6 +699,22 @@ void frag_usb_fffaf210(void *ebx, u32 *esi, int count)
 	}
 }
 
+void frag_usb_loop4(void *ebx, u32* esi, int count);
+void frag_usb_loop4(void *ebx, u32* esi, int count)
+{
+	u32 tmp;
+	for (int i = 0; i < 10; i++) {
+		tmp = 0;
+		for (int j = 0; j < count; j++) {
+			void *addr = ebx + esi[j];
+			tmp |= read32(addr);
+		}
+		usleep(10000);
+		if ((tmp & 0x10) == 0)
+			return;
+	}
+}
+
 void frag_usb_loop2(void *ebx, u32 *esi, int count);
 void frag_usb_loop2(void *ebx, u32 *esi, int count)
 {
