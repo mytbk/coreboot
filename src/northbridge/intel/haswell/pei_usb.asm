@@ -2,7 +2,6 @@ global mrc_init_usb
 
 extern PeiServiceGetBootMode
 extern mrc_pch_revision
-extern usleep
 extern mrc_pch_iobp_update
 extern nb_usb2_ports
 extern mrc_sku_type
@@ -280,34 +279,12 @@ push ebx
 call frag_usb_loop1
 add esp, 12
 
-mov eax, dword [ebp - 0x34]
-mov dword [ebp - 0x2c], 0xa
-lea eax, [esi + eax*4]
-mov dword [ebp - 0x40], eax
+push dword [ebp - 0x34]
+push esi
+push ebx
+call frag_usb_loop4
+add esp, 12
 
-loc_fffaf23d:
-mov eax, esi
-xor edx, edx
-jmp short loc_fffaf24e  ; jmp 0xfffaf24e
-
-loc_fffaf243:
-mov ecx, dword [eax]
-add eax, 4
-add ecx, ebx
-mov ecx, dword [ecx]
-or edx, ecx
-
-loc_fffaf24e:
-cmp eax, dword [ebp - 0x40]
-jne short loc_fffaf243  ; jne 0xfffaf243
-mov eax, 0x2710
-mov dword [ebp - 0x70], edx
-call usleep
-mov edx, dword [ebp - 0x70]
-and dl, 0x10
-je loc_fffaf9e7  ; je 0xfffaf9e7
-dec dword [ebp - 0x2c]
-jne short loc_fffaf23d  ; jne 0xfffaf23d
 jmp near loc_fffaf9e7  ; jmp 0xfffaf9e7
 
 loc_fffaf276:
@@ -329,27 +306,11 @@ push ebx
 call frag_usb_loop3
 add esp, 12
 
-mov dword [ebp - 0x2c], 0xa
-
-loc_fffaf2c8:
-mov dword [ebp - 0x60], 0
-xor eax, eax
-
-loc_fffaf2d1:
-mov edx, dword [ebp - 0x3c]
-mov ecx, dword [edx + eax*4]
-inc eax
-add ecx, ebx
-mov edx, dword [ecx]
-or dword [ebp - 0x60], edx
-cmp eax, dword [ebp - 0x38]
-jb short loc_fffaf2d1  ; jb 0xfffaf2d1
-mov eax, 0x2710
-call usleep
-test byte [ebp - 0x60], 0x10
-je short loc_fffaf2f9  ; je 0xfffaf2f9
-dec dword [ebp - 0x2c]
-jne short loc_fffaf2c8  ; jne 0xfffaf2c8
+push dword [ebp - 0x38]
+push dword [ebp - 0x3c]
+push ebx
+call frag_usb_loop4
+add esp, 12
 
 loc_fffaf2f9:
 mov eax, dword [edi + 0xa00d0]
@@ -383,31 +344,12 @@ add esp, 12
 mov eax, dword [edi + 0xa00d8]
 and eax, 0xffffffc0
 mov dword [edi + 0xa00d8], eax
-mov edx, dword [ebp - 0x34]
-mov dword [ebp - 0x2c], 0xa
-lea edx, [esi + edx*4]
-mov dword [ebp - 0x40], edx
 
-loc_fffaf381:
-mov eax, esi
-xor edx, edx
-
-loc_fffaf385:
-mov ecx, dword [eax]
-add eax, 4
-add ecx, ebx
-mov ecx, dword [ecx]
-or edx, ecx
-cmp eax, dword [ebp - 0x40]
-jne short loc_fffaf385  ; jne 0xfffaf385
-mov eax, 0x2710
-mov dword [ebp - 0x70], edx
-call usleep
-mov edx, dword [ebp - 0x70]
-and dl, 0x10
-je short loc_fffaf3af  ; je 0xfffaf3af
-dec dword [ebp - 0x2c]
-jne short loc_fffaf381  ; jne 0xfffaf381
+push dword [ebp - 0x34]
+push esi
+push ebx
+call frag_usb_loop4
+add esp, 12
 
 loc_fffaf3af:
 push dword [ebp - 0x34]
@@ -508,15 +450,7 @@ push dword [ebp - 0x30]
 call frag_usb_fffaf555
 add esp, 8
 
-mov ecx, dword [ebp - 0x34]
-lea ecx, [esi + ecx*4]
-mov dword [ebp - 0x2c], ecx
-
-; count = ([ebp - 0x2c] - esi)/4
-mov eax, dword [ebp - 0x2c]
-sub eax, esi
-shr eax, 2
-push eax
+push dword [ebp - 0x34]
 push esi
 push ebx
 call frag_usb_loop4
