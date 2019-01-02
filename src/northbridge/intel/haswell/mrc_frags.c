@@ -803,6 +803,18 @@ void set_usb_overcurrent(PEI_USB *upd)
 	}
 }
 
+void frag_usb_fffaf4b1(PEI_USB *upd, int count);
+void frag_usb_fffaf4b1(PEI_USB *upd, int count)
+{
+	u32 v = 0;
+	for (int i = 0; i < count; i++) {
+		if (upd->xhci_resume_info[3 + i] == 1) {
+			v |= (1 << i);
+		}
+	}
+	pci_update_config32(PCI_DEV(0, 0x14, 0), 0xd0, 0xffff8000, v);
+}
+
 void frag_usb_fffaf555(PEI_USB *upd, int count);
 void frag_usb_fffaf555(PEI_USB *upd, int count)
 {
