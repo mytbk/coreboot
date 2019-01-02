@@ -21,6 +21,7 @@ extern frag_usb_loop3
 extern frag_usb_loop4
 extern frag_usb_fffaf4b1
 extern frag_usb_fffaf555
+extern set_ehci_oc_map
 
 mrc_init_usb:
 push ebp
@@ -435,62 +436,9 @@ and eax, 0xfffffffe
 mov dword [ebx + 0x80], eax
 
 loc_fffaf5ea:
-call mrc_sku_type
-mov dword [ebp - 0x34], eax
-xor esi, esi
-xor edx, edx
-xor ebx, ebx
-jmp short loc_fffaf635  ; jmp 0xfffaf635
-
-loc_fffaf5fa:
-mov eax, dword [ecx + ebx*4 + 0x6c]
-cmp eax, 8
-je short loc_fffaf634  ; je 0xfffaf634
-cmp ebx, 7
-ja short loc_fffaf61b  ; ja 0xfffaf61b
-cmp eax, 3
-ja short loc_fffaf634  ; ja 0xfffaf634
-lea ecx, [ebx + eax*8]
-mov eax, 1
-shl eax, cl
-or edx, eax
-jmp short loc_fffaf634  ; jmp 0xfffaf634
-
-loc_fffaf61b:
-cmp dword [ebp - 0x34], 1
-jne short loc_fffaf634  ; jne 0xfffaf634
-lea ecx, [eax - 4]
-cmp ecx, 3
-ja short loc_fffaf634  ; ja 0xfffaf634
-lea ecx, [ebx + eax*8 - 0x28]
-mov eax, dword [ebp - 0x34]
-shl eax, cl
-or esi, eax
-
-loc_fffaf634:
-inc ebx
-
-loc_fffaf635:
-mov dword [ebp - 0x70], edx
-call nb_usb2_ports
-movzx eax, al
-mov ecx, dword [ebp - 0x30]
-cmp ebx, eax
-mov edx, dword [ebp - 0x70]
-jb short loc_fffaf5fa  ; jb 0xfffaf5fa
-test byte [ecx + 0x55], 1
-je short loc_fffaf659  ; je 0xfffaf659
-mov eax, dword [ebp - 0x4c]
-mov dword [eax + 0xe8074], edx
-
-loc_fffaf659:
-cmp dword [ebp - 0x34], 1
-jne short loc_fffaf66e  ; jne 0xfffaf66e
-mov edx, dword [ebp - 0x30]
-test byte [edx + 0x56], 1
-je short loc_fffaf66e  ; je 0xfffaf66e
-mov ecx, dword [ebp - 0x50]
-mov dword [ecx + 0x74], esi
+push dword [ebp - 0x30]
+call set_ehci_oc_map
+add esp, 4
 
 loc_fffaf66e:
 call mrc_sku_type

@@ -744,6 +744,38 @@ void frag_usb_loop3(void *ebx, u32 *esi, int count)
 	}
 }
 
+void set_ehci_oc_map(PEI_USB *upd);
+void set_ehci_oc_map(PEI_USB *upd)
+{
+	int sku = mrc_sku_type();
+	int nusb = nb_usb2_ports();
+	u32 ocmap1 = 0;
+	u32 ocmap2 = 0;
+
+	for (int i = 0; i < nusb; i++) {
+		u32 oc = upd->ehci_oc[i];
+		if (oc == 8)
+			continue;
+		if (i <= 7) {
+			if (oc > 3)
+				continue;
+			ocmap1 |= (1 << (oc * 8 + i));
+		} else {
+			if (sku != 1)
+				continue;
+			if (oc >= 4 && oc <= 7) {
+				ocmap2 |= (1 << ((oc - 4) * 8 + (i - 8)));
+			}
+		}
+	}
+	if (upd->xhci_resume_info[0] & 1) {
+		pci_write_config32(PCI_DEV(0, 0x1d, 0), 0x74, ocmap1);
+	}
+	if (sku == 1 && (upd->xhci_resume_info[1] & 1)) {
+		pci_write_config32(PCI_DEV(0, 0x1a, 0), 0x74, ocmap2);
+	}
+}
+
 /* from loc_fffaf684 to loc_fffaf75b */
 void set_usb_overcurrent(PEI_USB *upd);
 void set_usb_overcurrent(PEI_USB *upd)
