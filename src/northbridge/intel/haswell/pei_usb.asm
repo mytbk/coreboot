@@ -16,6 +16,7 @@ extern frag_usb_fffaeb10
 extern set_usb_overcurrent
 extern frag_usb_fffaf75b
 extern frag_usb_fffaf7d8
+extern frag_usb_fffaf210
 
 mrc_init_usb:
 push ebp
@@ -268,22 +269,13 @@ test al, 0x20
 jne short loc_fffaf226  ; jne 0xfffaf226
 jmp near loc_fffaf9e7  ; jmp 0xfffaf9e7
 
-loc_fffaf210:
-mov ecx, dword [esi + edx*4]
-add ecx, ebx
-mov eax, dword [ecx]
-and eax, 0x7ffffffd
-or eax, 0x80000000
-mov dword [ecx], eax
-inc edx
-jmp short loc_fffaf228  ; jmp 0xfffaf228
-
 loc_fffaf226:
-xor edx, edx
+push dword [ebp - 0x34]
+push esi
+push ebx
+call frag_usb_fffaf210
+add esp, 12
 
-loc_fffaf228:
-cmp edx, dword [ebp - 0x34]
-jne short loc_fffaf210  ; jne 0xfffaf210
 mov eax, dword [ebp - 0x34]
 mov dword [ebp - 0x2c], 0xa
 lea eax, [esi + eax*4]
