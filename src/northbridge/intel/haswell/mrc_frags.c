@@ -699,6 +699,18 @@ void frag_usb_fffaf210(void *ebx, u32 *esi, int count)
 	}
 }
 
+void frag_usb_loop2(void *ebx, u32 *esi, int count);
+void frag_usb_loop2(void *ebx, u32 *esi, int count)
+{
+	for (int i = 0; i < count; i++) {
+		void *addr = ebx + esi[i];
+		u32 tmp = read32(addr);
+		tmp &= 0xff01fffd;
+		tmp |= 0xfe0000;
+		write32(addr, tmp);
+	}
+}
+
 /* from loc_fffaf684 to loc_fffaf75b */
 void set_usb_overcurrent(PEI_USB *upd);
 void set_usb_overcurrent(PEI_USB *upd)
