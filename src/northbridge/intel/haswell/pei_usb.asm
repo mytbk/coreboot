@@ -317,24 +317,13 @@ mov eax, dword [edi + 0xa00d0]
 and eax, 0xffff8000
 mov dword [edi + 0xa00d0], eax
 
+push dword [ebp - 0x54]
 push dword [ebp - 0x38]
 push dword [ebp - 0x3c]
 push ebx
 call frag_usb_loop2
 add esp, 12
 
-cmp dword [ebp - 0x54], 0
-je short loc_fffaf347  ; je 0xfffaf347
-mov eax, dword [ebp - 0x3c]
-mov ecx, dword [ebp - 0x38]
-mov edx, ebx
-add edx, dword [eax + ecx*4]
-mov eax, dword [edx]
-and eax, 0xff01fffd
-or eax, 0xfe0000
-mov dword [edx], eax
-
-loc_fffaf347:
 push dword [ebp - 0x34]
 push esi
 push ebx
@@ -351,7 +340,7 @@ push ebx
 call frag_usb_loop4
 add esp, 12
 
-loc_fffaf3af:
+push 0
 push dword [ebp - 0x34]
 push esi
 push ebx
@@ -422,23 +411,13 @@ and edx, 0xffff8000
 or edx, eax
 mov dword [edi + 0xa00d0], edx
 
+push dword [ebp - 0x54]
 push dword [ebp - 0x38]
 push dword [ebp - 0x3c]
 push ebx
 call frag_usb_loop2
 add esp, 12
 
-cmp dword [ebp - 0x54], 0
-je short loc_fffaf51e  ; je 0xfffaf51e
-mov ecx, dword [ebp - 0x3c]
-mov edx, ebx
-add edx, dword [ecx + eax*4]
-mov eax, dword [edx]
-and eax, 0xff01fffd
-or eax, 0xfe0000
-mov dword [edx], eax
-
-loc_fffaf51e:
 push dword [ebp - 0x34]
 push esi
 push ebx
@@ -456,6 +435,7 @@ push ebx
 call frag_usb_loop4
 add esp, 12
 
+push 0
 push dword [ebp - 0x34]
 push esi
 push ebx
