@@ -687,8 +687,8 @@ void frag_usb_fffaeb10(PEI_USB *upd, void *ebar)
 	}
 }
 
-void frag_usb_fffaf210(void *ebx, u32 *esi, int count);
-void frag_usb_fffaf210(void *ebx, u32 *esi, int count)
+void frag_usb_loop1(void *ebx, u32 *esi, int count);
+void frag_usb_loop1(void *ebx, u32 *esi, int count)
 {
 	for (int i = 0; i < count; i++) {
 		void *addr = ebx + esi[i];
