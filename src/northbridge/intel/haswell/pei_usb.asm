@@ -20,6 +20,7 @@ extern frag_usb_loop1
 extern frag_usb_loop2
 extern frag_usb_loop3
 extern frag_usb_loop4
+extern frag_usb_fffaf555
 
 mrc_init_usb:
 push ebp
@@ -502,28 +503,11 @@ push ebx
 call frag_usb_loop1
 add esp, 12
 
-xor eax, eax
-xor ecx, ecx
-jmp short loc_fffaf555  ; jmp 0xfffaf555
+push dword [ebp - 0x34]
+push dword [ebp - 0x30]
+call frag_usb_fffaf555
+add esp, 8
 
-loc_fffaf541:
-mov edx, dword [ebp - 0x30]
-cmp byte [edx + ecx + 0x66], 1
-jne short loc_fffaf554  ; jne 0xfffaf554
-mov edx, 1
-shl edx, cl
-or eax, edx
-
-loc_fffaf554:
-inc ecx
-
-loc_fffaf555:
-cmp ecx, dword [ebp - 0x34]
-jne short loc_fffaf541  ; jne 0xfffaf541
-mov edx, dword [edi + 0xa00d8]
-and edx, 0xffffffc0
-or edx, eax
-mov dword [edi + 0xa00d8], edx
 mov ecx, dword [ebp - 0x34]
 lea ecx, [esi + ecx*4]
 mov dword [ebp - 0x2c], ecx
