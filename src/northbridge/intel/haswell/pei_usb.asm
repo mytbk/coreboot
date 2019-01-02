@@ -388,18 +388,12 @@ or eax, 0xfe0000
 mov dword [edx], eax
 
 loc_fffaf347:
-xor edx, edx
+push dword [ebp - 0x34]
+push esi
+push ebx
+call frag_usb_fffaf210
+add esp, 12
 
-loc_fffaf349:
-mov ecx, dword [esi + edx*4]
-add ecx, ebx
-mov eax, dword [ecx]
-and eax, 0x7ffffffd
-or eax, 0x80000000
-mov dword [ecx], eax
-inc edx
-cmp edx, dword [ebp - 0x34]
-jne short loc_fffaf349  ; jne 0xfffaf349
 mov eax, dword [edi + 0xa00d8]
 and eax, 0xffffffc0
 mov dword [edi + 0xa00d8], eax
@@ -455,18 +449,13 @@ mov ecx, dword [ebp - 0x2c]
 mov ax, word [ecx + 0xf80a2]
 test al, 0x20
 je short loc_fffaf44c  ; je 0xfffaf44c
-xor edx, edx
 
-loc_fffaf3ff:
-mov ecx, dword [esi + edx*4]
-add ecx, ebx
-mov eax, dword [ecx]
-and eax, 0x7ffffffd
-or eax, 0x80000000
-mov dword [ecx], eax
-inc edx
-cmp edx, dword [ebp - 0x34]
-jb short loc_fffaf3ff  ; jb 0xfffaf3ff
+push dword [ebp - 0x34]
+push esi
+push ebx
+call frag_usb_fffaf210
+add esp, 12
+
 mov dword [ebp - 0x2c], 0xa
 
 loc_fffaf41f:
