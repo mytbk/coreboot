@@ -129,7 +129,6 @@ global fcn_fffc7720
 
 extern mrc_init_usb
 global ref_fffcb998
-global ref_fffcb99c
 global ref_fffcc988
 
 ;; mrc_end_of_pei
@@ -47233,24 +47232,6 @@ dd 0x00000001
 
 ref_fffcb998:
 dd 0x00000102
-
-ref_fffcb99c:
-dd 0x00000000
-dd 0x00000001
-dd 0x00000002
-dd 0x00000003
-dd 0x00000008
-dd 0x00000009
-dd 0x0000000c
-dd 0x0000000d
-dd 0x00000004
-dd 0x00000005
-dd 0x00000006
-dd 0x00000007
-dd 0x0000000a
-dd 0x0000000b
-dd 0x0000000c
-dd 0x0000000d
 
 ref_fffcba38:
 dd loc_fffafaad

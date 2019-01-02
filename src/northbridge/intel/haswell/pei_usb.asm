@@ -22,6 +22,7 @@ extern frag_usb_loop4
 extern frag_usb_fffaf4b1
 extern frag_usb_fffaf555
 extern set_ehci_oc_map
+extern set_usb_pdo
 
 mrc_init_usb:
 push ebp
@@ -482,87 +483,12 @@ mov edx, dword [ebp - 0x30]
 mov dword [ebp - 0x2c], eax
 test byte [edx + 0x57], 3
 je loc_fffaf944  ; je 0xfffaf944
-mov esi, dword [edi + 0xa00e4]
-xor ebx, ebx
-and esi, 0x7fff
-jmp short loc_fffaf8cc  ; jmp 0xfffaf8cc
 
-loc_fffaf89b:
-cmp dword [ebp - 0x2c], 1
-mov ecx, ebx
-jne short loc_fffaf8aa  ; jne 0xfffaf8aa
-mov ecx, dword [ebx*4 + ref_fffcb99c]  ; mov ecx, dword [ebx*4 - 0x34664]
-
-loc_fffaf8aa:
-imul eax, ebx, 6
-mov edx, dword [ebp - 0x30]
-test byte [edx + eax + 1], 1
-jne short loc_fffaf8c2  ; jne 0xfffaf8c2
-mov eax, 1
-shl eax, cl
-or esi, eax
-jmp short loc_fffaf8cb  ; jmp 0xfffaf8cb
-
-loc_fffaf8c2:
-mov eax, 0xfffffffe
-rol eax, cl
-and esi, eax
-
-loc_fffaf8cb:
-inc ebx
-
-loc_fffaf8cc:
-call nb_usb2_ports
-movzx eax, al
-cmp ebx, eax
-jb short loc_fffaf89b  ; jb 0xfffaf89b
-mov ebx, dword [edi + 0xa00e8]
-xor ecx, ecx
-and ebx, 0x3f
-jmp short loc_fffaf91a  ; jmp 0xfffaf91a
-
-loc_fffaf8e5:
-cmp byte [ebp - 0x67], 2
-jbe short loc_fffaf8f8  ; jbe 0xfffaf8f8
-mov eax, dword [ebp - 0x30]
-test byte [eax + ecx + 0xbd], 1
-jmp short loc_fffaf903  ; jmp 0xfffaf903
-
-loc_fffaf8f8:
-imul eax, ecx, 6
-mov edx, dword [ebp - 0x30]
-test byte [edx + eax + 1], 1
-
-loc_fffaf903:
-jne short loc_fffaf910  ; jne 0xfffaf910
-mov eax, 1
-shl eax, cl
-or ebx, eax
-jmp short loc_fffaf919  ; jmp 0xfffaf919
-
-loc_fffaf910:
-mov eax, 0xfffffffe
-rol eax, cl
-and ebx, eax
-
-loc_fffaf919:
-inc ecx
-
-loc_fffaf91a:
-mov dword [ebp - 0x70], ecx
-call mrc_sku_type
-dec eax
-xor edx, edx
-cmp eax, 1
-mov ecx, dword [ebp - 0x70]
-ja short loc_fffaf934  ; ja 0xfffaf934
-movzx edx, byte [eax + ref_fffcb9dc]  ; movzx edx, byte [eax - 0x34624]
-
-loc_fffaf934:
-cmp ecx, edx
-jb short loc_fffaf8e5  ; jb 0xfffaf8e5
-mov dword [edi + 0xa00e4], esi
-mov dword [edi + 0xa00e8], ebx
+movzx eax, byte [ebp - 0x67]
+push eax
+push edx
+call set_usb_pdo
+add esp, 8
 
 loc_fffaf944:
 mov eax, dword [ebp - 0x38]
