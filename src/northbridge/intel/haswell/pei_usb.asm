@@ -16,7 +16,7 @@ extern frag_usb_fffaeb10
 extern set_usb_overcurrent
 extern frag_usb_fffaf75b
 extern frag_usb_fffaf7d8
-extern frag_usb_fffaf210
+extern frag_usb_loop1
 extern frag_usb_loop2
 extern frag_usb_loop3
 extern frag_usb_loop4
@@ -276,7 +276,7 @@ loc_fffaf226:
 push dword [ebp - 0x34]
 push esi
 push ebx
-call frag_usb_fffaf210
+call frag_usb_loop1
 add esp, 12
 
 mov eax, dword [ebp - 0x34]
@@ -376,7 +376,7 @@ loc_fffaf347:
 push dword [ebp - 0x34]
 push esi
 push ebx
-call frag_usb_fffaf210
+call frag_usb_loop1
 add esp, 12
 
 mov eax, dword [edi + 0xa00d8]
@@ -432,7 +432,7 @@ je short loc_fffaf44c  ; je 0xfffaf44c
 push dword [ebp - 0x34]
 push esi
 push ebx
-call frag_usb_fffaf210
+call frag_usb_loop1
 add esp, 12
 
 push dword [ebp - 0x34]
@@ -496,21 +496,12 @@ or eax, 0xfe0000
 mov dword [edx], eax
 
 loc_fffaf51e:
-xor edx, edx
-jmp short loc_fffaf536  ; jmp 0xfffaf536
+push dword [ebp - 0x34]
+push esi
+push ebx
+call frag_usb_loop1
+add esp, 12
 
-loc_fffaf522:
-mov ecx, dword [esi + edx*4]
-add ecx, ebx
-mov eax, dword [ecx]
-and eax, 0x7ffffffd
-or eax, 0x80000000
-mov dword [ecx], eax
-inc edx
-
-loc_fffaf536:
-cmp edx, dword [ebp - 0x34]
-jne short loc_fffaf522  ; jne 0xfffaf522
 xor eax, eax
 xor ecx, ecx
 jmp short loc_fffaf555  ; jmp 0xfffaf555
@@ -547,24 +538,12 @@ push ebx
 call frag_usb_loop4
 add esp, 12
 
-jmp short loc_fffaf5c5  ; jmp 0xfffaf5c5
+push dword [ebp - 0x34]
+push esi
+push ebx
+call frag_usb_loop2
+add esp, 12
 
-loc_fffaf5ad:
-mov ecx, dword [esi + eax*4]
-add ecx, ebx
-mov edx, dword [ecx]
-and edx, 0xff01fffd
-or edx, 0xfe0000
-mov dword [ecx], edx
-inc eax
-jmp short loc_fffaf5c7  ; jmp 0xfffaf5c7
-
-loc_fffaf5c5:
-xor eax, eax
-
-loc_fffaf5c7:
-cmp eax, dword [ebp - 0x34]
-jne short loc_fffaf5ad  ; jne 0xfffaf5ad
 mov eax, dword [ebx + 0x80]
 or eax, 1
 mov dword [ebx + 0x80], eax
