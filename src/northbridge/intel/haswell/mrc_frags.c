@@ -897,3 +897,81 @@ void frag_usb_fffaf7d8(PEI_USB *upd)
 		}
 	}
 }
+
+static const u32 shift_tab[16] = {
+	0x00000000,
+	0x00000001,
+	0x00000002,
+	0x00000003,
+	0x00000008,
+	0x00000009,
+	0x0000000c,
+	0x0000000d,
+	0x00000004,
+	0x00000005,
+	0x00000006,
+	0x00000007,
+	0x0000000a,
+	0x0000000b,
+	0x0000000c,
+	0x0000000d
+};
+
+void set_usb_pdo(PEI_USB *upd, u8 ppiv);
+void set_usb_pdo(PEI_USB *upd, u8 ppiv)
+{
+	int sku = mrc_sku_type();
+	int nusb = nb_usb2_ports();
+
+	u32 usb2pdo = pci_read_config32(PCI_DEV(0, 0x14, 0), 0xe4) & 0x7fff;
+
+	for (int i = 0; i < nusb; i++) {
+		u32 shifts;
+		if (sku == 1) {
+			shifts = shift_tab[i];
+		} else {
+			shifts = i;
+		}
+		/* if usb2 port is enabled, prevents it from
+		 * reporting a device connection to the xHC,
+		 * otherwise allows the reporting
+		 */
+		if (upd->ehci_settings[i].enable & 1) {
+			usb2pdo |= (1 << shifts);
+		} else {
+			usb2pdo &= ~(1 << shifts);
+		}
+	}
+
+	u32 usb3pdo = pci_read_config32(PCI_DEV(0, 0x14, 0), 0xe8) & 0x3f;
+	int nb_xxx;
+	if (sku == 1)
+		nb_xxx = 6;
+	else if (sku == 2)
+		nb_xxx = 4;
+	else
+		nb_xxx = 0;
+
+	/* ppiv is 4
+	printk(BIOS_DEBUG, "%s: ppiv is %d.\n", __func__, ppiv);
+	*/
+
+	for (int i = 0; i < nb_xxx; i++) {
+		if (ppiv > 2) {
+			if ((upd->xhci_en[i] & 1) == 0) {
+				usb3pdo |= (1 << i);
+			} else {
+				usb3pdo &= ~(1 << i);
+			}
+		} else {
+			if ((upd->ehci_settings[i].enable & 1) == 0) {
+				usb3pdo |= (1 << i);
+			} else {
+				usb3pdo &= ~(1 << i);
+			}
+		}
+	}
+
+	pci_write_config32(PCI_DEV(0, 0x14, 0), 0xe4, usb2pdo);
+	pci_write_config32(PCI_DEV(0, 0x14, 0), 0xe8, usb3pdo);
+}
