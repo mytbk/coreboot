@@ -71,3 +71,41 @@ int fcn_fffbe070(EFI_PEI_SERVICES **pps, void *me, u8 *a2)
 	*a2 = 1;
 	return ret;
 }
+
+int fcn_fffbe110(EFI_PEI_SERVICES **pps, u32, u32);
+
+int fcn_fffbe14d(EFI_PEI_SERVICES **pps, void *me, int a3, u32 a4);
+int fcn_fffbe14d(EFI_PEI_SERVICES **pps, void *me, int a3, u32 a4)
+{
+	u32 hfs = pci_read_config32(PCH_ME_DEV, 0x40);
+
+	if (((hfs >> 16) & 0xf) == 2)
+		return 0;
+
+	if (((hfs >> 8) & 0xf0) != 0)
+		return 0;
+
+	u32 meseg_lo = pci_read_config32(PCI_DEV(0, 0, 0), 0x70);
+	u32 meseg_hi = pci_read_config32(PCI_DEV(0, 0, 0), 0x74);
+	/* from intel_early_me_init_done in sb/intel/lynxpoint/early_me.c */
+	/* low 4 bits of meseg_hi << 12, meseg_lo >> 20 */
+	u32 uma_base = ((meseg_hi << 28) | (meseg_lo >> 4)) >> 16;
+	u32 meDID = uma_base | (1 << 28);
+	if (a4 & 0x80)
+		meDID |= (1 << 23);
+	meDID |= ((a4 & 0x7f) << 24);
+	pci_read_config32(PCH_ME_DEV, 0x4c);
+	pci_write_config32(PCH_ME_DEV, 0x4c, meDID);
+
+	usleep(1100);
+	pci_read_config32(PCH_ME_DEV, 0x40);
+
+	for (int i = 0; i < 5001; i++) {
+		usleep(1000);
+		hfs = pci_read_config32(PCH_ME_DEV, 0x40);
+		if (((hfs >> 24) & 0xf0) != 0) {
+			break;
+		}
+	}
+	return fcn_fffbe110(pps, a3, ((hfs >> 25) & 7));
+}

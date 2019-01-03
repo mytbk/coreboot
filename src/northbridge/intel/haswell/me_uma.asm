@@ -6,7 +6,9 @@ extern mrc_sku_type
 extern gWdtPpiGuid
 extern get_uma_size
 extern fcn_fffbe070
+extern fcn_fffbe14d
 
+global fcn_fffbe110
 global fcn_fffbdf70
 
 fcn_fffbdf70:  ; not directly referenced
@@ -152,102 +154,6 @@ call fcn_fffbdf70  ; call 0xfffbdf70
 loc_fffbe149:  ; not directly referenced
 xor eax, eax
 leave
-ret
-
-fcn_fffbe14d:  ; not directly referenced
-push ebp
-mov ebp, esp
-push esi
-push ebx
-lea edx, [ebp - 0xc]
-lea esp, [esp - 0x2c]
-mov ebx, dword [ebp + 8]
-mov cl, byte [ebp + 0x14]
-mov eax, dword [ebx]
-mov byte [ebp - 0x1c], cl
-push edx
-push 0
-push 0
-push gEfiPeiStallPpiGuid
-push ebx
-call dword [eax + 0x20]  ; ucall
-mov eax, dword [0xf00b0040]
-add esp, 0x20
-mov edx, eax
-mov cl, byte [ebp - 0x1c]
-shr edx, 0x10
-and edx, 0xf
-cmp dl, 2
-je loc_fffbe22f  ; je 0xfffbe22f
-movzx edx, ah
-xor eax, eax
-and dl, 0xf0
-jne loc_fffbe231  ; jne 0xfffbe231
-mov edx, dword [0xf0000070]
-mov eax, dword [0xf0000074]
-shl eax, 0x1c
-shr edx, 4
-add edx, eax
-shr edx, 0x10
-mov eax, edx
-or edx, 0x10800000
-or eax, 0x10000000
-test cl, cl
-cmovs eax, edx
-mov edx, ecx
-and edx, 0x7f
-shl edx, 0x18
-or eax, edx
-mov edx, dword [0xf00b004c]
-mov dword [0xf00b004c], eax
-push esi
-mov eax, dword [ebp - 0xc]
-mov esi, 0x1389
-push 0x44c
-push eax
-push ebx
-call dword [eax + 4]  ; ucall
-mov eax, dword [0xf00b0040]
-add esp, 0x10
-jmp short loc_fffbe20c  ; jmp 0xfffbe20c
-
-loc_fffbe1f6:  ; not directly referenced
-push ecx
-mov eax, dword [ebp - 0xc]
-push 0x3e8
-push eax
-push ebx
-call dword [eax + 4]  ; ucall
-mov eax, dword [0xf00b0040]
-add esp, 0x10
-
-loc_fffbe20c:  ; not directly referenced
-mov edx, eax
-shr edx, 0x18
-and dl, 0xf0
-jne short loc_fffbe219  ; jne 0xfffbe219
-dec esi
-jne short loc_fffbe1f6  ; jne 0xfffbe1f6
-
-loc_fffbe219:  ; not directly referenced
-shr eax, 0x19
-push edx
-and eax, 7
-push eax
-push dword [ebp + 0x10]
-push ebx
-call fcn_fffbe110  ; call 0xfffbe110
-add esp, 0x10
-jmp short loc_fffbe231  ; jmp 0xfffbe231
-
-loc_fffbe22f:  ; not directly referenced
-xor eax, eax
-
-loc_fffbe231:  ; not directly referenced
-lea esp, [ebp - 8]
-pop ebx
-pop esi
-pop ebp
 ret
 
 PchMeUmaDesc:
