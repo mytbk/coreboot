@@ -190,6 +190,7 @@ global fcn_fffb2062
 global fcn_fffc8290
 global fcn_fffa91af
 global fcn_fffa0020
+extern do_smbus_op
 
 ;;
 
@@ -6702,7 +6703,7 @@ push eax
 and edx, 0xfffffffe
 mov eax, 5
 add edx, 0x6e
-call fcn_fffc1ae2  ; call 0xfffc1ae2
+call do_smbus_op
 add esp, 0x10
 
 loc_fffa9348:
@@ -6714,7 +6715,7 @@ lea ecx, [ebp - 0x4d]
 shl edx, 8
 mov eax, 4
 or edx, dword [ebp - 0x90]
-call fcn_fffc1ae2  ; call 0xfffc1ae2
+call do_smbus_op
 mov al, byte [ebp - 0x4d]
 add esp, 0x10
 cmp dword [ebp - 0x4c], 0
@@ -36597,61 +36598,6 @@ loc_fffc18c5:
 db 0x00
 db 0x00
 db 0x00
-
-fcn_fffc1ae2:
-push ebp
-mov ebp, esp
-push edi
-mov edi, eax
-push esi
-push ebx
-mov ebx, edx
-lea edx, [ebp - 0x1c]
-lea esp, [esp - 0x38]
-mov esi, dword [0xff7d7538]
-mov dword [ebp - 0x20], 1
-mov eax, dword [esi]
-mov dword [ebp - 0x2c], ecx
-push edx
-push 0
-push 0
-push gEfiPeiSmbusPpiGuid
-push esi
-call dword [eax + 0x20]  ; ucall
-add esp, 0x20
-mov ecx, dword [ebp - 0x2c]
-push ecx
-lea ecx, [ebp - 0x20]
-mov edx, ebx
-push ecx
-mov ecx, ebx
-movzx ebx, bh
-shr ecx, 0x16
-mov eax, dword [ebp - 0x1c]
-shr edx, 1
-and ecx, 1
-push ecx
-and edx, 0x7f
-push edi
-push ebx
-push edx
-push eax
-push esi
-call dword [eax]  ; ucall
-add esp, 0x20
-cmp dword [ebp + 8], 0
-je short loc_fffc1b49  ; je 0xfffc1b49
-mov edx, dword [ebp + 8]
-mov dword [edx], eax
-
-loc_fffc1b49:
-mov eax, dword [ebp - 0x20]
-lea esp, [ebp - 0xc]
-pop ebx
-pop esi
-pop edi
-pop ebp
-ret
 
 loc_fffc23aa:
 db 0x00

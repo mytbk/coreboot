@@ -835,3 +835,22 @@ int __attribute((regparm(3))) fcn_fffa1d20(int bootmode, int v, void *addr,
 	}
 	return ret;
 }
+
+int MRCABI do_smbus_op(EFI_SMBUS_OPERATION op, u32 addr_desc, void *buf, int *retcode)
+{
+	EFI_PEI_SMBUS_PPI *smbus;
+	u32 length = 1;
+	EFI_SMBUS_DEVICE_ADDRESS sa = { .SmbusDeviceAddress = (addr_desc >> 1) & 0x7f };
+	EFI_SMBUS_DEVICE_COMMAND cmd = (u8)(addr_desc >> 8);
+	int PecCheck = (addr_desc >> 22) & 1;
+
+	const EFI_PEI_SERVICES **pps = *gpPei;
+	(*pps)->LocatePpi(pps, &gEfiPeiSmbusPpiGuid, 0, NULL, (void**)&smbus);
+	int ret = smbus->Execute((EFI_PEI_SERVICES**)pps, smbus,
+			sa, cmd, op, PecCheck,
+			&length, buf);
+	if (retcode != NULL)
+		*retcode = ret;
+
+	return length;
+}
