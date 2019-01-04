@@ -846,6 +846,10 @@ int MRCABI do_smbus_op(EFI_SMBUS_OPERATION op, u32 addr_desc, void *buf, int *re
 
 	const EFI_PEI_SERVICES **pps = *gpPei;
 	(*pps)->LocatePpi(pps, &gEfiPeiSmbusPpiGuid, 0, NULL, (void**)&smbus);
+
+	printk(BIOS_DEBUG, "do_smbus_op, op = %d, addr = 0x%02x, cmd = 0x%x.\n",
+			(u32)op, (u32)sa.SmbusDeviceAddress, (u32)cmd);
+
 	int ret = smbus->Execute((EFI_PEI_SERVICES**)pps, smbus,
 			sa, cmd, op, PecCheck,
 			&length, buf);
