@@ -668,6 +668,18 @@ static void frag_fffa1e83(void *ebx, void *esi, pei_raminit_ppi *ppi)
 		T8(0x6e2, 0x57);
 	}
 
+	/* record for DIMMs starting at offset 0xdf:
+	 * 0x00: u32
+	 * 0x04: u8 number of enabled channels
+	 *
+	 * 0x05: per channel structures, each has 0x2fa bytes
+	 *       0x00: u32 channel enabled (2: enabled, 1: disabled)
+	 *       0x04: u32 enabled DIMMs (0, 1, 2)
+	 *       0x08: per DIMM structures, each has 0x14f bytes
+	 *             0x00: u32 DIMM disabled (0: enabled, 1: disabled)
+	 *             0x24: u8[256] SPD
+	 *             0x14e: u8 SPD address
+	 */
 	void *ptr0 = ebx + 0xdf;
 	*(u8*)(ebx + 0xe3) = 0;
 	for (int i = 0; i < 2; i++) {
@@ -680,24 +692,24 @@ static void frag_fffa1e83(void *ebx, void *esi, pei_raminit_ppi *ppi)
 		if (tmp == 2) { /* disable DIMM 1 */
 			*(u32*)(ptr2 + 8) = 0;
 			*(u32*)(ptr2 + 0x157) = 1;
-			*(u32*)(ptr1 + 5) = 2;
+			*(u32*)(ptr2) = 2;
 			(*(u8*)(ptr0 + 4))++;
 			*(u32*)(ptr2 + 4) = 1;
 		} else if (tmp == 3) { /* disable DIMM 0+1 */
 			*(u32*)(ptr2 + 8) = 1;
 			*(u32*)(ptr2 + 0x157) = 1;
-			*(u32*)(ptr1 + 5) = 1;
+			*(u32*)(ptr2) = 1;
 			*(u32*)(ptr2 + 4) = 0;
 		} else if (tmp != 1) { /* 0: enable channel */
 			*(u32*)(ptr2 + 8) = 0;
 			*(u32*)(ptr2 + 0x157) = 0;
-			*(u32*)(ptr1 + 5) = 2;
+			*(u32*)(ptr2) = 2;
 			(*(u8*)(ptr0 + 4))++;
 			*(u32*)(ptr2 + 4) = 2;
 		} else { /* tmp == 1: disable DIMM 0 */
 			*(u32*)(ptr2 + 8) = 1;
 			*(u32*)(ptr2 + 0x157) = 0;
-			*(u32*)(ptr1 + 5) = 2;
+			*(u32*)(ptr2) = 2;
 			(*(u8*)(ptr0 + 4))++;
 			*(u32*)(ptr2 + 4) = 1;
 		}
@@ -830,6 +842,24 @@ int __attribute((regparm(3))) fcn_fffa1d20(int bootmode, int v, void *addr,
 		fcn_fffa91af(v, addr);
 		ret = 0;
 	}
+
+	printk(BIOS_DEBUG, "SPD for all slots:\n\n");
+	void *chan_record = addr + 0xdf + 5;
+	for (int i = 0; i < 2; i++) {
+		void *current_channel = chan_record + i * 0x2fa;
+		void *slot_record = current_channel + 8;
+		for (int j = 0; j < 2; j++) {
+			void *current_slot = slot_record + j * 0x14f;
+			u8 *spd = (u8*)(current_slot + 0x24);
+			printk(BIOS_DEBUG, "Channel %d DIMM %d:", i, j);
+			for (int k = 0; k < 0x100; k++) {
+				char delim = ((k % 16) == 0)? '\n':' ';
+				printk(BIOS_DEBUG, "%c%02hhx", delim, spd[k]);
+			}
+			printk(BIOS_DEBUG, "\n");
+		}
+	}
+
 	if (*(u32*)(addr + 0x49) == 1) {
 		fcn_fffa0020(addr, ppi);
 	}
@@ -847,12 +877,17 @@ int MRCABI do_smbus_op(EFI_SMBUS_OPERATION op, u32 addr_desc, void *buf, int *re
 	const EFI_PEI_SERVICES **pps = *gpPei;
 	(*pps)->LocatePpi(pps, &gEfiPeiSmbusPpiGuid, 0, NULL, (void**)&smbus);
 
-	printk(BIOS_DEBUG, "do_smbus_op, op = %d, addr = 0x%02x, cmd = 0x%x.\n",
+	printk(BIOS_DEBUG, "do_smbus_op: op = %d, addr = 0x%02x, cmd = 0x%x.\n",
 			(u32)op, (u32)sa.SmbusDeviceAddress, (u32)cmd);
 
 	int ret = smbus->Execute((EFI_PEI_SERVICES**)pps, smbus,
 			sa, cmd, op, PecCheck,
 			&length, buf);
+
+	if (op == EfiSmbusReadByte) {
+		printk(BIOS_DEBUG, "do_smbus_op: reads 0x%02hhx.\n", *(u8*)buf);
+	}
+
 	if (retcode != NULL)
 		*retcode = ret;
 
