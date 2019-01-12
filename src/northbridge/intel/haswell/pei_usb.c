@@ -416,7 +416,7 @@ static void frag_usb_fffaf7d8(PEI_USB *upd)
 
 	for (int i = 0; i < nb_usb2_ports(); i++) {
 		if (i <= 7 && (upd->xhci_resume_info[0] & 1)) {
-			if (upd->ehci_settings[i].enable & 1) {
+			if ((upd->ehci_settings[i].enable & 1) == 0) {
 				pci_or_config8(PCI_DEV(0, 0x1d, 0), 0x64, (1 << i));
 			} else {
 				pci_update_config8(PCI_DEV(0, 0x1d, 0), 0x64, (~(1 << i)), 0);
@@ -430,7 +430,7 @@ static void frag_usb_fffaf7d8(PEI_USB *upd)
 		if ((upd->xhci_resume_info[1] & 1) == 0)
 			continue;
 
-		if (upd->ehci_settings[i].enable & 1) {
+		if ((upd->ehci_settings[i].enable & 1) == 0) {
 			pci_or_config8(PCI_DEV(0, 0x1a, 0), 0x64, 1 << (i - 8));
 		} else {
 			pci_update_config8(PCI_DEV(0, 0x1a, 0), 0x64, ~(1 << (i - 8)), 0);
@@ -471,11 +471,8 @@ static void set_usb_pdo(PEI_USB *upd, u8 ppiv)
 		} else {
 			shifts = i;
 		}
-		/* if usb2 port is enabled, prevents it from
-		 * reporting a device connection to the xHC,
-		 * otherwise allows the reporting
-		 */
-		if (upd->ehci_settings[i].enable & 1) {
+
+		if ((upd->ehci_settings[i].enable & 1) == 0) {
 			usb2pdo |= (1 << shifts);
 		} else {
 			usb2pdo &= ~(1 << shifts);
