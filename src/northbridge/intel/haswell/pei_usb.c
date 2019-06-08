@@ -377,25 +377,27 @@ static void set_usb_overcurrent(PEI_USB *upd)
 	}
 }
 
-static void frag_usb_fffaf4b1(PEI_USB *upd, int count)
+static void xhci_config_usb2_route(PEI_USB *upd, int count)
 {
 	u32 v = 0;
 	for (int i = 0; i < count; i++) {
-		if (upd->xhci_resume_info[3 + i] == 1) {
+		if (upd->usb2_route_to_xhc[i] == 1) {
 			v |= (1 << i);
 		}
 	}
+	/* 0xd0: XUSB2PR */
 	pci_update_config32(PCH_XHCI_DEV, 0xd0, 0xffff8000, v);
 }
 
-static void frag_usb_fffaf555(PEI_USB *upd, int count)
+static void xhci_config_superspeed(PEI_USB *upd, int count)
 {
 	u32 v = 0;
 	for (int i = 0; i < count; i++) {
-		if (upd->xhci_resume_info[0x11 + i] == 1) {
+		if (upd->usb3_superspeed_en[i] == 1) {
 			v |= (1 << i);
 		}
 	}
+	/* 0xd8: USB3_PSSEN */
 	pci_update_config32(PCH_XHCI_DEV, 0xd8, 0xffffffc0, v);
 }
 
@@ -728,10 +730,10 @@ int mrc_init_usb(const EFI_PEI_SERVICES **pps)
 	if ((upd->xhci_resume_info[2] & 0x10) != 0) {
 		frag_usb_loop3(xbar, ebar_offset, xhci_usb2_count);
 		frag_usb_loop4(xbar, ebar_offset, xhci_usb2_count);
-		frag_usb_fffaf4b1(upd, xhci_usb2_count);
+		xhci_config_usb2_route(upd, xhci_usb2_count);
 		frag_usb_loop2(xbar, ebar_offset, xhci_usb2_count, flag);
 		frag_usb_loop1(xbar, xbar_offset, xhci_usb3_count);
-		frag_usb_fffaf555(upd, xhci_usb3_count);
+		xhci_config_superspeed(upd, xhci_usb3_count);
 		frag_usb_loop4(xbar, xbar_offset, xhci_usb3_count);
 		frag_usb_loop2(xbar, xbar_offset, xhci_usb3_count, 0);
 

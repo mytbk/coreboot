@@ -12,7 +12,9 @@ struct _PEI_USB
 {
 	uint8_t v0; // 0x0
 	PEI_EHCI ehci_settings[14]; // 0x1
-	uint8_t xhci_resume_info[23]; // 0x55
+	uint8_t xhci_resume_info[3]; // 0x55
+	uint8_t usb2_route_to_xhc[14]; // 0x58
+	uint8_t usb3_superspeed_en[6]; // 0x66
 	uint32_t ehci_oc[14]; // 0x6c
 	uint32_t xhci_oc[6]; // 0xa4
 	uint8_t unk;
