@@ -1,0 +1,2 @@
+config BOARD_CLEVO_W650SZ
+	bool "W650SZ"

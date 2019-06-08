@@ -21,6 +21,10 @@ This section contains documentation about coreboot on specific mainboards.
 
 - [CN81XX EVB SFF](cavium/cn8100_sff_evb.md)
 
+## Clevo
+
+- [W650SZ](clevo/w650sz.md)
+
 ## Emulation
 
 The boards in this section are not real mainboards, but emulators.

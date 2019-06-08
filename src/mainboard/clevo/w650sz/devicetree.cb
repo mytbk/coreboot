@@ -1,0 +1,90 @@
+##
+## This file is part of the coreboot project.
+##
+## Copyright (C) 2019 Iru Cai <mytbk920423@gmail.com>
+##
+## This program is free software: you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation, either version 2 of the License, or
+## (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+
+chip northbridge/intel/haswell
+	register "gfx.did" = "{ 0x80000100, 0x80000240, 0x80000410 }"
+	register "gfx.ndid" = "3"
+	register "gpu_cpu_backlight" = "0x041e041e"
+	register "gpu_ddi_e_connected" = "1"
+	register "gpu_dp_b_hotplug" = "4"
+	register "gpu_dp_c_hotplug" = "4"
+	register "gpu_dp_d_hotplug" = "4"
+	register "gpu_panel_port_select" = "0"
+	register "gpu_panel_power_backlight_off_delay" = "1"
+	register "gpu_panel_power_backlight_on_delay" = "1"
+	register "gpu_panel_power_cycle_delay" = "6"
+	register "gpu_panel_power_down_delay" = "500"
+	register "gpu_panel_power_up_delay" = "2000"
+	register "gpu_pch_backlight" = "0x041e041e"
+	device cpu_cluster 0x0 on
+		chip cpu/intel/haswell
+			register "c1_acpower" = "1"
+			register "c1_battery" = "1"
+			register "c2_acpower" = "3"
+			register "c2_battery" = "3"
+			register "c3_acpower" = "5"
+			register "c3_battery" = "5"
+			device lapic 0x0 on end
+			device lapic 0xacac off end
+		end
+	end
+	device domain 0x0 on
+		subsystemid 0x1558 0x0655 inherit
+		device pci 00.0 on end # Host bridge Host bridge
+		device pci 01.0 on end # PCIe Bridge for discrete graphics
+		device pci 02.0 on end # Internal graphics VGA controller
+		device pci 03.0 on end # Mini-HD audio Audio controller
+
+		chip southbridge/intel/lynxpoint # Intel Series 8 Lynx Point PCH
+			register "gen1_dec" = "0x000c0069"
+			register "gen2_dec" = "0x000c3321"
+			register "gpi7_routing" = "2"
+			register "pirqa_routing" = "0x8b"
+			register "pirqb_routing" = "0x80"
+			register "pirqc_routing" = "0x83"
+			register "pirqd_routing" = "0x8a"
+			register "pirqe_routing" = "0x80"
+			register "pirqf_routing" = "0x80"
+			register "pirqg_routing" = "0x85"
+			register "pirqh_routing" = "0x84"
+			register "sata_ahci" = "1"
+			# ODD(0), eSATA(2), mSATA(4), HDD(5)
+			register "sata_port_map" = "0x35"
+			device pci 14.0 on end # xHCI Controller
+			device pci 16.0 on end # Management Engine Interface 1
+			device pci 16.1 off end # Management Engine Interface 2
+			device pci 16.2 off end # Management Engine IDE-R
+			device pci 16.3 off end # Management Engine KT
+			device pci 19.0 off end # Intel Gigabit Ethernet
+			device pci 1a.0 on end # USB2 EHCI #2
+			device pci 1b.0 on end # High Definition Audio Controller
+			device pci 1c.0 on end # PCIe Port #1
+			device pci 1c.1 off end # PCIe Port #2
+			device pci 1c.2 on end # PCIe Port #3, WLAN
+			device pci 1c.3 on end # PCIe Port #4, Realtek GbE and card reader
+			device pci 1c.4 off end # PCIe Port #5
+			device pci 1c.5 off end # PCIe Port #6
+			device pci 1c.6 off end # PCIe Port #7
+			device pci 1c.7 off end # PCIe Port #8
+			device pci 1d.0 on end # USB2 EHCI #1
+			device pci 1f.0 on end # LPC Controller
+			device pci 1f.2 on end # SATA Controller 1
+			device pci 1f.3 on end # SMBus
+			device pci 1f.5 off end # SATA Controller 2
+			device pci 1f.6 off end # Thermal
+		end
+	end
+end
