@@ -405,7 +405,7 @@ static void frag_usb_fffaf75b(PEI_USB *upd)
 {
 	for (int i = 0; i < nb_usb2_ports(); i++) {
 		u32 a1 = (u32)(upd->ehci_settings[i].f4 & 7) << 8;
-		u32 a2 = (u32)(upd->ehci_settings[i].f5 & 7) << 11;
+		u32 a2 = (u32)(upd->ehci_settings[i].txamp & 7) << 11;
 		pch_iobp_update((0xe50041 + i) << 8, 0xffff80ff, a1 | a2);
 	}
 }

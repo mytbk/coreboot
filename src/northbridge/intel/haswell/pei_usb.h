@@ -3,7 +3,7 @@ struct _PEI_EHCI {
 	uint8_t location;
 	uint16_t length;
 	uint8_t f4;
-	uint8_t f5;
+	uint8_t txamp;
 } __packed;
 
 typedef struct _PEI_EHCI PEI_EHCI;

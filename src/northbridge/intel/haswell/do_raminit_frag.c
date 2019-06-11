@@ -353,25 +353,25 @@ static void frag_fffa3ba4(PEI_USB *pusb)
 		uint8_t loc = setting->location;
 		if (loc == 5) {
 			setting->f4 = 5;
-			setting->f5 = 2;
+			setting->txamp = 2;
 		} else if (loc == 2) {
 			setting->f4 = 4;
-			setting->f5 = 2 - (setting->length < 0x50);
+			setting->txamp = 2 - (setting->length < 0x50);
 		} else if (setting->length <= 0x6f) {
 			setting->f4 = 5;
-			setting->f5 = 2;
+			setting->txamp = 2;
 		} else {
 			setting->f4 = 6;
 			if (setting->length <= 0xff) {
-				setting->f5 = 2;
+				setting->txamp = 2;
 			} else {
-				setting->f5 = 3;
+				setting->txamp = 3;
 			}
 		}
 	}
 }
 
-static void frag_fffa3aa7(PEI_USB *pusb)
+static void conf_ehci_desktop(PEI_USB *pusb)
 {
 	int nb_ehci = nb_usb2_ports();
 
@@ -380,13 +380,19 @@ static void frag_fffa3aa7(PEI_USB *pusb)
 		uint8_t loc = setting->location;
 		if (loc == 0) {
 			setting->f4 = 4;
-			if (setting->length <= 0x7f) {
-				setting->f5 = 2;
+			if (setting->length < 0x80) {
+				/* setting 1, front/back panel <8in, lowest tx amp */
+				setting->txamp = 2;
+			} else if (setting->length < 0x130) {
+				/* setting 2, back panel 8~13in, higher tx amp */
+				setting->txamp = 3;
+			} else {
+				/* setting 3, back panel 13~15in, highest tx amp */
+				setting->txamp = 4;
 			}
-			setting->f5 = 4 - (setting->length < 0x130);
 		} else {
 			setting->f4 = 3;
-			setting->f5 = 2;
+			setting->txamp = 2;
 		}
 	}
 }
@@ -402,19 +408,19 @@ static void frag_fffa3c1b(PEI_USB *pusb)
 			if (setting->length > 0x6f) {
 				setting->f4 = 6;
 				if (setting->length > 0xff)
-					setting->f5 = 3;
+					setting->txamp = 3;
 				else
-					setting->f5 = 2;
+					setting->txamp = 2;
 			} else {
 				setting->f4 = 5;
-				setting->f5 = 2;
+				setting->txamp = 2;
 			}
 		} else if (loc == 2) {
 			setting->f4 = 0x50;
-			setting->f5 = 2 - (setting->length < 0x50);
+			setting->txamp = 2 - (setting->length < 0x50);
 		} else {
 			setting->f4 = 5;
-			setting->f5 = 2;
+			setting->txamp = 2;
 		}
 	}
 }
@@ -432,7 +438,7 @@ void frag_fffa3a17(PEI_USB *pusb)
 
 	uint16_t did = pci_read_config16(PCH_LPC_DEV, 2);
 	if (is_desktop_pch(did)) {
-		frag_fffa3aa7(pusb);
+		conf_ehci_desktop(pusb);
 		return;
 	}
 	if (is_mobile_pch(did)) {
