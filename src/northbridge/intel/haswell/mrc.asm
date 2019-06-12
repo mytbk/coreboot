@@ -134,7 +134,14 @@ extern ref_fffcd560
 global wstr_pchinitpei
 
 ;; raminit_frag
-extern io_fffa3c2e
+extern mrc_frag_smbus
+extern mrc_frag_pch
+global fcn_fffc5bf6
+global fcn_fffb9720
+global gPchDmiTcVcPpiGuid
+global ref_fffcc97c
+global ref_fffcca30
+global ref_fffcd560
 
 mrc_entry:
 mov ecx, esp
@@ -3045,28 +3052,9 @@ cmp ebx, eax
 jl short loc_fffa3a6d  ; jl 0xfffa3a6d
 
 loc_fffa3ab5:
-sub esp, 0xc
-push str_init_pch  ; push 0xfffcc5c7
-call mrc_printk
-mov eax, dword [0xf0000060]
-mov ebx, dword [0xff7d7538]
-and eax, 0xfc000000
-mov edx, dword [eax + 0xf80f0]
-and edx, 0xfffffffe
-mov word [edx + 0x3424], 0x10 ; RCBA16(DISPBDF) = 0x0010;
-mov eax, dword [edx + 0x3428]
-or eax, 1
-mov dword [edx + 0x3428], eax ; RCBA32_OR(FD2, PCH_ENABLE_DBDF);
-mov eax, dword [0xf0000060]
-add esp, 0x10
-and eax, 0xfc000000
-mov ax, word [eax + 0xf80a4] ; pci_read_config16(PCH_LPC_DEV, GEN_PMCON_3);
-test al, 4
-je loc_fffa3c99
-mov esi, edx ; save edx
-call io_fffa3c2e
-mov edx, esi
-jmp loc_fffa3c99
+call mrc_frag_pch
+call mrc_frag_smbus
+jmp loc_init_usb
 
 loc_fffa3b14:
 cmp dx, 0x8c4f
@@ -3199,111 +3187,6 @@ movzx eax, al
 cmp ebx, eax
 jl short loc_fffa3bc0  ; jl 0xfffa3bc0
 jmp near loc_fffa3ab5  ; jmp 0xfffa3ab5
-
-loc_fffa3c99:
-mov dword [edx + 0x3310], 0x10 ; RCBA32(0x3310) = 0x10;
-mov eax, ebx
-call mrc_pch_init
-mov eax, 0xc
-call mrc_alloc
-test eax, eax
-mov esi, eax
-je short loc_fffa3d32  ; je 0xfffa3d32
-mov edx, 0xc
-call mrc_zeromem
-mov eax, 0x28
-call mrc_alloc
-test eax, eax
-mov edi, eax
-je short loc_fffa3d32  ; je 0xfffa3d32
-mov edx, 0x28
-call mrc_zeromem
-mov ecx, 0x28
-mov edx, ref_fffcc8dc  ; mov edx, 0xfffcc8dc
-mov eax, edi
-call mrc_memcpy
-mov dword [esi + 8], edi
-mov dword [esi], 0x80000010
-mov dword [esi + 4], gPchDmiTcVcPpiGuid  ; mov dword [esi + 4], 0xfffcd534
-push edi
-push edi
-mov eax, dword [ebx]
-push esi
-push ebx
-call dword [eax + 0x18]  ; ucall
-pop eax
-pop edx
-mov eax, dword [ebx]
-push ref_fffcc97c  ; push 0xfffcc97c
-push ebx
-call dword [eax + 0x18]  ; ucall
-pop ecx
-pop esi
-mov eax, dword [ebx]
-push ref_fffcca30  ; push 0xfffcca30
-push ebx
-call dword [eax + 0x24]  ; ucall
-pop edi
-pop eax
-mov eax, dword [ebx]
-push ref_fffcd560  ; push 0xfffcd560
-push ebx
-call dword [eax + 0x24]  ; ucall
-add esp, 0x10
-
-loc_fffa3d32:
-push ecx
-push 0
-push 0
-push dword [0xff7d7538]
-call fcn_fffb9720  ; call 0xfffb9720
-mov dword [esp], str_init_smbus
-call mrc_printk
-mov eax, 0x10f
-mov esi, dword [0xff7d7538]
-call mrc_alloc
-add esp, 0x10
-test eax, eax
-mov ebx, eax
-je loc_init_usb
-mov edx, eax
-mov eax, esi
-call fcn_fffc5bf6  ; call 0xfffc5bf6
-mov eax, dword [0xf0000060]
-and eax, 0xfc000000
-mov edx, dword [eax + 0xfb020]
-and edx, 0xffe0
-or edx, dword [ebx + 0xc]
-mov dword [eax + 0xfb020], edx
-mov dl, byte [eax + 0xfb004]
-or edx, 1
-mov byte [eax + 0xfb004], dl
-mov dl, byte [eax + 0xfb040]
-or edx, 8
-mov byte [eax + 0xfb040], dl
-mov dl, byte [eax + 0xfb040]
-and edx, 0xfffffff8
-or edx, 1
-mov byte [eax + 0xfb040], dl
-mov edx, 0xff
-xor eax, eax
-call mrc_smbus_outb
-mov eax, dword [0xff7d7538]
-lea ecx, [ebx + 0x10]
-push edi
-add ebx, 0x2c
-push edi
-mov edx, dword [eax]
-push ecx
-push eax
-call dword [edx + 0x18]  ; ucall
-pop eax
-pop edx
-mov eax, dword [esi]
-push ebx
-push esi
-call dword [eax + 0x24]  ; ucall
-add esp, 0x10
 
 loc_init_usb:
 sub esp, 0xc
@@ -51697,12 +51580,6 @@ db 'System Agent: S3 resume detected',0x0a,0x00
 ref_fffcc574:
 db 'System Agent: Unsupported DDR3 frequence %d (Supported are 800, 1067, 1333, 1600)',0x0a,0x00
 
-str_init_pch:
-db 'System Agent: Initializing PCH',0x0a,0x00
-
-str_init_smbus:
-db 'System Agent: Initializing PCH (SMBUS)',0x0a,0x00
-
 str_init_usb:
 db 'System Agent: Initializing PCH (USB)',0x0a,0x00
 
@@ -51750,18 +51627,6 @@ dd 0x7ae3ceb7
 dd 0x48fa2ee2
 dd 0x103549aa
 dd 0xbfca83bc
-
-ref_fffcc8dc:
-dd 0x00000000
-dd 0x00000001
-dd 0x00000002
-dd 0x00000000
-dd 0x00000000
-dd 0x00000000
-dd 0x00000000
-dd 0x00000003
-dd 0x01010001
-dd 0x07010201
 
 ref_fffcc904:
 dd 0x80000020

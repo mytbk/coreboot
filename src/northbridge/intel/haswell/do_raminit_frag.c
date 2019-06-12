@@ -1,10 +1,13 @@
 #include <southbridge/intel/lynxpoint/pch.h>
 #include <arch/io.h>
+#include <device/pci_ops.h>
+#include "mrc_pei.h"
+#include "mrc_utils.h"
+#include "mrc_smbus.h"
+#include "mrc_pch_init.h"
+#include <console/console.h>
 
-// loc_fffa3c2e
-//
-void io_fffa3c2e(void);
-void io_fffa3c2e(void)
+static void io_fffa3c2e(void)
 {
 	u32 reg3410;
 	u8 t1, t2, tmp;
@@ -28,4 +31,73 @@ void io_fffa3c2e(void)
 	outb(t1, 0x70);
 	tmp = inb(0x71) & 0x7f;
 	outb(tmp, 0x71);
+}
+
+static const EFI_PEI_SERVICES ***gpPei = (const EFI_PEI_SERVICES***)0xff7d7538;
+void __attribute((regparm(2))) fcn_fffc5bf6(const EFI_PEI_SERVICES **ps, void *);
+void fcn_fffb9720(const EFI_PEI_SERVICES **ps, int, int);
+
+void mrc_frag_smbus(void);
+void mrc_frag_smbus(void)
+{
+	const EFI_PEI_SERVICES **pps = *gpPei;
+
+	fcn_fffb9720(pps, 0, 0);
+	mrc_printk("System Agent: Initializing PCH (SMBUS)\n");
+
+	void *mem = mrc_alloc(0x10f);
+	if (mem == NULL)
+		return;
+	fcn_fffc5bf6(pps, mem);
+	pci_update_config32(PCI_DEV(0, 0x1f, 3), 0x20, 0xffe0, *(u32*)(mem + 0xc));
+	pci_or_config8(PCI_DEV(0, 0x1f, 3), 4, 1);
+	pci_or_config8(PCI_DEV(0, 0x1f, 3), 0x40, 8);
+	pci_update_config32(PCI_DEV(0, 0x1f, 3), 0x40, 0xfffffff8, 1);
+	mrc_smbus_outb(0, 0xff);
+
+	(*pps)->InstallPpi(pps, mem + 0x10);
+	(*pps)->NotifyPpi(pps, mem + 0x2c);
+}
+
+static const uint32_t ref_fffcc8dc[] = {
+	0, 1, 2, 0, 0, 0, 0, 3, 0x01010001, 0x07010201
+};
+extern EFI_GUID gPchDmiTcVcPpiGuid;
+extern EFI_PEI_PPI_DESCRIPTOR ref_fffcc97c;
+extern EFI_PEI_NOTIFY_DESCRIPTOR ref_fffcca30;
+extern EFI_PEI_NOTIFY_DESCRIPTOR ref_fffcd560;
+
+void mrc_frag_pch(void);
+void mrc_frag_pch(void)
+{
+	const EFI_PEI_SERVICES **pps = *gpPei;
+
+	mrc_printk("System Agent: Initializing PCH\n");
+
+	RCBA16(DISPBDF) = 0x0010;
+	RCBA32_OR(FD2, PCH_ENABLE_DBDF);
+	u16 tmp = pci_read_config16(PCH_LPC_DEV, GEN_PMCON_3);
+	if (tmp & 4) {
+		io_fffa3c2e();
+	}
+	RCBA32(0x3310) = 0x10;
+	mrc_pch_init();
+
+	EFI_PEI_PPI_DESCRIPTOR *desc = mrc_alloc(sizeof(EFI_PEI_PPI_DESCRIPTOR));
+	if (desc == NULL)
+		return;
+
+	void *ppi = mrc_alloc(0x28);
+	if (ppi == NULL)
+		return;
+
+	mrc_memcpy(ppi, ref_fffcc8dc, 0x28);
+	desc->Flags = 0x80000010;
+	desc->Guid = &gPchDmiTcVcPpiGuid;
+	desc->Ppi = ppi;
+
+	(*pps)->InstallPpi(pps, desc);
+	(*pps)->InstallPpi(pps, &ref_fffcc97c);
+	(*pps)->NotifyPpi(pps, &ref_fffcca30);
+	(*pps)->NotifyPpi(pps, &ref_fffcd560);
 }
