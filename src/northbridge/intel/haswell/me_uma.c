@@ -38,3 +38,36 @@ u32 get_uma_size(EFI_PEI_SERVICES **pps, void *me)
 		return 0;
 	}
 }
+
+int __attribute((regparm(2)))
+fcn_fffbdf70(EFI_PEI_SERVICES **pps, int v);
+
+int fcn_fffbe070(EFI_PEI_SERVICES **pps, void *me, u8 *a2);
+int fcn_fffbe070(EFI_PEI_SERVICES **pps, void *me, u8 *a2)
+{
+	int i = 0;
+	int ret = 0;
+
+	u32 gmes = pci_read_config32(PCH_ME_DEV, 0x48);
+
+	while ((gmes & 0x100) == 0) {
+		if (i == 50) {
+			*a2 = 1;
+			return ret;
+		}
+		usleep(1000);
+		i++;
+		gmes = pci_read_config32(PCH_ME_DEV, 0x48);
+	}
+	if (i != 50) {
+		if (gmes & 0x80) {
+			/* clear GEN_PMCON_2 DRAM initialization bit */
+			pci_update_config16(PCH_LPC_DEV, 0xa2, 0xff7f, 0);
+			ret = fcn_fffbdf70(pps, 1);
+		}
+		if ((gmes & 0x90) != 0x10)
+			return ret;
+	}
+	*a2 = 1;
+	return ret;
+}
