@@ -4,6 +4,9 @@ global gPchMeUmaPpiGuid
 extern gEfiPeiStallPpiGuid
 extern mrc_sku_type
 extern gWdtPpiGuid
+extern get_uma_size
+
+global fcn_fffbdf70
 
 fcn_fffbdf70:  ; not directly referenced
 push ebp
@@ -325,76 +328,6 @@ pop esi
 pop ebp
 ret
 
-fcn_fffc8c78:  ; not directly referenced
-push ebp
-mov ebp, esp
-push edi
-push esi
-push ebx
-lea esp, [esp - 0x1c]
-mov edi, dword [0xf00b0044]
-mov eax, dword [0xf00b0040]
-mov esi, dword [ebp + 8]
-mov edx, eax
-shr edx, 0x10
-and edx, 0xf
-cmp dl, 2
-jne short loc_fffc8ca1  ; jne 0xfffc8ca1
-
-loc_fffc8c9d:  ; not directly referenced
-xor eax, eax
-jmp short loc_fffc8cfc  ; jmp 0xfffc8cfc
-
-loc_fffc8ca1:  ; not directly referenced
-movzx eax, ah
-test al, 0xf0
-jne short loc_fffc8c9d  ; jne 0xfffc8c9d
-sub esp, 0xc
-lea edx, [ebp - 0x1c]
-mov eax, dword [esi]
-xor ebx, ebx
-push edx
-push 0
-push 0
-push gEfiPeiStallPpiGuid
-push esi
-call dword [eax + 0x20]  ; ucall
-add esp, 0x20
-jmp short loc_fffc8cdd  ; jmp 0xfffc8cdd
-
-loc_fffc8cc5:  ; not directly referenced
-push edx
-mov eax, dword [ebp - 0x1c]
-inc ebx
-push 0x3e8
-push eax
-push esi
-call dword [eax + 4]  ; ucall
-mov edi, dword [0xf00b0044]
-add esp, 0x10
-
-loc_fffc8cdd:  ; not directly referenced
-test edi, 0x10000
-jne short loc_fffc8cef  ; jne 0xfffc8cef
-cmp ebx, 0x1388
-jne short loc_fffc8cc5  ; jne 0xfffc8cc5
-jmp short loc_fffc8c9d  ; jmp 0xfffc8c9d
-
-loc_fffc8cef:  ; not directly referenced
-cmp ebx, 0x1388
-je short loc_fffc8c9d  ; je 0xfffc8c9d
-mov eax, edi
-and eax, 0x3f
-
-loc_fffc8cfc:  ; not directly referenced
-lea esp, [ebp - 0xc]
-pop ebx
-pop esi
-pop edi
-pop ebp
-ret
-
-
 PchMeUmaDesc:
 dd 0x80000010
 dd gPchMeUmaPpiGuid
@@ -407,7 +340,7 @@ dd 0x859d7bb4
 dd 0xd1c9f31d
 
 ref_fffcd514:
-dd fcn_fffc8c78
+dd get_uma_size
 dd fcn_fffbe070
 dd fcn_fffbe14d
 dd fcn_fffbe110

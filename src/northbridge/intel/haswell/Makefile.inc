@@ -57,6 +57,7 @@ romstage-y += mrc_wdt.c
 romstage-y += pei_smbus.c
 romstage-y += mrc_frags.c
 romstage-y += pei_usb.c
+romstage-y += me_uma.c
 postcar-y += memmap.c
 
 endif
