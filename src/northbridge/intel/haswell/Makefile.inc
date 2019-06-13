@@ -33,7 +33,6 @@ smm-y += finalize.c
 
 romstage-libs += $(obj)/mrc.o
 romstage-libs += $(obj)/me_uma.o
-romstage-libs += $(obj)/pei_usb.o
 romstage-libs += $(obj)/pei_cpuio.o
 romstage-libs += $(obj)/mrc_init_memory.o
 romstage-libs += $(obj)/mrc_end_of_pei.o
@@ -57,6 +56,7 @@ romstage-y += mrc_frag_init_memory.c
 romstage-y += mrc_wdt.c
 romstage-y += pei_smbus.c
 romstage-y += mrc_frags.c
+romstage-y += pei_usb.c
 postcar-y += memmap.c
 
 endif
