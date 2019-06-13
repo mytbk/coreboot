@@ -3,8 +3,16 @@
 #include "mrc_pei.h"
 #include "mrc_utils.h"
 #include <console/console.h>
+#include "mrc_sku.h"
+#include "mrc_wdt.h"
 
 u32 get_uma_size(EFI_PEI_SERVICES **pps, void *me);
+int fcn_fffbe070(const EFI_PEI_SERVICES **pps, void *me, u8 *a2);
+int fcn_fffbe110(const EFI_PEI_SERVICES **pps, u32, u8);
+int fcn_fffbe14d(const EFI_PEI_SERVICES **pps, void *me, int a3, u32 a4);
+int __attribute((regparm(2)))
+fcn_fffbdf70(const EFI_PEI_SERVICES **pps, int v);
+
 u32 get_uma_size(EFI_PEI_SERVICES **pps, void *me)
 {
 	int i = 0;
@@ -39,11 +47,7 @@ u32 get_uma_size(EFI_PEI_SERVICES **pps, void *me)
 	}
 }
 
-int __attribute((regparm(2)))
-fcn_fffbdf70(EFI_PEI_SERVICES **pps, int v);
-
-int fcn_fffbe070(EFI_PEI_SERVICES **pps, void *me, u8 *a2);
-int fcn_fffbe070(EFI_PEI_SERVICES **pps, void *me, u8 *a2)
+int fcn_fffbe070(const EFI_PEI_SERVICES **pps, void *me, u8 *a2)
 {
 	int i = 0;
 	int ret = 0;
@@ -72,10 +76,7 @@ int fcn_fffbe070(EFI_PEI_SERVICES **pps, void *me, u8 *a2)
 	return ret;
 }
 
-int fcn_fffbe110(EFI_PEI_SERVICES **pps, u32, u32);
-
-int fcn_fffbe14d(EFI_PEI_SERVICES **pps, void *me, int a3, u32 a4);
-int fcn_fffbe14d(EFI_PEI_SERVICES **pps, void *me, int a3, u32 a4)
+int fcn_fffbe14d(const EFI_PEI_SERVICES **pps, void *me, int a3, u32 a4)
 {
 	u32 hfs = pci_read_config32(PCH_ME_DEV, 0x40);
 
@@ -108,4 +109,79 @@ int fcn_fffbe14d(EFI_PEI_SERVICES **pps, void *me, int a3, u32 a4)
 		}
 	}
 	return fcn_fffbe110(pps, a3, ((hfs >> 25) & 7));
+}
+
+int fcn_fffbe110(const EFI_PEI_SERVICES **pps, u32 me, u8 a3)
+{
+	pci_read_config32(PCH_ME_DEV, 0x48);
+	int v;
+
+	if (a3 == 2) {
+		v = 2;
+	} else if (a3 == 6) {
+		v = 6;
+	} else if (a3 == 1) {
+		v = 1;
+	} else {
+		return 0;
+	}
+	fcn_fffbdf70(pps, v);
+	return 0;
+}
+
+extern EFI_GUID gWdtPpiGuid;
+int __attribute((regparm(2))) fcn_fffbdf70(const EFI_PEI_SERVICES **pps, int v)
+{
+	PEI_WDT_PPI *wdt = NULL;
+	(*pps)->LocatePpi(pps, &gWdtPpiGuid, 0, NULL, (void**)&wdt);
+	int sku = mrc_sku_type();
+	pci_update_config32(PCH_LPC_DEV, 0xac, 0xffebffff, 0);
+	u8 io_cf9 = inb(0xcf9) & 0xf1;
+
+	if (v == 6) {
+		u32 gpiobase = pci_read_config32(PCH_LPC_DEV, 0x48) & 0xfffffffe;
+		/* GPIO Pin 30 used as GPIO, as output, level low */
+		u32 tmp;
+		if (sku == 1) {
+			tmp = inl(gpiobase);
+			tmp |= 0x40000000;
+			outl(tmp, gpiobase);
+
+			tmp = inl(gpiobase + 4);
+			tmp &= 0xbfffffff;
+			outl(tmp, gpiobase + 4);
+
+			tmp = inl(gpiobase + 0xc);
+			tmp &= 0xbfffffff;
+			outl(tmp, gpiobase + 0xc);
+		} else if (sku == 2) {
+			u32 gpio30 = gpiobase + 0x1f0;
+
+			tmp = inl(gpio30);
+			tmp |= 1;
+			outl(tmp, gpio30);
+
+			tmp = inl(gpio30);
+			tmp &= 0xfffffffb;
+			outl(tmp, gpio30);
+
+			tmp = inl(gpio30);
+			tmp &= 0x7fffffff;
+			outl(tmp, gpio30);
+		}
+		tmp = inl(gpiobase + 0x60);
+		tmp |= 0x40000000; /* GPIO30 will be reset by RSMRST# assertion only */
+		outl(tmp, gpiobase + 0x60);
+
+		pci_or_config32(PCH_LPC_DEV, 0xac, 0x100000);
+		io_cf9 |= 0xe;
+	} else if (v == 2) {
+		wdt->wdt_f0(2);
+		io_cf9 |= 0xe;
+	} else if (v == 1) {
+		io_cf9 |= 6;
+	}
+	wdt->wdt_f3();
+	outb(io_cf9, 0xcf9);
+	return 0;
 }
