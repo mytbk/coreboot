@@ -1,5 +1,6 @@
 #include <southbridge/intel/lynxpoint/pch.h>
 #include <device/pci_ops.h>
+#include <cpu/intel/haswell/haswell.h>
 #include "mrc_sku.h"
 #include "mrc_misc.h"
 #include "mrc_utils.h"
@@ -443,8 +444,299 @@ void __attribute((regparm(3))) fcn_fffc8290(void *, void *, void *,
 		void *, void *, void *);
 void __attribute((regparm(2))) fcn_fffa91af(u32, void *);
 void __attribute((regparm(2))) fcn_fffa0020(void *, void *);
-void frag_fffa1e83(void *ebx, void *esi, void *edi);
-void copy_spd(void *ebx);
+
+static inline u8 shupd(u8 a, u8 b, int sh)
+{
+	a &= (0xff - (1 << sh));
+	a |= ((b & 1) << sh);
+	return a;
+}
+
+static void frag_fffa1e83(void *ebx, void *esi, pei_raminit_ppi *ppi)
+{
+#ifndef T8
+#undef T8
+#endif
+#define T8(d,s) do { *(u8*)(ebx + d) = *(u8*)(esi + s); } while (0);
+#define SW16(d, s) do { T8(d + 1, s); T8(d, s + 1); } while (0);
+
+	u8 tmp;
+	uint8_t v = ppi->v;
+
+	*(u32*)(ebx + 0x8b) = *(u32*)(esi + 0x4e);
+	*(u16*)(ebx + 0x8f) = 0x3e8;
+	*(u8*)(ebx + 0x54) = 0;
+	T8(0x57, 0x2e);
+	T8(0x6d8, 0x2f); T8(0x6d9, 0x30); T8(0x6da, 0x31);
+	T8(0x6db, 0x6b);
+
+	tmp = *(u8*)(ebx + 0x6dc);
+	for (int i = 0; i < 8; i++) {
+		tmp = shupd(tmp, *(u8*)(esi + 0x32 + i), i);
+	}
+	*(u8*)(ebx + 0x6dc) = tmp;
+
+	tmp = *(u8*)(ebx + 0x6dd);
+	for (int i = 0; i < 8; i++) {
+		if (i == 3) continue;
+		tmp = shupd(tmp, *(u8*)(esi + 0x3a + i), i);
+	}
+	*(u8*)(ebx + 0x6dd) = tmp;
+
+	tmp = *(u8*)(ebx + 0x6de);
+	tmp = shupd(tmp, *(u8*)(esi + 0x42), 0);
+	tmp = shupd(tmp, *(u8*)(esi + 0x43), 2);
+	tmp = shupd(tmp, *(u8*)(esi + 0x44), 3);
+	tmp = shupd(tmp, *(u8*)(esi + 0x47), 6);
+	tmp = shupd(tmp, *(u8*)(esi + 0x48), 7);
+	*(u8*)(ebx + 0x6de) = tmp;
+
+	tmp = *(u8*)(ebx + 0x6df);
+	tmp = shupd(tmp, *(u8*)(esi + 0x49), 0);
+	tmp = shupd(tmp, *(u8*)(esi + 0x4a), 1);
+	tmp = shupd(tmp, *(u8*)(esi + 0x4b), 2);
+
+	if (v > 1) {
+		tmp = shupd(tmp, *(u8*)(esi + 0x58), 3);
+		tmp = shupd(tmp, *(u8*)(esi + 0x59), 4);
+		tmp = shupd(tmp, *(u8*)(esi + 0x5a), 5);
+	} else {
+		tmp = (tmp & 0xe7) | 0x20;
+	}
+	*(u8*)(ebx + 0x6df) = tmp;
+
+	tmp = *(u8*)(ebx + 0x6de);
+	if (v > 3) {
+		tmp = shupd(tmp, *(u8*)(esi + 0x5c), 1);
+		*(u8*)(ebx + 0x6de) = tmp;
+
+		for (int i = 0; i < 7; i++) {
+			T8(0x91 + i, 0x5d + i);
+		}
+	} else {
+		*(u8*)(ebx + 0x6de) = tmp | 2;
+		*(u8*)(ebx + 0x91) = 0xff;
+		*(u8*)(ebx + 0x92) = 0x40;
+		*(u8*)(ebx + 0x93) = 1;
+		*(u8*)(ebx + 0x94) = 1;
+		*(u8*)(ebx + 0x95) = 0;
+		*(u8*)(ebx + 0x96) = 7;
+		*(u8*)(ebx + 0x97) = 0;
+	}
+
+	if (v > 4) {
+		u32 v64 = *(u32*)(esi + 0x64);
+		if (v64 > 89999999) {
+			*(u32*)(ebx + 0x21) = (v64 / 1000000) * 1000000;
+		} else {
+			*(u32*)(ebx + 0x21) = 100000000;
+		}
+	} else {
+		*(u32*)(ebx + 0x21) = 100000000;
+	}
+
+	tmp = *(u8*)(ebx + 0x6df);
+	if (v > 5) {
+		tmp = shupd(tmp, *(u8*)(esi + 0x6a), 6);
+	} else {
+		tmp |= 0x40;
+	}
+	*(u8*)(ebx + 0x6df) = tmp;
+
+	if (v > 8) {
+		*(u32*)(ebx + 0x83) = ppi->ram_data->ied_region_size >> 0x14;
+		T8(0x98, 0x6c); T8(0x99, 0x6d);
+		*(u16*)(ebx + 0x9a) = *(u16*)(esi + 0x6e);
+		T8(0x9c, 0x70);
+	} else {
+		*(u32*)(ebx + 0x83) = 4;
+		*(u8*)(ebx + 0x98) = 0;
+		*(u8*)(ebx + 0x99) = 1;
+		*(u16*)(ebx + 0x9a) = 0x30ce;
+		*(u8*)(ebx + 0x9c) = 1;
+	}
+
+	if (v > 9) {
+		for (int i = 0; i < 4; i++) {
+			T8(0x9d + i, 0x71 + i);
+		}
+		int is_ult = (*(u32*)(ebx + 0x2d) == HASWELL_FAMILY_ULT);
+		if (is_ult) {
+			T8(0xa1, 0x75);
+		}
+		for (int i = 0; i < 5; i++) {
+			T8(0xa2 + i, 0x76 + i);
+		}
+		T8(0xa8, 0x7b); T8(0xa7, 0x7c);
+		for (int i = 0; i < 5; i++) {
+			T8(0xa9 + i, 0x7d + i);
+		}
+		for (int i = 0; i < 4; i++) {
+			T8(0xaf + i, 0x83 + i);
+		}
+		for (int i = 0; i < 16; i++) {
+			T8(0xb4 + i, 0x88 + i);
+		}
+		/* 0xc4, 0xc5, ..., 0xd6, 0xd7 */
+		for (int i = 0; i < 5; i++) {
+			SW16(0xc4 + i * 4, 0x98 + i * 2);
+			SW16(0xc6 + i * 4, 0xa2 + i * 2);
+		}
+		T8(0xd8, 0xac); T8(0xd9, 0xad);
+		T8(0xdb, 0xaf); T8(0xdc, 0xb0);
+		if (is_ult) {
+			T8(0xdd, 0xb1); T8(0xde, 0xb2);
+		}
+	} else {
+		int is_ult = (*(u32*)(ebx + 0x2d) == HASWELL_FAMILY_ULT);
+		*(u8*)(ebx + 0x9d) = 0;
+		*(u8*)(ebx + 0x9e) = 0;
+		*(u8*)(ebx + 0x9f) = 0;
+		*(u8*)(ebx + 0xa0) = 1;
+		if (is_ult) {
+			*(u8*)(ebx + 0xa1) = 0;
+		}
+		*(u8*)(ebx + 0xa2) = 0;
+		*(u8*)(ebx + 0xa3) = 1;
+		*(u8*)(ebx + 0xa4) = 0;
+		*(u8*)(ebx + 0xa6) = 3;
+		for (int i = 0; i < 5; i++) {
+			*(u8*)(ebx + 0xa9) = 0;
+		}
+		for (int i = 0; i < 4; i++) {
+			*(u8*)(ebx + 0xaf) = 0;
+		}
+		for (int i = 0; i < 2; i++) {
+			u8 *b1 = ebx + i * 2;
+			*(u8*)(ebx + i + 0xa7) = 0;
+			for (int j = 0; j < 4; j++) {
+				*(u8*)(b1 + 0xb4 + j * 4) = 0xff;
+			}
+			for (int j = 0; j < 5; j++) {
+				*(u8*)(b1 + 0xc4 + j * 4) = 0;
+			}
+			for (int j = 0; j < 4; j++) {
+				*(u8*)(b1 + 0xb5 + j * 4) = 0xff;
+			}
+			for (int j = 0; j < 5; j++) {
+				*(u8*)(b1 + 0xc5 + j * 4) = 0;
+			}
+		}
+		*(u8*)(ebx + 0xd8) = 1;
+		*(u16*)(ebx + 0xd9) = 0x200;
+		*(u8*)(ebx + 0xdb) = 0;
+		*(u8*)(ebx + 0xdc) = 0x30;
+		if (is_ult) {
+			*(u8*)(ebx + 0xdd) = 1;
+			*(u8*)(ebx + 0xde) = 0x40;
+		}
+	}
+
+	if (v > 10) {
+		T8(0x59, 0xc2); T8(0x5a, 0xc3); T8(0x6e5, 0xc4);
+	} else {
+		*(u8*)(ebx + 0x59) = 1;
+		*(u8*)(ebx + 0x5a) = 1;
+		*(u8*)(ebx + 0x6e5) = 0;
+	}
+
+	tmp = *(u8*)(ebx + 0x6dd);
+	if (v > 11) {
+		tmp = shupd(tmp, *(u8*)(esi + 0xc5), 3);
+	} else {
+		tmp |= 8;
+	}
+	*(u8*)(ebx + 0x6dd) = tmp;
+
+	tmp = *(u8*)(ebx + 0x6de);
+	if (v > 0xe) {
+		tmp = shupd(tmp, *(u8*)(esi + 0xc7), 4);
+	} else {
+		tmp = shupd(tmp, 1, 4);
+	}
+	*(u8*)(ebx + 0x6de) = tmp;
+
+	*(u32*)(ebx + 0x41) = 0;
+	*(u8*)(ebx + 0x40) = 0;
+	T8(0x56, 0x11);
+	T8(0x58, 0x2c);
+	T8(0x53, 0);
+	T8(0x6e1, 0x52);
+
+	if (*(u32*)(ebx + 0x2d) == HASWELL_FAMILY_ULT) {
+		*(u8*)(ebx + 0x6e3) = 0;
+		T8(0x6e2, 0x57);
+	}
+
+	void *ptr0 = ebx + 0xdf;
+	*(u8*)(ebx + 0xe3) = 0;
+	for (int i = 0; i < 2; i++) {
+		void *ptr1 = ptr0 + i * 0x2fa;
+		void *ptr2 = ptr1 + 5;
+		/* ram_param + 0x2a: channel i disabled */
+		tmp = *(u8*)(esi + i + 0x2a);
+		printk(BIOS_DEBUG, "dimm_channel%d_disabled = %hhd\n", i, tmp);
+
+		if (tmp == 2) { /* disable DIMM 1 */
+			*(u32*)(ptr2 + 8) = 0;
+			*(u32*)(ptr2 + 0x157) = 1;
+			*(u32*)(ptr1 + 5) = 2;
+			(*(u8*)(ptr0 + 4))++;
+			*(u32*)(ptr2 + 4) = 1;
+		} else if (tmp == 3) { /* disable DIMM 0+1 */
+			*(u32*)(ptr2 + 8) = 1;
+			*(u32*)(ptr2 + 0x157) = 1;
+			*(u32*)(ptr1 + 5) = 1;
+			*(u32*)(ptr2 + 4) = 0;
+		} else if (tmp != 1) { /* 0: enable channel */
+			*(u32*)(ptr2 + 8) = 0;
+			*(u32*)(ptr2 + 0x157) = 0;
+			*(u32*)(ptr1 + 5) = 2;
+			(*(u8*)(ptr0 + 4))++;
+			*(u32*)(ptr2 + 4) = 2;
+		} else { /* tmp == 1: disable DIMM 0 */
+			*(u32*)(ptr2 + 8) = 1;
+			*(u32*)(ptr2 + 0x157) = 0;
+			*(u32*)(ptr1 + 5) = 2;
+			(*(u8*)(ptr0 + 4))++;
+			*(u32*)(ptr2 + 4) = 1;
+		}
+	}
+
+	u8 *spd_addr = ppi->ram_data->spd_addresses;
+
+	printk(BIOS_DEBUG, "SPD addresses:");
+	for (int i = 0; i < 4; i++) {
+		printk(BIOS_DEBUG, " 0x%02hhx", spd_addr[i]);
+	}
+	printk(BIOS_DEBUG, "\n");
+
+	*(u8*)(ebx + 0x23a) = spd_addr[0];
+	*(u8*)(ebx + 0x389) = spd_addr[1];
+	*(u8*)(ebx + 0x534) = spd_addr[2];
+	*(u8*)(ebx + 0x683) = spd_addr[3];
+}
+
+static void copy_spd(void *ebx)
+{
+	MRC_PEI *pei = PEI_FROM_PEI_SERVICE(**gpPei);
+	struct pei_data *pd = pei->pei_data;
+
+	for (int i = 0; i < 2; i++) {
+		int idxi = i * 0x2fa;
+		for (int j = 0; j < 2; j++) {
+			void *edx = ebx + (idxi + j * 0x14f + 0xd0);
+			void *ptr = edx + 0x1c;
+			if (*(u8*)(edx + 0x16a) == 0xff &&
+					*(u32*)(edx + 0x1c) == 0) {
+				printk(BIOS_DEBUG, "Copy SPD for Channel %d Dimm %d\n", i, j);
+				/* FIXME: looks like mrc.bin only copies channel 0 slot 0??? */
+				mrc_memcpy(edx + 0x40, pd->spd_data, 0x100);
+				*(u8*)(ptr + 0x14e) = 0;
+			}
+		}
+	}
+}
 
 int __attribute((regparm(3))) fcn_fffa1d20(int bootmode, int v, void *addr,
 		EFI_PEI_SERVICES **pps /* not used */, pei_raminit_ppi *ppi);
@@ -478,13 +770,21 @@ int __attribute((regparm(3))) fcn_fffa1d20(int bootmode, int v, void *addr,
 		}
 	}
 
+	/* mchbar: 0xfd8 + 0x67 = 0x103f */
 	*(u32*)(addr + 0x67) = (u32)ppi->ram_data->mchbar;
+	/* pciexbar: 0x103b */
 	*(u32*)(addr + 0x63) = (u32)ppi->ram_data->pciexbar;
+	/* smbusbar: 0x1043 */
 	*(u32*)(addr + 0x6b) = (u32)ppi->ram_data->smbusbar;
+	/* gdxcbar: 0x1047 */
 	*(u32*)(addr + 0x6f) = (u32)ppi->ram_data->gdxcbar;
+	/* HPET: 0x104b */
 	*(u32*)(addr + 0x73) = 0xfed00000;
 	*(u32*)(addr + 0x7b) = *(u16*)(ppi->cfg0);
-	*(u32*)(addr + 0x18) = *(u16*)(esi + 1);
+
+	printk(BIOS_DEBUG, "Max DDR3 frequency: %hd\n", *(u16*)(esi + 1));
+
+	*(u32*)(addr + 0x18) = ppi->ram_param->max_ddr3_freq;
 	*(u32*)(addr + 0x7f) = ppi->ram_data->tseg_size >> 0x14;
 	*(u32*)(addr + 0x35) = *(u16*)(ppi->cfg0 + 2);
 	u32 eax = *(u8*)(ppi->cfg0 + 4);
