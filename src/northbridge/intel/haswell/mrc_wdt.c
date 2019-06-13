@@ -1,15 +1,9 @@
 #include <southbridge/intel/lynxpoint/pch.h>
 #include <arch/io.h>
 #include <device/pci_ops.h>
+#include "mrc_wdt.h"
 
 static uint8_t *status = (uint8_t *)0xff7d7540;
-
-int fcn_fffc5b14(void);
-int fcn_fffc5b27(void);
-void fcn_fffc5b3c(void);
-int fcn_fffc5b65(void);
-void fcn_fffc5b78(void);
-int fcn_fffc5b9a(uint32_t v);
 
 static uint32_t pm54(void)
 {
@@ -18,38 +12,38 @@ static uint32_t pm54(void)
 	return pmbase + 0x54;
 }
 
-int fcn_fffc5b14(void)
+static int fcn_fffc5b14(void)
 {
 	uint32_t tmp = inl(pm54());
 	return ((tmp >> 14) & 1);
 }
 
-int fcn_fffc5b27(void)
+static int fcn_fffc5b27(void)
 {
 	uint32_t tmp = inl(pm54());
 	return ((tmp & 0x3f0000)?1:0);
 }
 
-void fcn_fffc5b3c(void)
+static void fcn_fffc5b3c(void)
 {
 	*status = 1;
 	u32 tmp = inl(pm54()) & 0xffbf7fff;
 	outl(tmp, pm54());
 }
 
-int fcn_fffc5b65(void)
+static int fcn_fffc5b65(void)
 {
 	u32 tmp = inl(pm54());
 	return ((tmp >> 0x17) & 1);
 }
 
-void fcn_fffc5b78(void)
+static void fcn_fffc5b78(void)
 {
 	u32 tmp = inl(pm54()) & 0xffbf3fff;
 	outl(tmp, pm54());
 }
 
-int fcn_fffc5b9a(uint32_t v)
+static int fcn_fffc5b9a(uint32_t v)
 {
 	v--;
 	if (v > 0x3fe)
@@ -68,11 +62,11 @@ int fcn_fffc5b9a(uint32_t v)
 	return 0;
 }
 
-const void* const mrc_wdt_ppi[6] = {
-	(const void*) fcn_fffc5b9a,
-	(const void*) fcn_fffc5b65,
-	(const void*) fcn_fffc5b78,
-	(const void*) fcn_fffc5b3c,
-	(const void*) fcn_fffc5b27,
-	(const void*) fcn_fffc5b14,
+const PEI_WDT_PPI mrc_wdt_ppi = {
+	fcn_fffc5b9a,
+	fcn_fffc5b65,
+	fcn_fffc5b78,
+	fcn_fffc5b3c,
+	fcn_fffc5b27,
+	fcn_fffc5b14,
 };
