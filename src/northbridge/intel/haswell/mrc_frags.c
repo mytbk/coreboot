@@ -436,7 +436,7 @@ void frag_usb_fffaed46(PEI_USB *upd, void *xbar)
 	int sku = mrc_sku_type();
 	int rev = mrc_pch_revision();
 	u32 tmp1, tmp2;
-	device_t dev = PCI_DEV(0, 0x14, 0);
+	pci_devfn_t dev = PCI_DEV(0, 0x14, 0);
 
 	/* XBAR is e8100000
 	printk(BIOS_DEBUG, "XBAR is %p.\n", xbar);
@@ -529,7 +529,7 @@ void frag_usb_fffaeb10(PEI_USB *upd, void *ebar)
 		return;
 
 	for (int i = 0; i < nb_ehci_dev; i++) {
-		device_t dev = PCI_DEV(0, ehci_dev[i], 0);
+		pci_devfn_t dev = PCI_DEV(0, ehci_dev[i], 0);
 
 		if ((upd->xhci_resume_info[i] & 1) == 0) {
 			pci_write_config32(dev, 0x10, 0); // MEM_BASE
@@ -595,7 +595,7 @@ void frag_usb_fffaeb10(PEI_USB *upd, void *ebar)
 void set_usb_overcurrent(PEI_USB *upd);
 void set_usb_overcurrent(PEI_USB *upd)
 {
-	device_t dev = PCI_DEV(0, 0x14, 0);
+	pci_devfn_t dev = PCI_DEV(0, 0x14, 0);
 
 	u32 u2ocm1 = 0;
 	u32 u2ocm2 = 0;
