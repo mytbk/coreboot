@@ -151,6 +151,85 @@ int print_rcba(struct pci_dev *sb)
 			printf("0x%04x: 0x%08x\n", i, *(uint32_t *)(rcba + i));
 	}
 
+	u32 pch_iobp_read(volatile uint8_t *rcba, u32 address);
+	/* read usb iobp */
+	for (i = 0; i < 14; i++) {
+		u32 address = (0xe50041 + i) << 8;
+		u32 v = pch_iobp_read(rcba, address);
+		printf("iobp 0x%x: 0x%x (f4 = %d, txamp = %d)\n",
+				address, v, (v >> 8) & 7, (v >> 11) & 7);
+	}
+
 	unmap_physical((void *)rcba, size);
 	return 0;
+}
+
+#define RCBA8(x) (*((volatile u8 *)(rcba + x)))
+#define RCBA16(x) (*((volatile u16 *)(rcba + x)))
+#define RCBA32(x) (*((volatile u32 *)(rcba + x)))
+#define RCBA64(x) (*((volatile u64 *)(rcba + x)))
+/* IO Buffer Programming */
+#define IOBPIRI		0x2330
+#define IOBPD		0x2334
+#define IOBPS		0x2338
+#define  IOBPS_READY	0x0001
+#define  IOBPS_TX_MASK	0x0006
+#define  IOBPS_MASK     0xff00
+#define  IOBPS_READ     0x0600
+#define  IOBPS_WRITE	0x0700
+#define IOBPU		0x233a
+#define  IOBPU_MAGIC	0xf000
+
+#define IOBP_RETRY 1000
+static inline int iobp_poll(volatile uint8_t *rcba)
+{
+	unsigned try;
+
+	for (try = IOBP_RETRY; try > 0; try--) {
+		u16 status = RCBA16(IOBPS);
+		if ((status & IOBPS_READY) == 0)
+			return 1;
+		// udelay(10);
+	}
+
+	printf("IOBP: timeout waiting for transaction to complete\n");
+	return 0;
+}
+
+u32 pch_iobp_read(volatile uint8_t *rcba, u32 address)
+{
+	u16 status;
+
+	if (!iobp_poll(rcba))
+		return 0;
+
+	/* Set the address */
+	RCBA32(IOBPIRI) = address;
+
+	/* READ OPCODE */
+	status = RCBA16(IOBPS);
+	status &= ~IOBPS_MASK;
+	status |= IOBPS_READ;
+	RCBA16(IOBPS) = status;
+
+	/* Undocumented magic */
+	RCBA16(IOBPU) = IOBPU_MAGIC;
+
+	/* Set ready bit */
+	status = RCBA16(IOBPS);
+	status |= IOBPS_READY;
+	RCBA16(IOBPS) = status;
+
+	if (!iobp_poll(rcba))
+		return 0;
+
+	/* Check for successful transaction */
+	status = RCBA16(IOBPS);
+	if (status & IOBPS_TX_MASK) {
+		printf("IOBP: read 0x%08x failed\n", address);
+		return 0;
+	}
+
+	/* Read IOBP data */
+	return RCBA32(IOBPD);
 }
