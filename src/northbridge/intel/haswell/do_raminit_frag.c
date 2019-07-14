@@ -344,7 +344,7 @@ void frag_fffa3fd4(pei_raminit_ppi *ram_ppi)
 	}
 }
 
-static void frag_fffa3ba4(PEI_USB *pusb)
+static void conf_ehci_mobile(PEI_USB *pusb)
 {
 	int nb_ehci = nb_usb2_ports();
 
@@ -442,12 +442,12 @@ void frag_fffa3a17(PEI_USB *pusb)
 		return;
 	}
 	if (is_mobile_pch(did)) {
-		frag_fffa3ba4(pusb);
+		conf_ehci_mobile(pusb);
 		return;
 	}
 	did -= 0x9c41;
 	if (did <= 6) {
-		frag_fffa3ba4(pusb);
+		conf_ehci_mobile(pusb);
 		return;
 	}
 }
