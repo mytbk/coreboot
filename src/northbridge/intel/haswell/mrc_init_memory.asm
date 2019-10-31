@@ -85,6 +85,11 @@ extern dummy_func
 extern mrc_get_bootmode
 extern mrc_locateppi
 
+; me_uma
+extern get_uma_size
+extern fcn_fffbe070
+extern fcn_fffbe14d
+
 initialize_txt:
 push ebx
 mov edx, cr4
@@ -191,27 +196,18 @@ je loc_fffc23a2  ; je 0xfffc23a2
 
 loc_fffc1dc2:
 mov ecx, dword [ebp - 0x50bc]
-sub esp, 0xc
-lea edx, [ebp - 0x5098]
-push edx
-push 0
-push 0
-push gPchMeUmaPpiGuid
-push ecx
-call mrc_locateppi
 mov eax, dword [ebp - 0x50c4]
-add esp, 0x20
 dec eax
 cmp eax, 1
 jbe short loc_fffc1e18
 push ecx
 lea eax, [ebp - 0x50aa]
 push eax
-mov eax, dword [ebp - 0x5098]
 push 0
 push dword [ebp - 0x50bc]
-call dword [eax + 4]  ; ucall
+call fcn_fffbe070 ; in me_uma.c
 add esp, 0x10
+
 mov al, 0
 cmp byte [ebp - 0x50aa], 1
 cmove ebx, eax
@@ -228,10 +224,9 @@ call superfrag_fffc1ea8
 add esp, 20
 mov edi, eax
 
-mov eax, dword [ebp - 0x5098]
 push 0
 push dword [ebp - 0x50bc]
-call dword [eax]  ; ucall
+call get_uma_size
 mov dword [ebp - 0x3feb], eax
 add esp, 8
 
@@ -318,12 +313,11 @@ push eax
 push eax
 push dword [ebp - 0x3feb]
 push dword [ebp - 0x391a]
-mov eax, dword [ebp - 0x5098]
 push 1
 push edi
 push 0
 push dword [ebp - 0x50bc]
-call dword [eax + 8]  ; ucall
+call fcn_fffbe14d ; in me_uma.c
 add esp, 0x20
 lea eax, [ebp - 0x503a]
 mov edx, 0xddfe
@@ -379,11 +373,10 @@ push esi
 push ecx
 push dword [ebp - 0x391a]
 push eax
-mov eax, dword [ebp - 0x5098]
 push edi
 push 0
 push dword [ebp - 0x50bc]
-call dword [eax + 8]  ; ucall
+call fcn_fffbe14d ; in me_uma.c
 add esp, 0x20
 
 loc_fffc22d0:
