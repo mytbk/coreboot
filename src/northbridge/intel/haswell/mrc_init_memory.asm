@@ -82,6 +82,8 @@ extern frag_fffc2026
 global ref_fffcbf28
 extern memcpy
 extern dummy_func
+extern mrc_get_bootmode
+extern mrc_locateppi
 
 initialize_txt:
 push ebx
@@ -115,14 +117,15 @@ mov edx, ref_fffcbee8
 mov dword [ebp - 0x38ce], eax
 call mrc_memcpy
 mov edx, dword [ebp - 0x50bc]
+
 push edi
 push edi
-mov eax, dword [edx]
 lea edx, [ebp - 0x509c] ; stores boot mode
 push edx
 push dword [ebp - 0x50bc]
-call dword [eax + 0x28] ; GetBootMode
+call mrc_get_bootmode
 add esp, 0x10
+
 cmp dword [ebp - 0x509c], 0x11
 je short loc_fffc1bfd
 call create_raminit_hob
@@ -133,33 +136,32 @@ loc_fffc1bfd: ; boot mode is 3
 mov dword [ebp - 0x50a0], 0
 
 loc_fffc1c07:
-mov edx, dword [ebp - 0x50bc]
 sub esp, 0xc
 mov esi, 1
 xor edi, edi
-mov eax, dword [edx]
 lea edx, [ebp - 0x50a4]
 push edx
 push 0
 push 0
 push ref_fffcd4e4
 push dword [ebp - 0x50bc]
-call dword [eax + 0x20] ; LocatePpi
+call mrc_locateppi
 add esp, 0x20
+
 lea eax, [ebp - 0x503a]
 mov edx, 0xdd00
 call rtc_wait
+
 mov ecx, dword [ebp - 0x50bc]
 sub esp, 0xc
 lea edx, [ebp - 0x50a8]
 mov byte [ebp - 0x50aa], 0
-mov eax, dword [ecx]
 push edx
 push 0
 push 0
 push gEfiPeiReadOnlyVariablePpiGuid
 push ecx
-call dword [eax + 0x20] ; LocatePpi
+call mrc_locateppi
 add esp, 0x20
 
 call frag_fffc1c07
@@ -191,13 +193,12 @@ loc_fffc1dc2:
 mov ecx, dword [ebp - 0x50bc]
 sub esp, 0xc
 lea edx, [ebp - 0x5098]
-mov eax, dword [ecx]
 push edx
 push 0
 push 0
 push gPchMeUmaPpiGuid
 push ecx
-call dword [eax + 0x20] ; LocatePpi
+call mrc_locateppi
 mov eax, dword [ebp - 0x50c4]
 add esp, 0x20
 dec eax
