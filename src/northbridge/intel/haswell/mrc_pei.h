@@ -192,4 +192,8 @@ MRC_PEI *PEI_FROM_PEI_SERVICE(const EFI_PEI_SERVICES *ps)
 	return pei;
 }
 
+void mrc_get_bootmode(const EFI_PEI_SERVICES **pps, int *bootmode);
+int mrc_locateppi(const EFI_PEI_SERVICES **pps,
+		const EFI_GUID *Guid, unsigned long instance,
+		EFI_PEI_PPI_DESCRIPTOR  **PpiDescriptor, void *ppi);
 #endif

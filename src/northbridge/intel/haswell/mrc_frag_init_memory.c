@@ -4,11 +4,10 @@
 #include <cpu/x86/msr.h>
 #include "mrc_utils.h"
 #include <arch/cpu.h>
-#include "pei_ram.h"
 #include <console/console.h>
 #include "mrc_misc.h"
+#include "mrc_init_memory.h"
 
-int frag_fffc1d20(void);
 int frag_fffc1d20(void)
 {
 	u32 tmp = pci_read_config32(PCI_DEV(0, 0x1f, 0), 0xa0);
@@ -17,7 +16,6 @@ int frag_fffc1d20(void)
 	return (tmp == 0xa0)?1:0;
 }
 
-int frag_fffc1fc3(void);
 int frag_fffc1fc3(void)
 {
 	u32 tmp = pci_read_config32(PCI_DEV(0, 0x1f, 0), 0xa0);
@@ -28,7 +26,6 @@ int frag_fffc1fc3(void)
 
 extern EFI_GUID mEfiMemoryRestoreDataGuid;
 
-void *create_raminit_hob(void);
 void *create_raminit_hob(void)
 {
 	void *hob;
@@ -98,7 +95,6 @@ static void set_cpuid(struct cpu_model_id *mycpu)
 	}
 }
 
-int test_memory(void);
 int test_memory(void)
 {
 	for (size_t i = 0; i < 0x1000; i++) {
@@ -114,7 +110,6 @@ int test_memory(void)
 	return 0;
 }
 
-void frag_fffc1c07(void);
 int initialize_txt(void);
 void frag_fffc1c07()
 {
@@ -145,7 +140,6 @@ static void * frag_fffc1f53(uint32_t *wb)
 	return hob;
 }
 
-int copy_mrc_input(pei_raminit_ppi *ppi, int bootmode, void* dst);
 int copy_mrc_input(pei_raminit_ppi *ppi, int bootmode, void* dst)
 {
 	void *inp = ppi->mrc_input;
@@ -161,7 +155,6 @@ int copy_mrc_input(pei_raminit_ppi *ppi, int bootmode, void* dst)
 	return 1;
 }
 
-void __attribute((regparm(1))) fcn_fffa9196(void *a);
 static int check_data_structs(void *ram_data, pei_raminit_ppi *ppi)
 {
 	uint32_t chk;
@@ -228,11 +221,6 @@ static int frag_fffc1ea8(void *ram_data, pei_raminit_ppi *ppi,
 	return 2;
 }
 
-int __attribute((regparm(3))) fcn_fffa1d20(int bootmode, int v, void *addr,
-		EFI_PEI_SERVICES **pps /* not used */, void *raminit_ppi);
-
-int superfrag_fffc1ea8(int bootmode, void *ram_data, pei_raminit_ppi *ppi,
-		uint32_t v50c4, uint8_t bl);
 int superfrag_fffc1ea8(int bootmode, void *ram_data, pei_raminit_ppi *ppi,
 		uint32_t v50c4, uint8_t bl)
 {
@@ -264,7 +252,6 @@ extern ram_st ref_fffcbf28[];
 int __attribute((regparm(3))) fcn_fffc6438(void *ram_data, u32 a, u32 b);
 void fcn_fffc6986(void);
 
-int frag_fffc2026(void *ram_data);
 int frag_fffc2026(void *ram_data)
 {
 	uint32_t tmp;
