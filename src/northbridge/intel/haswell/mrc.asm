@@ -95,7 +95,7 @@ global fcn_fffae80e
 global fcn_fffb2e66
 global fcn_fffb365a
 global fcn_fffb3f6c
-global fcn_fffb5038
+extern fcn_fffb5038
 global fcn_fffb514c
 global fcn_fffb5535
 global fcn_fffb568f
@@ -20456,108 +20456,6 @@ jg loc_fffb4a75  ; jg 0xfffb4a75
 jmp near loc_fffb4a6d  ; jmp 0xfffb4a6d
 
 loc_fffb5030:  ; not directly referenced
-lea esp, [ebp - 0xc]
-pop ebx
-pop esi
-pop edi
-pop ebp
-ret
-
-fcn_fffb5038:
-push ebp
-mov ebp, esp
-push edi
-push esi
-mov esi, edx
-push ebx
-mov ebx, eax
-lea esp, [esp - 0x1c]
-mov eax, dword [eax + 0x103f]
-test edx, edx
-mov dword [ebp - 0x24], ecx
-mov edi, dword [eax + 0x5e00]
-mov eax, dword [eax + 0x5e04]
-mov dword [ebp - 0x20], edi
-mov dword [ebp - 0x1c], eax
-je short loc_fffb50cb  ; je 0xfffb50cb
-mov edx, edi
-mov eax, dword [ebx + 0xff9]
-shr edx, 4
-mov edi, 0x186a0
-and edx, 0xf
-test eax, eax
-mov byte [ebp - 0x25], dl
-mov edx, 0x5f5e100
-cmove eax, edx
-xor edx, edx
-div edi
-mov ecx, 0x3b9aca00
-cmp byte [ebp - 0x25], 1
-mov edx, 0x4f790d55
-cmovne ecx, edx
-mov edx, dword [ebp - 0x1c]
-and edx, 0xf
-mul edx
-mov edi, edx
-imul edi, ecx
-mul ecx
-xor ecx, ecx
-add edx, edi
-mov edi, edx
-or edi, eax
-je short loc_fffb50c9  ; je 0xfffb50c9
-push edx
-push eax
-push 0x8ac72304
-push 0x89e80000
-call udiv64  ; call 0xfffc91d0
-mov ecx, eax
-add esp, 0x10
-
-loc_fffb50c9:
-mov dword [esi], ecx
-
-loc_fffb50cb:
-cmp dword [ebp - 0x24], 0
-je short loc_fffb50dc  ; je 0xfffb50dc
-mov edx, dword [ebp - 0x24]
-mov al, byte [ebp - 0x1c]
-and eax, 0xf
-mov byte [edx], al
-
-loc_fffb50dc:
-cmp dword [ebp + 8], 0
-je short loc_fffb50f0  ; je 0xfffb50f0
-mov edi, dword [ebp + 8]
-mov eax, dword [ebp - 0x20]
-shr eax, 4
-and eax, 0xf
-mov dword [edi], eax
-
-loc_fffb50f0:
-mov ecx, dword [ebp - 0x20]
-mov edx, dword [ebx + 0xff9]
-shr ecx, 4
-mov eax, 0x5f5e100
-and ecx, 0xf
-test edx, edx
-push 0x5af3
-cmovne eax, edx
-dec cl
-mov edx, 0xbebc200
-mov ecx, 0xfe502ab
-cmovne edx, ecx
-mov ecx, dword [ebp - 0x1c]
-and ecx, 0xf
-imul eax, ecx
-mul edx
-add eax, 0x883d2000
-push 0x107a4000
-adc edx, 0x2d79
-push edx
-push eax
-call udiv64  ; call 0xfffc91d0
-add esp, 0x10
 lea esp, [ebp - 0xc]
 pop ebx
 pop esi
