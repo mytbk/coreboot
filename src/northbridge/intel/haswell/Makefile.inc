@@ -37,6 +37,7 @@ romstage-libs += $(obj)/pei_cpuio.o
 romstage-libs += $(obj)/mrc_init_memory.o
 romstage-libs += $(obj)/mrc_end_of_pei.o
 romstage-libs += $(obj)/pei_smbus.o
+romstage-libs += $(obj)/udiv.o
 $(obj)/%.o: $(src)/northbridge/intel/haswell/%.asm
 	echo "NASM $@"
 	nasm -f elf32 -o $@ $<
