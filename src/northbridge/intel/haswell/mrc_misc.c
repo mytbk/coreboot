@@ -9,6 +9,7 @@
 #include <console/console.h>
 #include "mrc_pei.h"
 #include "pei_ram.h"
+#include "haswell.h"
 
 int dummy_func(void)
 {
@@ -897,54 +898,61 @@ int MRCABI do_smbus_op(EFI_SMBUS_OPERATION op, u32 addr_desc, void *buf, int *re
 uint64_t MRCABI
 fcn_fffb5038(void *ram_data,uint32_t *param_2,uint8_t *param_3,uint32_t *param_4)
 {
-	uint32_t uVar1;
+	uint32_t mc_bios_data;
 	uint64_t uVar2;
 	uint64_t lVar3;
 	uint32_t uVar4;
 	int iVar5;
-	uint32_t uVar6;
-	uint32_t uVar7;
+	uint32_t mc_bios_req;
+	uint32_t refclk;
 	uint32_t uVar8;
-	uint64_t uVar9;
-	uint8_t local_20;
+	uint64_t memcfg_clk;
 
-	uVar6 = *(uint32_t *)(*(void **)(ram_data + 0x103f) + 0x5e00);
-	uVar1 = *(uint32_t *)(*(void **)(ram_data + 0x103f) + 0x5e04);
+	/* register name from snb
+	 * MC_BIOS_REQ is also documented in Intel Haswell docs */
+	mc_bios_req = MCHBAR32(0x5e00);
+	mc_bios_data = MCHBAR32(0x5e04);
 	if (param_2 != NULL) {
 		uVar4 = *(uint32_t *)(ram_data + 0xff9);
 		if (uVar4 == 0) {
 			uVar4 = 100000000;
 		}
-		uVar7 = 1000000000;
-		if (((uint8_t)(uVar6 >> 4) & 0xf) != 1) {
-			uVar7 = 0x4f790d55; // 1333333333
+
+		if (((uint8_t)(mc_bios_req >> 4) & 0xf) != 1) {
+			refclk = 1333333333;
+		} else {
+			refclk = 1000000000;
 		}
-		uVar2 = ((uint64_t)uVar4 / 100000) * (uint64_t)(uVar1 & 0xf) * (uint64_t)uVar7;
-		uVar8 = 0;
+		uVar2 = ((uint64_t)uVar4 / 100000) * (uint64_t)(mc_bios_data & 0xf) * (uint64_t)refclk;
 		if (uVar2 != 0) {
-			uVar9 = udiv64(10000000000000000000ULL,uVar2);
-			uVar8 = (uint32_t)uVar9;
+			uVar8 = udiv64(10000000000000000000ULL,uVar2);
+		} else {
+			uVar8 = 0;
 		}
 		*param_2 = uVar8;
 	}
+
 	if (param_3 != NULL) {
-		local_20 = (uint8_t)uVar1;
-		*param_3 = local_20 & 0xf;
+		*param_3 = (uint8_t)(mc_bios_data) & 0xf;
 	}
 	if (param_4 != NULL) {
-		*param_4 = uVar6 >> 4 & 0xf;
+		*param_4 = mc_bios_req >> 4 & 0xf;
 	}
-	iVar5 = 100000000;
+
 	if (*(int *)(ram_data + 0xff9) != 0) {
 		iVar5 = *(int *)(ram_data + 0xff9);
+	} else {
+		iVar5 = 100000000;
 	}
-	uVar4 = 200000000;
-	if (((uint8_t)(uVar6 >> 4) & 0xf) != 1) {
-		uVar4 = 0xfe502ab; // 266666667
+
+	if (((uint8_t)(mc_bios_req >> 4) & 0xf) != 1) {
+		uVar4 = 266666667;
+	} else {
+		uVar4 = 200000000;
 	}
-	lVar3 = (uint64_t)(iVar5 * (uVar1 & 0xf)) * (uint64_t)uVar4;
-	uVar9 = udiv64(lVar3 + 50000000000000ULL, 100000000000000ULL);
-	return uVar9;
+	lVar3 = (uint64_t)(iVar5 * (mc_bios_data & 0xf)) * (uint64_t)uVar4;
+	memcfg_clk = udiv64(lVar3 + 50000000000000ULL, 100000000000000ULL);
+	return memcfg_clk;
 }
 
 int fcn_fffaa6af(void *ram_data)
