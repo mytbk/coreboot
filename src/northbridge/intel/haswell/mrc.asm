@@ -78,7 +78,6 @@ global fcn_fffa8fb6
 global fcn_fffa9196
 global fcn_fffa948c
 global fcn_fffa94dd
-global fcn_fffaa6af
 global fcn_fffaa884
 global fcn_fffaa9d1
 global fcn_fffaacb1
@@ -8064,127 +8063,6 @@ jne loc_fffaa259  ; jne 0xfffaa259
 loc_fffaa6a7:  ; not directly referenced
 lea esp, [ebp - 0xc]
 pop ebx
-pop esi
-pop edi
-pop ebp
-ret
-
-fcn_fffaa6af:  ; not directly referenced
-push ebp
-mov ebp, esp
-push edi
-push esi
-push ebx
-lea esp, [esp - 0x3c]
-mov ebx, dword [ebp + 8]
-mov dword [ebp - 0x1c], 0
-mov al, byte [ebx + 0x9e8]
-lea edi, [ebx + 0x10b7]
-mov byte [ebx + 0x297b], al
-mov eax, dword [ebx + 0x9e4]
-mov dword [ebp - 0x24], edi
-mov dword [ebx + 0x2974], eax
-lea edi, [ebx + 0x9e4]
-mov dword [ebp - 0x28], edi
-lea edi, [ebx + 0x2974]
-mov dword [ebp - 0x2c], edi
-
-loc_fffaa6f6:  ; not directly referenced
-imul eax, dword [ebp - 0x1c], 0x2fa
-imul edx, dword [ebp - 0x1c], 0x2e6
-mov edi, dword [ebp - 0x24]
-add edx, dword [ebp - 0x28]
-lea eax, [edi + eax + 5]
-mov dword [ebp - 0x30], eax
-imul eax, dword [ebp - 0x1c], 0x1347
-add eax, dword [ebp - 0x2c]
-lea esi, [edx + 5]
-mov ecx, dword [esi + 5]
-mov dword [eax + 0xfd], ecx
-mov cl, byte [esi + 9]
-mov byte [eax + 0x1157], cl
-mov cl, byte [esi + 4]
-mov byte [eax + 0xf8], cl
-mov edx, dword [edx + 5]
-lea edi, [eax + 8]
-mov dword [eax + 8], edx
-mov dword [ebp - 0x20], edi
-xor edi, edi
-
-loc_fffaa747:  ; not directly referenced
-imul eax, edi, 0x2a
-mov ecx, dword [ebp - 0x20]
-inc edi
-lea edx, [esi + eax + 0xa]
-lea eax, [ecx + eax + 8]
-mov ecx, 0x2a
-call mrc_memcpy
-cmp edi, 4
-jne short loc_fffaa747  ; jne 0xfffaa747
-xor di, di
-
-loc_fffaa768:  ; not directly referenced
-imul eax, edi, 0xfb
-mov dword [ebp - 0x38], eax
-lea ecx, [esi + eax + 0xb0]
-lea edx, [ecx + 2]
-mov ecx, dword [ecx + 2]
-dec ecx
-mov dword [ebp - 0x3c], edx
-cmp ecx, 1
-ja short loc_fffaa7ca  ; ja 0xfffaa7ca
-imul edx, edi, 0x14f
-mov ecx, dword [ebp - 0x30]
-lea edx, [ecx + edx + 0x20]
-mov dword [ebp - 0x34], edx
-mov edx, dword [ebp - 0x20]
-mov ecx, 0xfb
-lea eax, [edx + eax + 0x1151]
-mov edx, dword [ebp - 0x3c]
-call mrc_memcpy
-imul eax, edi, 0x1f
-mov ecx, 0x1f
-lea edx, [esi + eax + 0x2a8]
-mov eax, dword [ebp - 0x34]
-add eax, 0x81
-call mrc_memcpy
-
-loc_fffaa7ca:  ; not directly referenced
-inc edi
-cmp edi, 2
-jne short loc_fffaa768  ; jne 0xfffaa768
-inc dword [ebp - 0x1c]
-cmp dword [ebp - 0x1c], 2
-jne loc_fffaa6f6  ; jne 0xfffaa6f6
-mov eax, dword [ebx + 0xfc2]
-mov dword [ebx + 0x172c], eax
-mov eax, dword [ebx + 0xfc6]
-mov dword [ebx + 0x1730], eax
-mov eax, dword [ebx + 0xfca]
-mov dword [ebx + 0x1734], eax
-mov eax, dword [ebx + 0xfce]
-mov dword [ebx + 0x1738], eax
-mov eax, dword [ebx + 0x9d8]
-mov dword [ebx + 0x1005], eax
-mov eax, dword [ebx + 0x9d4]
-mov dword [ebx + 0x1001], eax
-mov eax, dword [ebx + 0xfb5]
-mov dword [ebx + 0x16c6], eax
-mov eax, dword [ebx + 0xfb9]
-mov dword [ebx + 0x16ce], eax
-mov al, byte [ebx + 0xfc1]
-mov byte [ebx + 0x16d6], al
-mov eax, dword [ebx + 0xfbd]
-mov dword [ebx + 0x16d2], eax
-mov al, byte [ebx + 0xfd2]
-mov byte [ebx + 0x1740], al
-mov eax, dword [ebx + 0xfd3]
-mov dword [ebx + 0x1749], eax
-mov al, byte [ebx + 0xfd7]
-mov byte [ebx + 0x1746], al
-lea esp, [esp + 0x3c]
-pop ebx
-xor eax, eax
 pop esi
 pop edi
 pop ebp

@@ -946,3 +946,47 @@ fcn_fffb5038(void *ram_data,uint32_t *param_2,uint8_t *param_3,uint32_t *param_4
 	uVar9 = udiv64(lVar3 + 50000000000000ULL, 100000000000000ULL);
 	return uVar9;
 }
+
+int fcn_fffaa6af(void *ram_data)
+{
+	*(uint8_t*)(ram_data + 0x297b) = *(uint8_t*)(ram_data + 0x9e8);
+	*(uint32_t*)(ram_data + 0x2974) = *(uint32_t*)(ram_data + 0x9e4);
+
+	for (int i = 0; i < 2; i++) {
+		void *ptr1 = ram_data + i * 0x2e6 + 0x9e4;
+		void *ptr2 = ram_data + i * 0x1347 + 0x2974;
+		*(uint32_t*)(ptr2 + 0xfd) = *(uint32_t*)(ptr1 + 10);
+		*(uint8_t*)(ptr2 + 0x1157) = *(uint8_t*)(ptr1 + 0xe);
+		*(uint8_t*)(ptr2 + 0xf8) = *(uint8_t*)(ptr1 + 9);
+		*(uint32_t*)(ptr2 + 8) = *(uint32_t*)(ptr1 + 5);
+
+		for (int j = 0; j < 4; j++) {
+			int iVar1 = j * 0x2a;
+			mrc_memcpy(ptr2 + iVar1 + 0x10, ptr1 + iVar1 + 0xf, 0x2a);
+		}
+
+		for (int j = 0; j < 2; j++) {
+			void *ptr3 = ptr1 + j * 0xfb + 0xb5;
+			if (*(int *)(ptr3 + 2) - 1U < 2) {
+				mrc_memcpy(ptr2 + j * 0xfb + 0x1159, ptr3 + 2, 0xfb);
+				mrc_memcpy(ram_data + j * 0x14f + i * 0x2fa + 0x115d,
+						ptr1 + j * 0x1f + 0x2ad, 0x1f);
+			}
+		}
+	}
+
+	*(uint32_t*)(ram_data + 0x172c) = *(uint32_t*)(ram_data + 0xfc2);
+	*(uint32_t*)(ram_data + 0x1730) = *(uint32_t*)(ram_data + 0xfc6);
+	*(uint32_t*)(ram_data + 0x1734) = *(uint32_t*)(ram_data + 0xfca);
+	*(uint32_t*)(ram_data + 0x1738) = *(uint32_t*)(ram_data + 0xfce);
+	*(uint32_t*)(ram_data + 0x1005) = *(uint32_t*)(ram_data + 0x9d8);
+	*(uint32_t*)(ram_data + 0x1001) = *(uint32_t*)(ram_data + 0x9d4);
+	*(uint32_t*)(ram_data + 0x16c6) = *(uint32_t*)(ram_data + 0xfb5);
+	*(uint32_t*)(ram_data + 0x16ce) = *(uint32_t*)(ram_data + 0xfb9);
+	*(uint8_t*)(ram_data + 0x16d6) = *(uint8_t*)(ram_data + 0xfc1);
+	*(uint32_t*)(ram_data + 0x16d2) = *(uint32_t*)(ram_data + 0xfbd);
+	*(uint8_t*)(ram_data + 0x1740) = *(uint8_t*)(ram_data + 0xfd2);
+	*(uint32_t*)(ram_data + 0x1749) = *(uint32_t*)(ram_data + 0xfd3);
+	*(uint8_t*)(ram_data + 0x1746) = *(uint8_t*)(ram_data + 0xfd7);
+	return 0;
+}

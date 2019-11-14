@@ -11,3 +11,5 @@ int MRCABI do_smbus_op(EFI_SMBUS_OPERATION op, u32 addr_desc, void *buf, int *re
 uint64_t MRCABI
 fcn_fffb5038(void *ram_data,uint32_t *param_2,uint8_t *param_3,uint32_t *param_4);
 uint64_t udiv64(uint64_t, uint64_t);
+
+int fcn_fffaa6af(void *ram_data);
