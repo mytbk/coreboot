@@ -11,6 +11,14 @@
 #include "pei_ram.h"
 #include "haswell.h"
 
+#define PRINT_FUNC printk(BIOS_DEBUG, "enter %s\n", __func__)
+
+#ifdef PRINT_SMBUS
+#define print_smbus printk
+#else
+#define print_smbus(a, ...)
+#endif
+
 int dummy_func(void)
 {
 	return 0;
@@ -844,6 +852,7 @@ int __attribute((regparm(3))) fcn_fffa1d20(int bootmode, int v, void *addr,
 		ret = 0;
 	}
 
+#ifdef PRINT_SPD
 	printk(BIOS_DEBUG, "SPD for all slots:\n\n");
 	void *chan_record = addr + 0xdf + 5;
 	for (int i = 0; i < 2; i++) {
@@ -860,6 +869,7 @@ int __attribute((regparm(3))) fcn_fffa1d20(int bootmode, int v, void *addr,
 			printk(BIOS_DEBUG, "\n");
 		}
 	}
+#endif
 
 	if (*(u32*)(addr + 0x49) == 1) {
 		fcn_fffa0020(addr, ppi);
@@ -878,7 +888,7 @@ int MRCABI do_smbus_op(EFI_SMBUS_OPERATION op, u32 addr_desc, void *buf, int *re
 	const EFI_PEI_SERVICES **pps = *gpPei;
 	(*pps)->LocatePpi(pps, &gEfiPeiSmbusPpiGuid, 0, NULL, (void**)&smbus);
 
-	printk(BIOS_DEBUG, "do_smbus_op: op = %d, addr = 0x%02x, cmd = 0x%x.\n",
+	print_smbus(BIOS_DEBUG, "do_smbus_op: op = %d, addr = 0x%02x, cmd = 0x%x.\n",
 			(u32)op, (u32)sa.SmbusDeviceAddress, (u32)cmd);
 
 	int ret = smbus->Execute((EFI_PEI_SERVICES**)pps, smbus,
@@ -886,7 +896,7 @@ int MRCABI do_smbus_op(EFI_SMBUS_OPERATION op, u32 addr_desc, void *buf, int *re
 			&length, buf);
 
 	if (op == EfiSmbusReadByte) {
-		printk(BIOS_DEBUG, "do_smbus_op: reads 0x%02hhx.\n", *(u8*)buf);
+		print_smbus(BIOS_DEBUG, "do_smbus_op: reads 0x%02hhx.\n", *(u8*)buf);
 	}
 
 	if (retcode != NULL)
@@ -957,6 +967,8 @@ fcn_fffb5038(void *ram_data,uint32_t *param_2,uint8_t *param_3,uint32_t *param_4
 
 int fcn_fffaa6af(void *ram_data)
 {
+	PRINT_FUNC;
+
 	*(uint8_t*)(ram_data + 0x297b) = *(uint8_t*)(ram_data + 0x9e8);
 	*(uint32_t*)(ram_data + 0x2974) = *(uint32_t*)(ram_data + 0x9e4);
 
@@ -1012,6 +1024,8 @@ int fcn_fffa78a0(void *ramdata)
 	uint32_t uVar8;
 	bool bVar9;
 	uint64_t uVar10;
+
+	PRINT_FUNC;
 
 	uVar6 = *(uint32_t*)(*(void**)(ramdata + 0x103b) + 0xe8);
 	bVar9 = ((*(uint32_t*)(*(void**)(ramdata + 0x103b) + 0xe4) & 8) != 0);
