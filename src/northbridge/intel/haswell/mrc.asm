@@ -69,7 +69,6 @@ global ref_fffcd4e4
 extern locate_hob
 extern fcn_fffa1d20
 global fcn_fffa56ac
-global fcn_fffa78a0
 global fcn_fffa7a1c
 global fcn_fffa7e71
 global fcn_fffa7e78
@@ -191,6 +190,7 @@ global fcn_fffa91af
 global fcn_fffa0020
 extern do_smbus_op
 extern udiv64
+extern ref_fffcbc04
 
 ;;
 
@@ -4636,148 +4636,6 @@ ret
 
 loc_fffa782b:
 db 0x00
-
-fcn_fffa78a0:  ; not directly referenced
-push ebp
-mov ebp, esp
-push edi
-push esi
-push ebx
-lea esp, [esp - 0x1c]
-mov ebx, dword [ebp + 8]
-mov eax, dword [ebx + 0x103b]
-mov edx, dword [eax + 0xe4]
-mov ecx, dword [eax + 0xe8]
-xor eax, eax
-and dl, 8
-setne al
-mov edx, ecx
-shr edx, 0x15
-mov dword [ebp - 0x20], eax
-shr ecx, 4
-mov eax, dword [ebx + 0xff5]
-mov dword [ebx + 0x16d2], eax
-mov eax, dword [ebx + 0xff0]
-mov dword [ebp - 0x1c], eax
-dec eax
-and ecx, 7
-cmp eax, 0x7ffffffe
-mov eax, 0xa6b
-cmovb eax, dword [ebp - 0x1c]
-and edx, 7
-mov dword [ebp - 0x1c], eax
-mov dword [ebx + 0x16c2], eax
-jne short loc_fffa7911  ; jne 0xfffa7911
-mov dword [ebx + 0x16d2], 0
-
-loc_fffa7911:  ; not directly referenced
-cmp dword [ebp - 0x20], 0
-mov esi, dword [ebx + 0x16d2]
-je short loc_fffa7931  ; je 0xfffa7931
-test edx, edx
-je short loc_fffa797e  ; je 0xfffa797e
-mov byte [ebx + 0x1747], 1
-xor ecx, ecx
-mov edx, 7
-jmp short loc_fffa793a  ; jmp 0xfffa793a
-
-loc_fffa7931:  ; not directly referenced
-movzx ecx, cl
-xor edi, edi
-test edx, edx
-je short loc_fffa7971  ; je 0xfffa7971
-
-loc_fffa793a:  ; not directly referenced
-add edx, 6
-mov eax, 0xbebc200
-imul edx, edx, 0x5f5e100
-mov dword [ebp - 0x24], ecx
-mul edx
-push 0x5af3
-add eax, 0x883d2000
-push 0x107a4000
-adc edx, 0x2d79
-push edx
-push eax
-call udiv64  ; call 0xfffc91d0
-mov edi, eax
-add esp, 0x10
-mov ecx, dword [ebp - 0x24]
-
-loc_fffa7971:  ; not directly referenced
-test ecx, ecx
-je short loc_fffa7980  ; je 0xfffa7980
-mov edx, 0xb
-sub edx, ecx
-jmp short loc_fffa7985  ; jmp 0xfffa7985
-
-loc_fffa797e:  ; not directly referenced
-xor edi, edi
-
-loc_fffa7980:  ; not directly referenced
-mov edx, 0xa
-
-loc_fffa7985:  ; not directly referenced
-imul eax, edx, 0x5f5e100
-mov ecx, 0xfe502ab
-mul ecx
-push 0x5af3
-add eax, 0x883d2000
-push 0x107a4000
-adc edx, 0x2d79
-push edx
-push eax
-call udiv64  ; call 0xfffc91d0
-add esp, 0x10
-cmp dword [ebx + 0x1021], 0
-je short loc_fffa79d1  ; je 0xfffa79d1
-cmp dword [ebp - 0x20], 0
-je short loc_fffa79c8  ; je 0xfffa79c8
-cmp esi, 1
-cmovne edi, eax
-jmp short loc_fffa79d5  ; jmp 0xfffa79d5
-
-loc_fffa79c8:  ; not directly referenced
-cmp edi, eax
-mov esi, 1
-ja short loc_fffa79d5  ; ja 0xfffa79d5
-
-loc_fffa79d1:  ; not directly referenced
-mov edi, eax
-xor esi, esi
-
-loc_fffa79d5:  ; not directly referenced
-cmp edi, dword [ebp - 0x1c]
-jae short loc_fffa79e6  ; jae 0xfffa79e6
-mov dword [ebx + 0x16c2], edi
-mov dword [ebx + 0x16d2], esi
-
-loc_fffa79e6:  ; not directly referenced
-mov ecx, dword [ebx + 0x16c2]
-xor eax, eax
-
-loc_fffa79ee:  ; not directly referenced
-lea edx, [eax + eax*8]
-cmp ecx, dword [edx + ref_fffcbc08]  ; cmp ecx, dword [edx - 0x343f8]
-jne short loc_fffa7a01  ; jne 0xfffa7a01
-mov eax, dword [edx + ref_fffcbc04]  ; mov eax, dword [edx - 0x343fc]
-jmp short loc_fffa7a0c  ; jmp 0xfffa7a0c
-
-loc_fffa7a01:  ; not directly referenced
-inc eax
-cmp eax, 0x11
-jne short loc_fffa79ee  ; jne 0xfffa79ee
-mov eax, 0x2625a0
-
-loc_fffa7a0c:  ; not directly referenced
-mov dword [ebx + 0x16ca], eax
-lea esp, [ebp - 0xc]
-pop ebx
-xor eax, eax
-pop esi
-pop edi
-pop ebp
-ret
 
 fcn_fffa7a1c:  ; not directly referenced
 push ebp

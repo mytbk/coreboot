@@ -990,3 +990,86 @@ int fcn_fffaa6af(void *ram_data)
 	*(uint8_t*)(ram_data + 0x1746) = *(uint8_t*)(ram_data + 0xfd7);
 	return 0;
 }
+
+extern uint8_t ref_fffcbc04[];
+
+int fcn_fffa78a0(void *ramdata)
+{
+	uint64_t lVar1;
+	uint32_t uVar2;
+	int iVar3;
+	uint32_t uVar5;
+	uint32_t uVar6;
+	uint32_t iVar7;
+	uint32_t uVar8;
+	bool bVar9;
+	uint64_t uVar10;
+
+	uVar6 = *(uint32_t*)(*(void**)(ramdata + 0x103b) + 0xe8);
+	bVar9 = ((*(uint32_t*)(*(void**)(ramdata + 0x103b) + 0xe4) & 8) != 0);
+	*(uint32_t*)(ramdata + 0x16d2) = *(uint32_t*)(ramdata + 0xff5);
+	uVar5 = (uVar6 >> 4) & 7;
+	if (*(uint32_t*)(ramdata + 0xff0) - 1 < 0x7ffffffe) {
+		uVar2 = *(uint32_t*)(ramdata + 0xff0);
+	} else {
+		uVar2 = 0xa6b;
+	}
+	uVar6 = (uVar6 >> 0x15) & 7;
+	*(uint32_t*)(ramdata + 0x16c2) = uVar2;
+	if (uVar6 == 0) {
+		*(uint32_t*)(ramdata + 0x16d2) = 0;
+	}
+	iVar3 = *(int *)(ramdata + 0x16d2);
+	if (bVar9) {
+		if (uVar6 != 0) {
+			*(uint8_t*)(ramdata + 0x1747) = 1;
+			uVar5 = 0;
+			uVar6 = 7;
+loc_fffa793a:
+			lVar1 = (uint64_t)((uVar6 + 6) * 100000000) * 200000000;
+			uVar10 = udiv64(lVar1 + 50000000000000ULL, 100000000000000ULL);
+			uVar8 = (uint32_t)uVar10;
+			goto loc_fffa7971;
+		}
+		uVar8 = 0;
+loc_fffa7980:
+		iVar7 = 10;
+	}
+	else {
+		uVar8 = 0;
+		if (uVar6 != 0) goto loc_fffa793a;
+loc_fffa7971:
+		if (uVar5 == 0) goto loc_fffa7980;
+		iVar7 = 0xb - uVar5;
+	}
+	lVar1 = (uint64_t)(iVar7 * 100000000) * 266666667;
+	uVar10 = udiv64(lVar1 + 50000000000000ULL, 100000000000000ULL);
+	uVar6 = (uint32_t)uVar10;
+	if (*(int *)(ramdata + 0x1021) != 0) {
+		if (bVar9) {
+			if (iVar3 != 1) {
+				uVar8 = uVar6;
+			}
+			goto loc_fffa79d5;
+		}
+		iVar3 = 1;
+		if (uVar6 < uVar8) goto loc_fffa79d5;
+	}
+	iVar3 = 0;
+	uVar8 = uVar6;
+loc_fffa79d5:
+	if (uVar8 < uVar2) {
+		*(uint32_t*)(ramdata + 0x16c2) = uVar8;
+		*(int *)(ramdata + 0x16d2) = iVar3;
+	}
+
+	for (int i = 0; i < 0x11; i++) {
+		if (*(int *)(ramdata + 0x16c2) == *(int *)((void*)ref_fffcbc04 + iVar3 * 9 + 4)) {
+			uint32_t uVar4 = *(uint32_t*)((void*)ref_fffcbc04 + iVar3 * 9);
+			*(uint32_t*)(ramdata + 0x16ca) = uVar4;
+			return 0;
+		}
+	}
+	*(uint32_t*)(ramdata + 0x16ca) = 2500000;
+	return 0;
+}
