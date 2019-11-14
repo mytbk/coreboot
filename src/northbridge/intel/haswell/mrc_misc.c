@@ -1013,12 +1013,14 @@ int fcn_fffaa6af(void *ram_data)
 
 extern uint8_t ref_fffcbc04[];
 
+// CAPID0_A 0xe4 is already defined
+#define CAPID0_B 0xe8
+
 int fcn_fffa78a0(void *ramdata)
 {
 	uint64_t lVar1;
 	uint32_t uVar2;
 	int iVar3;
-	uint32_t uVar5;
 	uint32_t uVar6;
 	uint32_t iVar7;
 	uint32_t uVar8;
@@ -1027,43 +1029,49 @@ int fcn_fffa78a0(void *ramdata)
 
 	PRINT_FUNC;
 
-	uVar6 = *(uint32_t*)(*(void**)(ramdata + 0x103b) + 0xe8);
-	bVar9 = ((*(uint32_t*)(*(void**)(ramdata + 0x103b) + 0xe4) & 8) != 0);
-	*(uint32_t*)(ramdata + 0x16d2) = *(uint32_t*)(ramdata + 0xff5);
-	uVar5 = (uVar6 >> 4) & 7;
+	uint32_t cap_b = pci_read_config32(PCI_DEV(0, 0, 0), CAPID0_B);
+	uint32_t cap_a = pci_read_config32(PCI_DEV(0, 0, 0), CAPID0_A);
+	bVar9 = ((cap_a & 8) != 0);
+	uint32_t dmfc = (cap_b >> 4) & 7; // DRAM frequency select
 	if (*(uint32_t*)(ramdata + 0xff0) - 1 < 0x7ffffffe) {
 		uVar2 = *(uint32_t*)(ramdata + 0xff0);
 	} else {
-		uVar2 = 0xa6b;
+		uVar2 = 2667;
 	}
-	uVar6 = (uVar6 >> 0x15) & 7;
+
+	uint32_t pll_ref100_cfg = (cap_b >> 0x15) & 7; // PLL_REF100_CFG
 	*(uint32_t*)(ramdata + 0x16c2) = uVar2;
-	if (uVar6 == 0) {
+	if (pll_ref100_cfg == 0) {
+		// 100MHz ref disabled
 		*(uint32_t*)(ramdata + 0x16d2) = 0;
+	} else {
+		*(uint32_t*)(ramdata + 0x16d2) = *(uint32_t*)(ramdata + 0xff5);
 	}
 	iVar3 = *(int *)(ramdata + 0x16d2);
+
 	if (bVar9) {
-		if (uVar6 != 0) {
+		if (pll_ref100_cfg != 0) {
 			*(uint8_t*)(ramdata + 0x1747) = 1;
-			uVar5 = 0;
-			uVar6 = 7;
-loc_fffa793a:
-			lVar1 = (uint64_t)((uVar6 + 6) * 100000000) * 200000000;
+			lVar1 = (uint64_t)((7 + 6) * 100000000) * 200000000;
 			uVar10 = udiv64(lVar1 + 50000000000000ULL, 100000000000000ULL);
 			uVar8 = (uint32_t)uVar10;
-			goto loc_fffa7971;
+			iVar7 = 10;
+		} else {
+			uVar8 = 0;
+			iVar7 = 10;
 		}
-		uVar8 = 0;
-loc_fffa7980:
-		iVar7 = 10;
+	} else {
+		if (pll_ref100_cfg != 0) {
+			lVar1 = (uint64_t)((pll_ref100_cfg + 6) * 100000000) * 200000000;
+			uVar10 = udiv64(lVar1 + 50000000000000ULL, 100000000000000ULL);
+			uVar8 = (uint32_t)uVar10;
+			iVar7 = (dmfc == 0)?10:(11-dmfc);
+		} else {
+			uVar8 = 0;
+			iVar7 = (dmfc == 0)?10:(11-dmfc);
+		}
 	}
-	else {
-		uVar8 = 0;
-		if (uVar6 != 0) goto loc_fffa793a;
-loc_fffa7971:
-		if (uVar5 == 0) goto loc_fffa7980;
-		iVar7 = 0xb - uVar5;
-	}
+
 	lVar1 = (uint64_t)(iVar7 * 100000000) * 266666667;
 	uVar10 = udiv64(lVar1 + 50000000000000ULL, 100000000000000ULL);
 	uVar6 = (uint32_t)uVar10;
@@ -1086,8 +1094,8 @@ loc_fffa79d5:
 	}
 
 	for (int i = 0; i < 0x11; i++) {
-		if (*(int *)(ramdata + 0x16c2) == *(int *)((void*)ref_fffcbc04 + iVar3 * 9 + 4)) {
-			uint32_t uVar4 = *(uint32_t*)((void*)ref_fffcbc04 + iVar3 * 9);
+		if (*(int *)(ramdata + 0x16c2) == *(int *)((void*)ref_fffcbc04 + i * 9 + 4)) {
+			uint32_t uVar4 = *(uint32_t*)((void*)ref_fffcbc04 + i * 9);
 			*(uint32_t*)(ramdata + 0x16ca) = uVar4;
 			return 0;
 		}
