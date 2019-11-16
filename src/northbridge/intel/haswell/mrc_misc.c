@@ -75,8 +75,7 @@ uint8_t __attribute((regparm(1))) pci_setup_bridge(uint8_t bus)
 	return (r == 0)?bus:r;
 }
 
-int fcn_fffbd29a(u32 a0, void * a1, void * a2);
-int fcn_fffbd29a(u32 a0, void * a1, void * a2)
+int fcn_fffbd29a(void * a0, void * a1, void * a2)
 {
 	u32 b1 = (*(u8*)(a1 + 5) >> 3) & 7;
 	u32 *wb = (u32*)(a2 + 0xd5);
@@ -1102,4 +1101,153 @@ loc_fffa79d5:
 	}
 	*(uint32_t*)(ramdata + 0x16ca) = 2500000;
 	return 0;
+}
+
+static const callback3_t ref_fffcbb8c[] = {
+	fcn_fffbd356, fcn_fffbd30a, fcn_fffbd1e7, fcn_fffbd184, fcn_fffbd1b3, fcn_fffbd106,
+	fcn_fffbd29a, fcn_fffbd213, fcn_fffbd0e4, fcn_fffbd0c8, fcn_fffbd046, fcn_fffbd01d};
+
+static const callback_t ref_fffcbbbc[] = {
+	fcn_fffbce60, fcn_fffb73ef, fcn_fffb6f52, fcn_fffbcc31, fcn_fffbc869, fcn_fffbc643,
+	fcn_fffbc441, fcn_fffb7633, fcn_fffbc277, fcn_fffbc075, fcn_fffbbe9c, fcn_fffbca4d,
+	fcn_fffbbcd4, fcn_fffbbb0c, fcn_fffb7e5c, fcn_fffb7c94, fcn_fffb7acc, fcn_fffb7866};
+
+static const uint8_t ref_fffcbc9d[] = {1, 3, 0};
+
+int fcn_fffb8689(void *ramdata)
+{
+	char *pcVar1;
+	char cVar2;
+	int iVar3;
+	uint32_t uVar4;
+	void * ptr5;
+	int iVar8;
+	int iVar9;
+	void * ptr9;
+	int local_84;
+	int local_80;
+	int local_7c;
+	int local_78;
+	int local_74;
+	void *local_64[21];
+
+	PRINT_FUNC;
+
+	local_78 = 0;
+	local_84 = 0;
+	local_7c = 0;
+	local_80 = 0x16;
+	do {
+		iVar8 = local_78 * 0x2fa;
+		local_74 = 0;
+		do {
+			if (*(uint32_t *)(ramdata + local_74 * 0x14f + iVar8 + 0x10c4) < 2) {
+				memcpy(local_64, ref_fffcbb8c, sizeof(callback3_t) * 12);
+				ptr9 = ramdata + local_74 * 0x14f + 0x10e8 + iVar8;
+				ptr5 = ramdata + local_74 * 0xfb + 0x3ab0 + local_78 * 0x1347;
+				iVar3 = 0;
+				*(uint32_t *)(ptr5 + 0x1d) = 3;
+			loc_fffb8775:
+				pcVar1 = (char *)(ptr9 + iVar3);
+				iVar3 = iVar3 + 1;
+				if (*pcVar1 == '\0')
+					goto code_r0x0002376f;
+				uVar4 = 1;
+				for (int k = 0; k < 12 && uVar4 != 0; k++) {
+					uVar4 = ((callback3_t)local_64[k])(ramdata, ptr9, ptr5 + 0x1d) & 1;
+				}
+				if (uVar4 == 0) {
+					*(uint32_t *)(ptr5 + 0x1d) = 1;
+				} else {
+					*(uint32_t *)(ptr5 + 0x1d) = 2;
+					ptr9 = ramdata + local_74 * 0x14f + 0x10a0 + iVar8;
+					crc16((uint8_t *)(ptr9 + 0xbd), 0xb,
+					      (uint16_t *)(ptr5 + 0xf8));
+					if (*(int *)(ptr9 + 0x24) == 1) {
+						*(uint32_t *)(ptr5 + 0x1d) = 1;
+					}
+					ptr5 = ramdata + local_74 * 0xfb + local_78 * 0x1347
+						+ 0x3acd;
+					if (*(int *)(ramdata + 0x1749) == 0) {
+						*(uint32_t *)(ramdata + 0x1749) =
+							*(uint32_t *)(ptr5 + 0xc5);
+						iVar9 = local_80;
+					} else {
+						iVar9 = 0x19;
+						if (*(int *)(ramdata + 0x1749)
+						    == *(int *)(ptr5 + 0xc5)) {
+							iVar9 = local_80;
+						}
+					}
+					local_80 = iVar9;
+					if (local_7c == 0) {
+						local_7c = *(int *)(ptr5 + 0xc9);
+					} else {
+						if (local_7c != *(int *)(ptr5 + 0xc9)) {
+							return 0x19;
+						}
+					}
+					if (local_80 == 0x19) {
+						return 0x19;
+					}
+					local_84 = local_84 + 1;
+				}
+			}
+		loc_fffb8880:
+			local_74 = local_74 + 1;
+		} while (local_74 != 2);
+		local_78 = local_78 + 1;
+		if (local_78 == 2) {
+			if (local_84 != 0) {
+				memcpy(local_64, ref_fffcbbbc, sizeof(callback_t) * 18);
+				uVar4 = 1;
+				for (int k = 0; k < 18 && uVar4 != 0; k++) {
+					uVar4 = (((callback_t)local_64[k])(ramdata)) & 1;
+				}
+				if (uVar4 != 0) {
+					*(uint8_t *)(ramdata + 0x1740) = 1;
+					for (int i = 0; i < 2; i++) {
+						void *ptr8 = ramdata + i * 0x1347 + 0x297c;
+						*(uint8_t *)(ptr8 + 0xf0) = 1;
+						for (int j = 0; j < 2; j++) {
+							void *ptr10 = ptr8 + 0x1150 + j * 0xfb;
+							if (*(int *)(ptr10 + 1) - 1U < 2) {
+								*(int *)(ptr8 + 0xf5) += 1;
+							}
+							if (*(int *)(ptr10 + 1) == 2) {
+								uint8_t bVar12 = (*(uint8_t *)(ptr10 + 0xde) - 1);
+								if (bVar12 < 2) {
+									cVar2 = ref_fffcbc9d[bVar12];
+								} else {
+									cVar2 = 0;
+								}
+								*(uint8_t *)(ptr8 + 0x114f) |=
+									 (cVar2 << (j * 2));
+								*(uint8_t *)(ptr8 + 0xf0) &=
+									 *(uint8_t *)(ptr10 + 0xbd);
+								*(uint8_t *)(ramdata + 0x1740) &=
+									 *(uint8_t *)(ptr10 + 0xbd);
+							}
+						}
+						if ((*(int *)(ptr8 + 0xf5) != 0)
+						    && (*(char *)(ptr8 + 0x114f) != '\0')) {
+							*(char *)(ramdata + 0x297b) += 1;
+							*(uint32_t *)(ramdata
+								      + i * 0x1347
+								      + 0x297c) = 2;
+						}
+					}
+					if (*(char *)(ramdata + 0x297b) != '\0') {
+						*(uint32_t *)(ramdata + 0x2974) = 2;
+						local_80 = 0;
+					}
+				}
+			}
+			return local_80;
+		}
+	} while (true);
+code_r0x0002376f:
+	if (iVar3 == 0x100)
+		goto loc_fffb8880;
+	goto loc_fffb8775;
 }

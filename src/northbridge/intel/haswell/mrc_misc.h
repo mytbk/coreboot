@@ -14,3 +14,43 @@ uint64_t udiv64(uint64_t, uint64_t);
 
 int fcn_fffaa6af(void *ram_data);
 int fcn_fffa78a0(void *ramdata);
+
+typedef int (*callback_t)(void *);
+typedef int (*callback3_t)(void *, void *, void *);
+
+#define DECL_CB1(f) int f(void *)
+#define DECL_CB3(f) int f(void *, void *, void *)
+
+DECL_CB3(fcn_fffbd356);
+DECL_CB3(fcn_fffbd30a);
+DECL_CB3(fcn_fffbd1e7);
+DECL_CB3(fcn_fffbd184);
+DECL_CB3(fcn_fffbd1b3);
+DECL_CB3(fcn_fffbd106);
+DECL_CB3(fcn_fffbd29a);
+DECL_CB3(fcn_fffbd213);
+DECL_CB3(fcn_fffbd0e4);
+DECL_CB3(fcn_fffbd0c8);
+DECL_CB3(fcn_fffbd046);
+DECL_CB3(fcn_fffbd01d);
+
+DECL_CB1(fcn_fffbce60);
+DECL_CB1(fcn_fffb73ef);
+DECL_CB1(fcn_fffb6f52);
+DECL_CB1(fcn_fffbcc31);
+DECL_CB1(fcn_fffbc869);
+DECL_CB1(fcn_fffbc643);
+DECL_CB1(fcn_fffbc441);
+DECL_CB1(fcn_fffb7633);
+DECL_CB1(fcn_fffbc277);
+DECL_CB1(fcn_fffbc075);
+DECL_CB1(fcn_fffbbe9c);
+DECL_CB1(fcn_fffbca4d);
+DECL_CB1(fcn_fffbbcd4);
+DECL_CB1(fcn_fffbbb0c);
+DECL_CB1(fcn_fffb7e5c);
+DECL_CB1(fcn_fffb7c94);
+DECL_CB1(fcn_fffb7acc);
+DECL_CB1(fcn_fffb7866);
+
+int fcn_fffb8689(void *ramdata);

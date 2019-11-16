@@ -107,7 +107,6 @@ global fcn_fffb5cbc
 global fcn_fffb8040
 global fcn_fffb85ca
 global fcn_fffb8625
-global fcn_fffb8689
 global fcn_fffb89f8
 global fcn_fffb8d2d
 global fcn_fffba408
@@ -181,7 +180,6 @@ extern frag_fffba341
 extern freq_sel
 
 ;; misc
-extern fcn_fffbd29a
 global fcn_fffb2d76
 global fcn_fffb1d24
 global fcn_fffb2062
@@ -192,6 +190,37 @@ extern do_smbus_op
 extern udiv64
 extern ref_fffcbc04
 
+global fcn_fffbd356
+global fcn_fffbd30a
+global fcn_fffbd1e7
+global fcn_fffbd184
+global fcn_fffbd1b3
+global fcn_fffbd106
+global fcn_fffbd29a
+global fcn_fffbd213
+global fcn_fffbd0e4
+global fcn_fffbd0c8
+global fcn_fffbd046
+global fcn_fffbd01d
+
+global fcn_fffbce60
+global fcn_fffb73ef
+global fcn_fffb6f52
+global fcn_fffbcc31
+global fcn_fffbc869
+global fcn_fffbc643
+global fcn_fffbc441
+global fcn_fffb7633
+global fcn_fffbc277
+global fcn_fffbc075
+global fcn_fffbbe9c
+global fcn_fffbca4d
+global fcn_fffbbcd4
+global fcn_fffbbb0c
+global fcn_fffb7e5c
+global fcn_fffb7c94
+global fcn_fffb7acc
+global fcn_fffb7866
 ;;
 
 mrc_entry:
@@ -24691,266 +24720,6 @@ call fcn_fffb03ba  ; call 0xfffb03ba
 leave
 ret
 
-fcn_fffb8689:  ; not directly referenced
-push ebp
-mov ebp, esp
-push edi
-push esi
-lea edi, [ebp - 0x60]
-push ebx
-lea esp, [esp - 0x9c]
-mov ebx, dword [ebp + 8]
-mov dword [ebp - 0x74], 0
-mov dword [ebp - 0x80], 0
-mov dword [ebp - 0x78], 0
-mov dword [ebp - 0x7c], 0x16
-mov dword [ebp - 0x6c], edi
-lea eax, [ebx + 0x10b7]
-lea edx, [ebx + 0x2974]
-mov dword [ebp - 0x8c], eax
-mov dword [ebp - 0x90], edx
-
-loc_fffb86d3:  ; not directly referenced
-imul edx, dword [ebp - 0x74], 0x2fa
-mov eax, dword [ebp - 0x8c]
-mov ecx, dword [ebp - 0x90]
-mov dword [ebp - 0x70], 0
-mov dword [ebp - 0x88], edx
-lea eax, [eax + edx + 5]
-mov dword [ebp - 0x94], eax
-imul eax, dword [ebp - 0x74], 0x1347
-mov dword [ebp - 0x9c], eax
-lea ecx, [ecx + eax + 8]
-mov dword [ebp - 0x98], ecx
-
-loc_fffb8714:  ; not directly referenced
-imul eax, dword [ebp - 0x70], 0x14f
-mov edi, dword [ebp - 0x94]
-cmp dword [edi + eax + 8], 1
-ja loc_fffb8880  ; ja 0xfffb8880
-mov edx, dword [ebp - 0x88]
-mov esi, ref_fffcbb8c  ; mov esi, 0xfffcbb8c
-mov ecx, 0xc
-mov edi, dword [ebp - 0x6c]
-rep movsd  ; rep movsd dword es:[edi], dword ptr [esi]
-lea eax, [eax + edx + 0x10c0]
-mov ecx, dword [ebp - 0x9c]
-lea esi, [ebx + eax + 0x28]
-imul eax, dword [ebp - 0x70], 0xfb
-lea eax, [eax + ecx + 0x3ab0]
-lea edi, [ebx + eax]
-xor eax, eax
-lea edx, [edi + 0x1d]
-mov dword [edi + 0x1d], 3
-mov dword [ebp - 0x84], edx
-
-loc_fffb8775:  ; not directly referenced
-mov dl, byte [esi + eax]
-inc eax
-test dl, dl
-jne short loc_fffb87ae  ; jne 0xfffb87ae
-cmp eax, 0x100
-jne short loc_fffb8775  ; jne 0xfffb8775
-jmp near loc_fffb8880  ; jmp 0xfffb8880
-
-loc_fffb8789:  ; not directly referenced
-push eax
-push dword [ebp - 0x84]
-movzx eax, dl
-mov byte [ebp - 0xa0], dl
-push esi
-push ebx
-call dword [ebp + eax*4 - 0x60]  ; ucall
-mov dl, byte [ebp - 0xa0]
-and eax, 1
-inc edx
-add esp, 0x10
-jmp short loc_fffb87b5  ; jmp 0xfffb87b5
-
-loc_fffb87ae:  ; not directly referenced
-xor edx, edx
-mov eax, 1
-
-loc_fffb87b5:  ; not directly referenced
-cmp dl, 0xb
-setbe cl
-test cl, al
-jne short loc_fffb8789  ; jne 0xfffb8789
-test eax, eax
-jne short loc_fffb87cf  ; jne 0xfffb87cf
-mov dword [edi + 0x1d], 1
-jmp near loc_fffb8880  ; jmp 0xfffb8880
-
-loc_fffb87cf:  ; not directly referenced
-imul eax, dword [ebp - 0x70], 0x14f
-mov ecx, dword [ebp - 0x88]
-mov dword [edi + 0x1d], 2
-mov edx, 0xb
-lea esi, [eax + ecx + 0x10a0]
-add esi, ebx
-mov ecx, dword [ebp - 0x84]
-add ecx, 0xdb
-lea eax, [esi + 0xbd]
-call crc16  ; call 0xfffb8646
-cmp dword [esi + 0x24], 1
-jne short loc_fffb8815  ; jne 0xfffb8815
-mov dword [edi + 0x1d], 1
-
-loc_fffb8815:  ; not directly referenced
-imul eax, dword [ebp - 0x70], 0xfb
-mov edi, dword [ebp - 0x98]
-mov edx, dword [ebx + 0x1749]
-test edx, edx
-lea eax, [edi + eax + 0x1151]
-jne short loc_fffb8841  ; jne 0xfffb8841
-mov edx, dword [eax + 0xc5]
-mov dword [ebx + 0x1749], edx
-jmp short loc_fffb8853  ; jmp 0xfffb8853
-
-loc_fffb8841:  ; not directly referenced
-cmp edx, dword [eax + 0xc5]
-mov edx, 0x19
-cmove edx, dword [ebp - 0x7c]
-mov dword [ebp - 0x7c], edx
-
-loc_fffb8853:  ; not directly referenced
-cmp dword [ebp - 0x78], 0
-jne short loc_fffb8864  ; jne 0xfffb8864
-mov eax, dword [eax + 0xc9]
-mov dword [ebp - 0x78], eax
-jmp short loc_fffb8873  ; jmp 0xfffb8873
-
-loc_fffb8864:  ; not directly referenced
-mov edx, dword [ebp - 0x78]
-cmp edx, dword [eax + 0xc9]
-jne loc_fffb89db  ; jne 0xfffb89db
-
-loc_fffb8873:  ; not directly referenced
-cmp dword [ebp - 0x7c], 0x19
-je loc_fffb89ed  ; je 0xfffb89ed
-inc dword [ebp - 0x80]
-
-loc_fffb8880:  ; not directly referenced
-inc dword [ebp - 0x70]
-cmp dword [ebp - 0x70], 2
-jne loc_fffb8714  ; jne 0xfffb8714
-inc dword [ebp - 0x74]
-cmp dword [ebp - 0x74], 2
-jne loc_fffb86d3  ; jne 0xfffb86d3
-cmp dword [ebp - 0x80], 0
-je loc_fffb89ed  ; je 0xfffb89ed
-lea edi, [ebp - 0x60]
-mov esi, ref_fffcbbbc  ; mov esi, 0xfffcbbbc
-mov ecx, 0x12
-mov eax, 1
-rep movsd  ; rep movsd dword es:[edi], dword ptr [esi]
-jmp short loc_fffb88d8  ; jmp 0xfffb88d8
-
-loc_fffb88ba:  ; not directly referenced
-sub esp, 0xc
-mov byte [ebp - 0xa0], cl
-movzx eax, cl
-push ebx
-call dword [ebp + eax*4 - 0x60]  ; ucall
-mov cl, byte [ebp - 0xa0]
-and eax, 1
-inc ecx
-add esp, 0x10
-
-loc_fffb88d8:  ; not directly referenced
-cmp cl, 0x11
-setbe dl
-test dl, al
-jne short loc_fffb88ba  ; jne 0xfffb88ba
-test eax, eax
-je loc_fffb89ed  ; je 0xfffb89ed
-lea edi, [ebx + 0x2974]
-mov byte [ebx + 0x1740], 1
-mov dword [ebp - 0x70], 0
-mov dword [ebp - 0x74], edi
-
-loc_fffb8901:  ; not directly referenced
-imul eax, dword [ebp - 0x70], 0x1347
-mov edx, dword [ebp - 0x74]
-lea eax, [edx + eax + 8]
-xor edx, edx
-mov byte [eax + 0xf0], 1
-
-loc_fffb8918:  ; not directly referenced
-imul ecx, edx, 0xfb
-lea ecx, [eax + ecx + 0x1150]
-mov edi, dword [ecx + 1]
-lea esi, [ecx + 1]
-dec edi
-cmp edi, 1
-ja short loc_fffb8937  ; ja 0xfffb8937
-inc dword [eax + 0xf5]
-
-loc_fffb8937:  ; not directly referenced
-cmp dword [ecx + 1], 2
-jne short loc_fffb8989  ; jne 0xfffb8989
-mov cl, byte [esi + 0xdd]
-mov byte [ebp - 0x78], 0
-lea edi, [ecx - 1]
-mov ecx, edi
-cmp cl, 1
-ja short loc_fffb8960  ; ja 0xfffb8960
-and edi, 0xff
-mov cl, byte [edi + ref_fffcbc9d]  ; mov cl, byte [edi - 0x34363]
-mov byte [ebp - 0x78], cl
-
-loc_fffb8960:  ; not directly referenced
-movzx edi, byte [ebp - 0x78]
-lea ecx, [edx + edx]
-shl edi, cl
-mov ecx, edi
-or byte [eax + 0x114f], cl
-mov cl, byte [esi + 0xbc]
-and byte [eax + 0xf0], cl
-mov cl, byte [esi + 0xbc]
-and byte [ebx + 0x1740], cl
-
-loc_fffb8989:  ; not directly referenced
-inc edx
-cmp edx, 2
-jne short loc_fffb8918  ; jne 0xfffb8918
-cmp dword [eax + 0xf5], 0
-je short loc_fffb89b9  ; je 0xfffb89b9
-cmp byte [eax + 0x114f], 0
-je short loc_fffb89b9  ; je 0xfffb89b9
-imul eax, dword [ebp - 0x70], 0x1347
-mov edi, dword [ebp - 0x74]
-inc byte [ebx + 0x297b]
-mov dword [edi + eax + 8], 2
-
-loc_fffb89b9:  ; not directly referenced
-inc dword [ebp - 0x70]
-cmp dword [ebp - 0x70], 2
-jne loc_fffb8901  ; jne 0xfffb8901
-jmp short loc_fffb89e4  ; jmp 0xfffb89e4
-
-loc_fffb89c8:  ; not directly referenced
-mov dword [ebx + 0x2974], 2
-mov dword [ebp - 0x7c], 0
-jmp short loc_fffb89ed  ; jmp 0xfffb89ed
-
-loc_fffb89db:  ; not directly referenced
-mov dword [ebp - 0x7c], 0x19
-jmp short loc_fffb89ed  ; jmp 0xfffb89ed
-
-loc_fffb89e4:  ; not directly referenced
-cmp byte [ebx + 0x297b], 0
-jne short loc_fffb89c8  ; jne 0xfffb89c8
-
-loc_fffb89ed:  ; not directly referenced
-mov eax, dword [ebp - 0x7c]
-lea esp, [ebp - 0xc]
-pop ebx
-pop esi
-pop edi
-pop ebp
-ret
-
 fcn_fffb89f8:  ; not directly referenced
 push ebp
 mov ebp, esp
@@ -46263,40 +46032,6 @@ dd 0x0bb80bb8
 dd 0x00000000
 dd 0x00000000
 
-ref_fffcbb8c:
-dd fcn_fffbd356
-dd fcn_fffbd30a
-dd fcn_fffbd1e7
-dd fcn_fffbd184
-dd fcn_fffbd1b3
-dd fcn_fffbd106
-dd fcn_fffbd29a
-dd fcn_fffbd213
-dd fcn_fffbd0e4
-dd fcn_fffbd0c8
-dd fcn_fffbd046
-dd fcn_fffbd01d
-
-ref_fffcbbbc:
-dd fcn_fffbce60
-dd fcn_fffb73ef
-dd fcn_fffb6f52
-dd fcn_fffbcc31
-dd fcn_fffbc869
-dd fcn_fffbc643
-dd fcn_fffbc441
-dd fcn_fffb7633
-dd fcn_fffbc277
-dd fcn_fffbc075
-dd fcn_fffbbe9c
-dd fcn_fffbca4d
-dd fcn_fffbbcd4
-dd fcn_fffbbb0c
-dd fcn_fffb7e5c
-dd fcn_fffb7c94
-dd fcn_fffb7acc
-dd fcn_fffb7866
-
 ref_fffcbc04:
 dd 0xffffffff
 
@@ -46340,11 +46075,6 @@ dd 0x6b000b71
 dd 0x0100000a
 dd 0x00000000
 dd 0x00000000
-db 0x00
-
-ref_fffcbc9d:
-db 0x01
-db 0x03
 db 0x00
 
 ref_fffcbcd0:
