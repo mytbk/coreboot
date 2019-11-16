@@ -20,6 +20,30 @@ void frag_fffa0ff3(void)
 	pci_write_config32(PCI_DEV(0, 2, 0), 0x14, 0);
 }
 
+void frag_fffa5810(void *ramdata, int idx);
+void frag_fffa5810(void *ramdata, int idx)
+{
+	// ramdata in ebx, idx in [ebp - 0x70]
+	if (*(int *)(ramdata + 0x297c) == 2) {
+		void *ptr = ramdata + idx * 0x2a + 0x297c;
+		uint32_t t1 = *(uint16_t *)(ptr + 0xe);
+		uint32_t t2 = *(uint16_t *)(ptr + 0x10);
+		if (4 < (int)(t1 - t2)) {
+			*(short *)(ptr + 0x10) = t1 - 4;
+		}
+	}
+	// fffa583d
+	if (*(int *)(ramdata + 0x3cc3) == 2) {
+		void *ptr = ramdata + idx * 0x2a + 0x3cc3;
+		uint32_t t1 = *(uint16_t *)(ptr + 0xe);
+		uint32_t t2 = *(uint16_t *)(ptr + 0x10);
+		if (4 < (int)(t1 - t2)) {
+			*(short *)(ptr + 0x10) = t1 - 4;
+		}
+	}
+	// goto loc_fffa57f9
+}
+
 void frag_fffa5d3c(void *bar, uint32_t offset);
 void frag_fffa5d3c(void *bar, uint32_t offset)
 {

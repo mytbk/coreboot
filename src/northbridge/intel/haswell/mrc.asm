@@ -220,6 +220,8 @@ global fcn_fffb7e5c
 global fcn_fffb7c94
 global fcn_fffb7acc
 global fcn_fffb7866
+
+extern frag_fffa5810
 ;;
 
 mrc_entry:
@@ -2332,32 +2334,10 @@ jne short loc_fffa586c  ; jne 0xfffa586c
 jmp near loc_fffa58b6  ; jmp 0xfffa58b6
 
 loc_fffa5810:  ; not directly referenced
-cmp dword [ebx + 0x297c], 2
-jne short loc_fffa583d  ; jne 0xfffa583d
-imul eax, dword [ebp - 0x70], 0x2a
-lea eax, [ebx + eax + 0x297c]
-movzx esi, word [eax + 0x10]
-mov cx, word [eax + 0xe]
-movzx edx, cx
-sub edx, esi
-cmp edx, 4
-jle short loc_fffa583d  ; jle 0xfffa583d
-sub ecx, 4
-mov word [eax + 0x10], cx
-
-loc_fffa583d:  ; not directly referenced
-cmp dword [ebx + 0x3cc3], 2
-jne short loc_fffa57f9  ; jne 0xfffa57f9
-imul eax, dword [ebp - 0x70], 0x2a
-lea eax, [ebx + eax + 0x3cc3]
-movzx esi, word [eax + 0x10]
-mov cx, word [eax + 0xe]
-movzx edx, cx
-sub edx, esi
-cmp edx, 4
-jle short loc_fffa57f9  ; jle 0xfffa57f9
-sub ecx, 4
-mov word [eax + 0x10], cx
+push dword [ebp - 0x70]
+push ebx
+call frag_fffa5810
+add esp, 8
 jmp short loc_fffa57f9  ; jmp 0xfffa57f9
 
 loc_fffa586c:  ; not directly referenced
