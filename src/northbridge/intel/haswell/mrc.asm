@@ -222,6 +222,7 @@ global fcn_fffb7acc
 global fcn_fffb7866
 
 extern frag_fffa5810
+extern frag_fffa58f7
 ;;
 
 mrc_entry:
@@ -2376,50 +2377,9 @@ mov byte [ebx + 0x16d6], al
 jmp near loc_fffa586c  ; jmp 0xfffa586c
 
 loc_fffa58f7:  ; not directly referenced
-cmp dword [ebx + 0x16d7], 0
-jne short loc_fffa5979  ; jne 0xfffa5979
-cmp dword [ebx + 0x1021], 1
-jne short loc_fffa5915  ; jne 0xfffa5915
-mov al, byte [ebx + 0xff4]
-test al, al
-je short loc_fffa5915  ; je 0xfffa5915
-jmp short loc_fffa5973  ; jmp 0xfffa5973
-
-loc_fffa5915:  ; not directly referenced
-mov eax, dword [ebx + 0xff9]
-mov ecx, dword [ebx + 0x16c6]
-test eax, eax
-mov edi, dword [ebx + 0x16d2]
-mov dword [ebp - 0x74], ecx
-mov esi, 0x3e8
-je short loc_fffa593e  ; je 0xfffa593e
-mov ecx, 0x186a0
-xor edx, edx
-div ecx
-mov esi, eax
-
-loc_fffa593e:  ; not directly referenced
-dec edi
-mov eax, 0x411ab
-mov ecx, 0x30d40
-cmovne ecx, eax
-mov eax, 0x3b9aca00
-imul ecx, esi
-mul dword [ebp - 0x74]
-xor edi, edi
-push edi
-push ecx
-push edx
-push eax
-call udiv64  ; call 0xfffc91d0
-add eax, 0x1f4
-mov ecx, 0x3e8
-xor edx, edx
-add esp, 0x10
-div ecx
-
-loc_fffa5973:  ; not directly referenced
-mov byte [ebx + 0x16d6], al
+push ebx
+call frag_fffa58f7
+add esp, 4
 
 loc_fffa5979:  ; not directly referenced
 mov al, byte [ebx + 0x16d6]

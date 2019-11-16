@@ -9,6 +9,7 @@
 #include <cpu/intel/haswell/haswell.h>
 #include "mrc_pch.h"
 #include "pei_usb.h"
+#include "mrc_misc.h"
 
 void frag_fffa0ff3(void);
 void frag_fffa0ff3(void)
@@ -42,6 +43,35 @@ void frag_fffa5810(void *ramdata, int idx)
 		}
 	}
 	// goto loc_fffa57f9
+}
+
+void frag_fffa58f7(void *ramdata);
+void frag_fffa58f7(void *ramdata)
+{
+	// ramdata in ebx
+	char cVar11;
+	if (*(int *)(ramdata + 0x16d7) == 0) {
+		if ((*(int *)(ramdata + 0x1021) != 1) ||
+				(cVar11 = *(char *)(ramdata + 0xff4),cVar11 == '\0')) {
+			uint32_t uVar28;
+			int iVar8;
+			if (*(uint32_t*)(ramdata + 0xff9) != 0) {
+				uVar28 = *(uint32_t*)(ramdata + 0xff9) / 100000;
+			} else {
+				uVar28 = 1000;
+			}
+			if (*(int *)(ramdata + 0x16d2) != 1) {
+				iVar8 = 266667;
+			} else {
+				iVar8 = 200000;
+			}
+			uint64_t uVar37 = udiv64(
+					(uint64_t)(*(uint32_t*)(ramdata + 0x16c6)) * 1000000000,
+					(uint64_t)(iVar8 * uVar28));
+			cVar11 = (char)(((int)uVar37 + 500U) / 1000);
+		}
+		*(char *)((int)ramdata + 0x16d6) = cVar11;
+	}
 }
 
 void frag_fffa5d3c(void *bar, uint32_t offset);
