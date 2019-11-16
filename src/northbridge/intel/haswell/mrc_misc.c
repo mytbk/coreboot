@@ -1114,11 +1114,22 @@ static const callback_t ref_fffcbbbc[] = {
 
 static const uint8_t ref_fffcbc9d[] = {1, 3, 0};
 
+static bool is_zero256(const void *data)
+{
+	const uint32_t *start = data;
+	const uint32_t *end = (data + 256);
+
+	while (start < end) {
+		if (*start != 0)
+			return false;
+		start++;
+	}
+	return true;
+}
+
 int fcn_fffb8689(void *ramdata)
 {
-	char *pcVar1;
 	char cVar2;
-	int iVar3;
 	uint32_t uVar4;
 	void * ptr5;
 	int iVar8;
@@ -1128,7 +1139,6 @@ int fcn_fffb8689(void *ramdata)
 	int local_80;
 	int local_7c;
 	int local_78;
-	int local_74;
 	void *local_64[21];
 
 	PRINT_FUNC;
@@ -1139,19 +1149,17 @@ int fcn_fffb8689(void *ramdata)
 	local_80 = 0x16;
 	do {
 		iVar8 = local_78 * 0x2fa;
-		local_74 = 0;
-		do {
-			if (*(uint32_t *)(ramdata + local_74 * 0x14f + iVar8 + 0x10c4) < 2) {
+		for (int idx = 0; idx < 2; idx++) {
+			if (*(uint32_t *)(ramdata + idx * 0x14f + iVar8 + 0x10c4) < 2) {
 				memcpy(local_64, ref_fffcbb8c, sizeof(callback3_t) * 12);
-				ptr9 = ramdata + local_74 * 0x14f + 0x10e8 + iVar8;
-				ptr5 = ramdata + local_74 * 0xfb + 0x3ab0 + local_78 * 0x1347;
-				iVar3 = 0;
+				ptr9 = ramdata + idx * 0x14f + 0x10e8 + iVar8;
+				ptr5 = ramdata + idx * 0xfb + 0x3ab0 + local_78 * 0x1347;
 				*(uint32_t *)(ptr5 + 0x1d) = 3;
-			loc_fffb8775:
-				pcVar1 = (char *)(ptr9 + iVar3);
-				iVar3 = iVar3 + 1;
-				if (*pcVar1 == '\0')
-					goto code_r0x0002376f;
+
+				if (is_zero256(ptr9)) {
+					continue;
+				}
+
 				uVar4 = 1;
 				for (int k = 0; k < 12 && uVar4 != 0; k++) {
 					uVar4 = ((callback3_t)local_64[k])(ramdata, ptr9, ptr5 + 0x1d) & 1;
@@ -1160,13 +1168,13 @@ int fcn_fffb8689(void *ramdata)
 					*(uint32_t *)(ptr5 + 0x1d) = 1;
 				} else {
 					*(uint32_t *)(ptr5 + 0x1d) = 2;
-					ptr9 = ramdata + local_74 * 0x14f + 0x10a0 + iVar8;
+					ptr9 = ramdata + idx * 0x14f + 0x10a0 + iVar8;
 					crc16((uint8_t *)(ptr9 + 0xbd), 0xb,
 					      (uint16_t *)(ptr5 + 0xf8));
 					if (*(int *)(ptr9 + 0x24) == 1) {
 						*(uint32_t *)(ptr5 + 0x1d) = 1;
 					}
-					ptr5 = ramdata + local_74 * 0xfb + local_78 * 0x1347
+					ptr5 = ramdata + idx * 0xfb + local_78 * 0x1347
 						+ 0x3acd;
 					if (*(int *)(ramdata + 0x1749) == 0) {
 						*(uint32_t *)(ramdata + 0x1749) =
@@ -1193,9 +1201,7 @@ int fcn_fffb8689(void *ramdata)
 					local_84 = local_84 + 1;
 				}
 			}
-		loc_fffb8880:
-			local_74 = local_74 + 1;
-		} while (local_74 != 2);
+		}
 		local_78 = local_78 + 1;
 		if (local_78 == 2) {
 			if (local_84 != 0) {
@@ -1246,8 +1252,4 @@ int fcn_fffb8689(void *ramdata)
 			return local_80;
 		}
 	} while (true);
-code_r0x0002376f:
-	if (iVar3 == 0x100)
-		goto loc_fffb8880;
-	goto loc_fffb8775;
 }
