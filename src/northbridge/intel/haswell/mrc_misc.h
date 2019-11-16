@@ -54,3 +54,4 @@ DECL_CB1(fcn_fffb7acc);
 DECL_CB1(fcn_fffb7866);
 
 int fcn_fffb8689(void *ramdata);
+int fcn_fffa7a1c(void *ramdata);

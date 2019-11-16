@@ -1249,3 +1249,205 @@ int fcn_fffb8689(void *ramdata)
 		}
 	} while (true);
 }
+
+int fcn_fffa7a1c(void *ramdata)
+{
+	void *iVar2;
+	uint32_t uVar3;
+	int iVar4;
+	void *iVar5;
+	uint32_t uVar7;
+	uint32_t uVar8;
+	uint32_t uVar9;
+	int i;
+	bool bVar10;
+
+	PRINT_FUNC;
+
+	uVar8 = pci_read_config32(PCI_DEV(0, 0, 0), 0xe4);
+	*(uint32_t *)(ramdata + 0xc) = pci_read_config32(PCI_DEV(0, 0, 0), 0xe8);
+	uVar9 = uVar8 >> 8 & 0xff;
+	*(uint32_t *)(ramdata + 8) = uVar8;
+	if (((uVar8 >> 8 & 8) == 0)
+	    && ((pci_read_config32(PCI_DEV(0, 0, 0), 0x54) & 0x10) != 0)) {
+		*(uint32_t *)(ramdata + 0x1724) = *(uint32_t *)(ramdata + 0x1009);
+		*(uint32_t *)(ramdata + 0x1728) = *(uint32_t *)(ramdata + 0x100d);
+	} else {
+		*(uint32_t *)(ramdata + 0x1724) = 0;
+		*(uint32_t *)(ramdata + 0x1728) = 0;
+	}
+	uVar7 = uVar8 >> 0x13 & 3;
+	if (uVar7 == 1) {
+		*(uint32_t *)(ramdata + 0x1751) = 0x2000;
+	} else {
+		if (uVar7 == 2) {
+			*(uint32_t *)(ramdata + 0x1751) = 0x800;
+		} else {
+			*(int *)(ramdata + 0x1751) = ((uVar7 == 0)?0x3e00:0) + 0x200;
+		}
+	}
+	iVar4 = 1;
+	if (*(uint32_t*)(ramdata + 0x1005) != HASWELL_FAMILY_ULT) {
+		iVar4 = ((int)(uVar9 << 0x19) >> 0x1f) + 2;
+	}
+	uVar7 = uVar8 >> 0x18 & 1;
+	if (uVar7 == 0) {
+		if ((uVar8 & 0x2000000) == 0) {
+			bVar10 = *(char *)(ramdata + 0x1740) != '\0';
+		} else {
+			bVar10 = false;
+		}
+	} else {
+		*(uint8_t *)(ramdata + 0x1740) = 1;
+		bVar10 = true;
+	}
+	int kk = *(int *)(ramdata + 0x1021) * 0x2a;
+	void *ptr0 = ramdata + 0x2974;
+	i = 0;
+	do {
+		iVar5 = ptr0 + i * 0x1347;
+		if (*(int *)(iVar5 + 8) == 2) {
+			if (((uVar8 & 0x20000) != 0)
+			    || ((*(int *)(ramdata + 0x1021) == 0
+				 && ((0x74b < *(uint32_t *)(ramdata + 0x16c6)
+				      || ((1 < *(uint32_t *)(iVar5 + 0xfd)
+					   && (0x534 < *(uint32_t *)(ramdata + 0x16c6))))))))) {
+				iVar2 = iVar5 + 8 + kk;
+				uint16_t uVar6 = 2;
+				if (1 < *(uint16_t *)(iVar2 + 0xc)) {
+					uVar6 = *(uint16_t *)(iVar2 + 0xc);
+				}
+				*(uint16_t *)(iVar2 + 0xc) = uVar6;
+			}
+			for (int j = 0; j < 2; j++) {
+				iVar2 = iVar5 + 0x1158 + j * 0xfb;
+				if (*(int *)(iVar2 + 1) != 2)
+					continue;
+				*(uint16_t *)(iVar2 + 9 + kk) =
+					*(uint16_t *)(iVar5 + 8 + kk + 0xc);
+				if (bVar10) {
+					if (*(char *)(iVar2 + 0xbd) == '\0') {
+						if (uVar7 != 1) {
+							*(uint32_t *)(iVar2 + 0xce) = 8;
+							*(uint8_t *)(ramdata + 0x1740) = 0;
+							continue;
+						}
+						*(uint32_t *)(iVar2 + 1) = 1;
+					} else {
+						if (*(char *)(iVar2 + 0xbd) != '\x01') {
+							*(uint32_t *)(iVar2 + 0xce) = 8;
+							*(uint8_t *)(ramdata + 0x1740) = 0;
+							continue;
+						}
+						*(uint32_t *)(iVar2 + 0xce) = 9;
+					}
+				} else {
+					*(uint8_t *)(iVar2 + 0xbd) = 0;
+					*(uint32_t *)(iVar2 + 0xce) = 8;
+					*(uint8_t *)(ramdata + 0x1740) = 0;
+				}
+			}
+		}
+		i = i + 1;
+		if (i == 2) {
+			*(uint32_t *)(ramdata + 0x1700) = 0;
+			uVar7 = 2;
+			*(char *)(ramdata + 0x1755) =
+				(*(char *)(ramdata + 0x1740) == '\x01') + '\b';
+			i = 0;
+			uVar8 = 0;
+			for (int k = 0; k < 2; k++) {
+				iVar5 = ptr0 + k * 0x1347;
+				if (*(int *)(iVar5 + 8) == 2) {
+					uVar3 = 0;
+					if (*(int *)(iVar5 + 0x1159) == 2) {
+						uVar3 = *(uint32_t *)(iVar5 + 0x122a);
+					}
+					if (*(int *)(iVar5 + 0x1254) == 2) {
+						uVar3 = uVar3 + *(int *)(iVar5 + 0x1325);
+					}
+					*(uint32_t *)(iVar5 + 0xf9) = uVar3;
+					if (uVar8 < uVar3) {
+						uVar8 = uVar3;
+						uVar7 = *(uint32_t *)(iVar5 + 0xfd);
+						i = k;
+					} else {
+						if ((uVar3 == uVar8 && iVar4 == 1)
+						    && (*(uint32_t *)(iVar5 + 0xfd) < uVar7)) {
+							uVar7 = *(uint32_t *)(iVar5 + 0xfd);
+							i = k;
+						}
+					}
+				}
+				*(int *)(ramdata + 0x1700) =
+					*(int *)(ramdata + 0x1700) + *(int *)(iVar5 + 0xf9);
+			}
+			if ((int)(uVar9 << 0x1b) < 0) {
+				for (int k = 0; k < 2; k++) {
+					if (((*(int *)(ramdata + k * 0x1347 + 0x297c) == 2)
+					     && (k != i))
+					    && (iVar5 = ramdata + k * 0x1347 + 0x2960,
+						*(int *)(iVar5 + 0x1c) == 2)) {
+						*(uint32_t *)(iVar5 + 0x1c) = 1;
+						*(uint8_t *)(iVar5 + 0x116a) = 0;
+						*(uint8_t *)(iVar5 + 0x116b) = 0;
+						if (*(int *)(iVar5 + 0x116d) == 2) {
+							*(uint32_t *)(iVar5 + 0x116d) = 1;
+							*(uint8_t *)(iVar5 + 0x124a) = 0;
+							*(uint32_t *)(iVar5 + 0x123e) = 0;
+						}
+						if (*(int *)(iVar5 + 0x1268) == 2) {
+							*(uint32_t *)(iVar5 + 0x1268) = 1;
+							*(uint8_t *)(iVar5 + 0x1345) = 0;
+							*(uint32_t *)(iVar5 + 0x1339) = 0;
+						}
+					}
+				}
+			}
+			if (iVar4 == 1) {
+				for (int k = 0; k < 2; k++) {
+					void *ptr = ptr0 + k * 0x1347;
+					if (*(int *)(ptr + 8) == 2) {
+						uVar8 = 0;
+						if (*(int *)(ptr + 0x1159) == 2) {
+							uVar8 = *(uint32_t *)(ptr + 0x122a);
+						}
+						if (*(int *)(ptr + 0x1254) == 2) {
+							if (*(uint32_t *)(ptr + 0x1325) < uVar8
+							    || *(uint32_t *)(ptr + 0x1325)
+								       == uVar8) {
+								*(uint32_t *)(ptr + 0x1254) = 1;
+							} else {
+								if (*(int *)(ptr + 0x1159)
+								    == 2) {
+									*(uint32_t
+										  *)(ptr
+										     + 0x1159) =
+										1;
+								}
+							}
+						}
+					}
+				}
+			}
+			if ((*(char *)(ramdata + 0x1070) == '\x01')
+			    && (*(uint8_t *)(ramdata + 0x1748) = 1,
+				*(int *)(ramdata + 0x2974) == 2)) {
+				for (int k = 0; k < 2; k++) {
+					void *ptr = ptr0 + k * 0x1347;
+					if (*(int *)(ptr + 8) == 2) {
+						if ((*(int *)(ptr + 0x1159) == 2)
+						    && (*(char *)(ptr + 0x1219) == '\0')) {
+							*(uint8_t *)(ramdata + 0x1748) = 0;
+						}
+						if ((*(int *)(ptr + 0x1254) == 2)
+						    && (*(char *)(ptr + 0x1314) == '\0')) {
+							*(uint8_t *)(ramdata + 0x1748) = 0;
+						}
+					}
+				}
+			}
+			return 0;
+		}
+	} while (true);
+}
