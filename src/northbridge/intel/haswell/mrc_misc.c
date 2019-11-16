@@ -1131,10 +1131,8 @@ int fcn_fffb8689(void *ramdata)
 {
 	char cVar2;
 	uint32_t uVar4;
-	void * ptr5;
 	int iVar8;
 	int iVar9;
-	void * ptr9;
 	int local_84;
 	int local_80;
 	int local_7c;
@@ -1152,8 +1150,8 @@ int fcn_fffb8689(void *ramdata)
 		for (int idx = 0; idx < 2; idx++) {
 			if (*(uint32_t *)(ramdata + idx * 0x14f + iVar8 + 0x10c4) < 2) {
 				memcpy(local_64, ref_fffcbb8c, sizeof(callback3_t) * 12);
-				ptr9 = ramdata + idx * 0x14f + 0x10e8 + iVar8;
-				ptr5 = ramdata + idx * 0xfb + 0x3ab0 + local_78 * 0x1347;
+				void *ptr9 = ramdata + idx * 0x14f + 0x10e8 + iVar8;
+				void *ptr5 = ramdata + idx * 0xfb + 0x3ab0 + local_78 * 0x1347;
 				*(uint32_t *)(ptr5 + 0x1d) = 3;
 
 				if (is_zero256(ptr9)) {
@@ -1168,30 +1166,28 @@ int fcn_fffb8689(void *ramdata)
 					*(uint32_t *)(ptr5 + 0x1d) = 1;
 				} else {
 					*(uint32_t *)(ptr5 + 0x1d) = 2;
-					ptr9 = ramdata + idx * 0x14f + 0x10a0 + iVar8;
-					crc16((uint8_t *)(ptr9 + 0xbd), 0xb,
-					      (uint16_t *)(ptr5 + 0xf8));
-					if (*(int *)(ptr9 + 0x24) == 1) {
+					void *ptr1 = ramdata + idx * 0x14f + 0x10a0 + iVar8;
+					crc16((uint8_t *)(ptr1 + 0xbd), 0xb, (uint16_t *)(ptr5 + 0xf8));
+					if (*(int *)(ptr1 + 0x24) == 1) {
 						*(uint32_t *)(ptr5 + 0x1d) = 1;
 					}
-					ptr5 = ramdata + idx * 0xfb + local_78 * 0x1347
-						+ 0x3acd;
+					void *ptr6 = ramdata + idx * 0xfb + local_78 * 0x1347 + 0x3acd;
 					if (*(int *)(ramdata + 0x1749) == 0) {
 						*(uint32_t *)(ramdata + 0x1749) =
-							*(uint32_t *)(ptr5 + 0xc5);
+							*(uint32_t *)(ptr6 + 0xc5);
 						iVar9 = local_80;
 					} else {
 						iVar9 = 0x19;
 						if (*(int *)(ramdata + 0x1749)
-						    == *(int *)(ptr5 + 0xc5)) {
+						    == *(int *)(ptr6 + 0xc5)) {
 							iVar9 = local_80;
 						}
 					}
 					local_80 = iVar9;
 					if (local_7c == 0) {
-						local_7c = *(int *)(ptr5 + 0xc9);
+						local_7c = *(int *)(ptr6 + 0xc9);
 					} else {
-						if (local_7c != *(int *)(ptr5 + 0xc9)) {
+						if (local_7c != *(int *)(ptr6 + 0xc9)) {
 							return 0x19;
 						}
 					}
