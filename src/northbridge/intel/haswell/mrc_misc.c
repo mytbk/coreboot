@@ -1681,3 +1681,63 @@ int fcn_fffa948c(void *ramdata)
 	}
 	return 0;
 }
+
+int fcn_fffab280(void *ramdata)
+{
+	PRINT_FUNC;
+
+	*(uint8_t *)(ramdata + 0x9e8) = *(uint8_t *)(ramdata + 0x297b);
+	*(uint32_t *)(ramdata + 0x9e4) = *(uint32_t *)(ramdata + 0x2974);
+	for (int i = 0; i < 2; i++) {
+		void *ptr0 = (ramdata + i * 0x1347 + 0x2974);
+		void *ptr1 = (ramdata + i * 0x2fa + 0x10bc);
+		void *ptr2 = (ramdata + i * 0x2e6 + 0x9e4);
+		*(uint32_t *)(ptr2 + 10) = *(uint32_t *)(ptr0 + 0xfd);
+		*(uint8_t *)(ptr2 + 0xe) = *(uint8_t *)(ptr0 + 0x1157);
+		*(uint8_t *)(ptr2 + 9) = *(uint8_t *)(ptr0 + 0xf8);
+		*(uint32_t *)(ptr2 + 5) = *(uint32_t *)(ptr0 + 8);
+		for (int j = 0; j < 4; j++) {
+			mrc_memcpy((ptr2 + j * 0x2a + 0xf),
+				   (ptr0 + j * 0x2a + 0x10), 0x2a);
+		}
+		mrc_memcpy((ptr2 + 0xb7), (ptr0 + 0x1159), 0xfb);
+		mrc_memcpy((ptr2 + 0x2ad), (ptr1 + 0xa1), 0x1f);
+		mrc_memcpy((ptr2 + 0x1b2), (ptr0 + 0x1254), 0xfb);
+		mrc_memcpy((ptr2 + 0x2cc), (ptr1 + 0x1f0), 0x1f);
+	}
+	*(uint32_t *)(ramdata + 0xfc2) = *(uint32_t *)(ramdata + 0x172c);
+	*(uint32_t *)(ramdata + 0xfc6) = *(uint32_t *)(ramdata + 0x1730);
+	*(uint32_t *)(ramdata + 0xfca) = *(uint32_t *)(ramdata + 0x1734);
+	*(uint32_t *)(ramdata + 0xfce) = *(uint32_t *)(ramdata + 0x1738);
+
+	void *saved_reg = ramdata + 0x14;
+	for (int i = 0; i < 0x5d; i++) {
+		uint32_t start = ref_fffcb80c[i * 2];
+		uint32_t end = ref_fffcb80c[i * 2 + 1];
+		while (start <= end) {
+			*(uint32_t*)(saved_reg) = MCHBAR32(start);
+			start += 4;
+			saved_reg = saved_reg + 4;
+		}
+	}
+
+	void __attribute((regparm(1))) fcn_fffa9196(void *a);
+	fcn_fffa9196((ramdata + 0x9dc));
+
+	*(uint32_t *)(ramdata + 0x9d8) = *(uint32_t *)(ramdata + 0x1005);
+	*(uint32_t *)(ramdata + 0x9d4) = *(uint32_t *)(ramdata + 0x1001);
+	*(uint32_t *)(ramdata + 0xfb5) = *(uint32_t *)(ramdata + 0x16c6);
+	*(uint32_t *)(ramdata + 0xfb9) = *(uint32_t *)(ramdata + 0x16ce);
+	*(uint8_t *)(ramdata + 0xfc1) = *(uint8_t *)(ramdata + 0x16d6);
+	*(uint32_t *)(ramdata + 0xfbd) = *(uint32_t *)(ramdata + 0x16d2);
+	*(uint8_t *)(ramdata + 0xfd2) = *(uint8_t *)(ramdata + 0x1740);
+	*(uint32_t *)(ramdata + 0xfd3) = *(uint32_t *)(ramdata + 0x1749);
+	*(uint8_t *)(ramdata + 0xfd7) = *(uint8_t *)(ramdata + 0x1746);
+
+	uint32_t crc = crc32(*(void **)(ramdata + 0x1033), *(size_t *)(ramdata + 0x1037));
+	*(uint32_t *)(ramdata + 0x9e0) = crc;
+	crc = crc32((ramdata + 8), 0xfd0);
+	*(uint32_t *)(ramdata + 4) = crc;
+
+	return 0;
+}

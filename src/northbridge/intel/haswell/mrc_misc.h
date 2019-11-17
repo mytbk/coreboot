@@ -60,3 +60,4 @@ int MRCABI wait_5030(void *ramdata);
 int MRCABI wait_5084(void *ramdata);
 int fcn_fffa7e78(void *ramdata);
 int fcn_fffa948c(void *ramdata);
+int fcn_fffab280(void *ramdata);
