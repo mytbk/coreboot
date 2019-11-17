@@ -1632,3 +1632,16 @@ int MRCABI wait_5030(void *ramdata)
 	} while (ts < end_ts);
 	return 0x11;
 }
+
+int MRCABI wait_5084(void *ramdata)
+{
+	uint32_t end_ts = mrc_get_timestamp() + 10000;
+	uint32_t ts;
+	do {
+		uint32_t reg32 = MCHBAR32(0x5084);
+		if ((reg32 & 0x10000) != 0)
+			return 0;
+		ts = mrc_get_timestamp();
+	} while (ts < end_ts);
+	return 0x11;
+}

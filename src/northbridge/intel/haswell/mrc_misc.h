@@ -57,3 +57,4 @@ int fcn_fffb8689(void *ramdata);
 int fcn_fffa7a1c(void *ramdata);
 int fcn_fffc7720(void *ramdata);
 int MRCABI wait_5030(void *ramdata);
+int MRCABI wait_5084(void *ramdata);

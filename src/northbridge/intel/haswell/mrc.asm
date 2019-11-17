@@ -223,6 +223,7 @@ global fcn_fffb7866
 extern frag_fffa5810
 extern frag_fffa58f7
 extern wait_5030
+extern wait_5084
 ;;
 
 mrc_entry:
@@ -4582,7 +4583,7 @@ jmp short loc_fffa7821  ; jmp 0xfffa7821
 
 loc_fffa77fb:  ; not directly referenced
 mov eax, ebx
-call fcn_fffbd79f  ; call 0xfffbd79f
+call wait_5084
 test eax, eax
 mov edx, 0x11
 jne short loc_fffa7821  ; jne 0xfffa7821
@@ -30528,35 +30529,6 @@ pop edi
 pop ebp
 ret
 
-fcn_fffbd79f:  ; not directly referenced
-push ebp
-mov ebp, esp
-push esi
-mov esi, eax
-push ebx
-call mrc_get_timestamp
-lea ebx, [eax + 0x2710]
-
-loc_fffbd7b1:  ; not directly referenced
-mov eax, dword [esi + 0x103f]
-mov eax, dword [eax + 0x5084]
-test eax, 0x10000
-jne short loc_fffbd7d4  ; jne 0xfffbd7d4
-call mrc_get_timestamp
-cmp ebx, eax
-ja short loc_fffbd7b1  ; ja 0xfffbd7b1
-mov eax, 0x11
-jmp short loc_fffbd7d6  ; jmp 0xfffbd7d6
-
-loc_fffbd7d4:  ; not directly referenced
-xor eax, eax
-
-loc_fffbd7d6:  ; not directly referenced
-pop ebx
-pop esi
-pop ebp
-ret
-
 fcn_fffbd7da:  ; not directly referenced
 push ebp
 mov ebp, esp
@@ -30570,7 +30542,7 @@ call wait_5030
 test eax, eax
 jne loc_fffbdf5f  ; jne 0xfffbdf5f
 mov eax, ebx
-call fcn_fffbd79f  ; call 0xfffbd79f
+call wait_5084
 test eax, eax
 jne loc_fffbdf5f  ; jne 0xfffbdf5f
 mov eax, dword [ebx + 0x103f]
