@@ -250,7 +250,6 @@ typedef struct _ram_st {
 extern ram_st ref_fffcbf28[];
 
 int __attribute((regparm(3))) fcn_fffc6438(void *ram_data, u32 a, u32 b);
-void fcn_fffc6986(void);
 
 int frag_fffc2026(void *ram_data)
 {
@@ -315,9 +314,9 @@ loc_fffc210d:
 				continue;
 			}
 		}
-		fcn_fffc6986();
+		mrc_get_timestamp();
 		ret = ref_fffcbf28[i].func(ram_data);
-		fcn_fffc6986();
+		mrc_get_timestamp();
 		dl = (ret == 0)? 1:0;
 	}
 	printk(BIOS_DEBUG, "return from frag_fffc2026 with value 0x%x\n", ret);

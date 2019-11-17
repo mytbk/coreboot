@@ -40,3 +40,5 @@ bar_or32(void *bar, uint32_t offset, uint32_t orv)
 	tmp |= orv;
 	write32(bar + offset, tmp);
 }
+
+uint64_t mrc_get_timestamp(void);

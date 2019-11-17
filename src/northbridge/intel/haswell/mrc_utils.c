@@ -13,6 +13,9 @@
 
 #include <string.h>
 #include <console/console.h>
+#include <cpu/x86/msr.h>
+#include <cpu/x86/tsc.h>
+#include <cpu/intel/haswell/haswell.h>
 
 #include "mrc_utils.h"
 
@@ -107,4 +110,13 @@ void __attribute((regparm(3))) crc16(uint8_t data[], size_t len, u16 *crc)
 		}
 	}
 	*crc = wCRC;
+}
+
+uint64_t mrc_get_timestamp(void)
+{
+	int ratio = (rdmsr(MSR_PLATFORM_INFO).lo >> 8) & 0xff;
+	int clks = ratio * 100000;
+	if (clks == 0)
+		return 0;
+	return tsc_to_uint64(rdtsc()) / clks;
 }

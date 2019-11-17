@@ -114,7 +114,7 @@ global fcn_fffbd4c2
 global fcn_fffbd5ac
 global fcn_fffbd7da
 extern fcn_fffc6438
-global fcn_fffc6986
+extern mrc_get_timestamp
 global fcn_fffc7720
 
 ;; pei_usb
@@ -2402,7 +2402,7 @@ or esi, eax
 mov eax, dword [ebx + 0x103f]
 or esi, 0x80000000
 mov dword [eax + 0x5e00], esi
-call fcn_fffc6986  ; call 0xfffc6986
+call mrc_get_timestamp
 imul edi, eax, 0x3e8
 jmp short loc_fffa59d4  ; jmp 0xfffa59d4
 
@@ -2415,7 +2415,7 @@ mov eax, esi
 shr eax, 0x18
 test al, al
 jns loc_fffa77fb  ; jns 0xfffa77fb
-call fcn_fffc6986  ; call 0xfffc6986
+call mrc_get_timestamp
 cmp edx, 0
 ja short loc_fffa5987  ; ja 0xfffa5987
 cmp eax, edi
@@ -7543,7 +7543,7 @@ mov esi, eax
 push ebx
 lea esp, [esp - 0x1c]
 mov byte [ebp - 0x19], dl
-call fcn_fffc6986  ; call 0xfffc6986
+call mrc_get_timestamp
 lea edi, [eax + 0x2710]
 mov eax, dword [esi + 0x103f]
 mov dword [eax + 0x4800], 5
@@ -7565,7 +7565,7 @@ xor eax, eax
 jmp short loc_fffaa9b3  ; jmp 0xfffaa9b3
 
 loc_fffaa9a5:  ; not directly referenced
-call fcn_fffc6986  ; call 0xfffc6986
+call mrc_get_timestamp
 cmp edi, eax
 ja short loc_fffaa97b  ; ja 0xfffaa97b
 mov eax, 0x11
@@ -24563,7 +24563,7 @@ mov ebp, esp
 push esi
 push ebx
 mov ebx, eax
-call fcn_fffc6986  ; call 0xfffc6986
+call mrc_get_timestamp
 lea esi, [eax + 0x2710]
 mov eax, dword [ebx + 0x103f]
 mov edx, dword [eax + 0x5030]
@@ -24576,7 +24576,7 @@ mov eax, dword [eax + 0x5030]
 shr eax, 0x10
 test al, al
 jns short loc_fffb8e4e  ; jns 0xfffb8e4e
-call fcn_fffc6986  ; call 0xfffc6986
+call mrc_get_timestamp
 cmp esi, eax
 ja short loc_fffb8e2b  ; ja 0xfffb8e2b
 mov eax, 0x11
@@ -24601,7 +24601,7 @@ mov esi, ecx
 push ebx
 lea esp, [esp - 0x3c]
 mov dword [ebp - 0x2c], edx
-call fcn_fffc6986  ; call 0xfffc6986
+call mrc_get_timestamp
 add eax, 0x2710
 xor ecx, ecx
 mov dword [ebp - 0x34], eax
@@ -24622,7 +24622,7 @@ mov ecx, eax
 shr ecx, 0x18
 test cl, cl
 jns loc_fffb8f72  ; jns 0xfffb8f72
-call fcn_fffc6986  ; call 0xfffc6986
+call mrc_get_timestamp
 cmp dword [ebp - 0x34], eax
 ja short loc_fffb8e92  ; ja 0xfffb8e92
 
@@ -24637,7 +24637,7 @@ mov eax, dword [eax]
 shr eax, 0x18
 test al, al
 jns loc_fffb8f99  ; jns 0xfffb8f99
-call fcn_fffc6986  ; call 0xfffc6986
+call mrc_get_timestamp
 cmp esi, eax
 ja short loc_fffb8ebd  ; ja 0xfffb8ebd
 jmp short loc_fffb8eb3  ; jmp 0xfffb8eb3
@@ -24717,7 +24717,7 @@ and eax, 0xfff000ff
 or eax, esi
 or eax, 0x80000000
 mov dword [edx], eax
-call fcn_fffc6986  ; call 0xfffc6986
+call mrc_get_timestamp
 lea esi, [eax + 0x2710]
 jmp near loc_fffb8ebd  ; jmp 0xfffb8ebd
 
@@ -24754,7 +24754,7 @@ push ebx
 shl esi, 0xa
 lea esp, [esp - 0x1c]
 mov dword [ebp - 0x24], ecx
-call fcn_fffc6986  ; call 0xfffc6986
+call mrc_get_timestamp
 add eax, 0x2710
 mov dword [ebp - 0x1c], eax
 lea eax, [esi + 0x4214]
@@ -24769,7 +24769,7 @@ mov ecx, eax
 shr ecx, 0x18
 test cl, cl
 jns loc_fffb90ad  ; jns 0xfffb90ad
-call fcn_fffc6986  ; call 0xfffc6986
+call mrc_get_timestamp
 cmp dword [ebp - 0x1c], eax
 ja short loc_fffb9004  ; ja 0xfffb9004
 
@@ -24800,7 +24800,7 @@ mov edx, dword [ebp - 0x20]
 add edx, dword [edi + 0x103f]
 or eax, 0x80000000
 mov dword [edx], eax
-call fcn_fffc6986  ; call 0xfffc6986
+call mrc_get_timestamp
 add eax, 0x2710
 mov dword [ebp - 0x1c], eax
 
@@ -24812,7 +24812,7 @@ mov eax, dword [eax]
 shr eax, 0x18
 test al, al
 jns short loc_fffb90be  ; jns 0xfffb90be
-call fcn_fffc6986  ; call 0xfffc6986
+call mrc_get_timestamp
 cmp dword [ebp - 0x1c], eax
 ja short loc_fffb9081  ; ja 0xfffb9081
 jmp short loc_fffb9028  ; jmp 0xfffb9028
@@ -30568,7 +30568,7 @@ mov ebp, esp
 push esi
 mov esi, eax
 push ebx
-call fcn_fffc6986  ; call 0xfffc6986
+call mrc_get_timestamp
 lea ebx, [eax + 0x2710]
 
 loc_fffbd7b1:  ; not directly referenced
@@ -30576,7 +30576,7 @@ mov eax, dword [esi + 0x103f]
 mov eax, dword [eax + 0x5084]
 test eax, 0x10000
 jne short loc_fffbd7d4  ; jne 0xfffbd7d4
-call fcn_fffc6986  ; call 0xfffc6986
+call mrc_get_timestamp
 cmp ebx, eax
 ja short loc_fffbd7b1  ; ja 0xfffbd7b1
 mov eax, 0x11
@@ -39891,42 +39891,6 @@ call fcn_fffc5bf6  ; call 0xfffc5bf6
 xor eax, eax
 leave
 ret
-
-loc_fffc6435:
-db 0x00
-db 0x00
-db 0x00
-
-fcn_fffc6986:
-mov ecx, 0xce
-rdmsr ; rdmsr(MSR_PLATFORM_INFO)
-movzx ecx, ah
-xor edx, edx
-imul ecx, ecx, 0x186a0 ; 100000
-xor eax, eax
-test ecx, ecx
-je short loc_fffc69ba  ; je 0xfffc69ba
-push ebp
-mov ebp, esp
-push ebx
-push eax
-mfence
-rdtsc
-xor ebx, ebx
-push ebx
-push ecx
-push edx
-push eax
-call udiv64  ; call 0xfffc91d0
-add esp, 0x10
-mov ebx, dword [ebp - 4]
-leave
-
-loc_fffc69ba:
-ret
-
-loc_fffc69bb:
-db 0x00
 
 fcn_fffc69bc:  ; not directly referenced
 push ebp
