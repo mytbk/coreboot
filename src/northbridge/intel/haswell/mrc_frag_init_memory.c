@@ -314,6 +314,7 @@ loc_fffc210d:
 				continue;
 			}
 		}
+		printk(BIOS_DEBUG, "calling memory init function %d.\n", i);
 		mrc_get_timestamp();
 		ret = ref_fffcbf28[i].func(ram_data);
 		mrc_get_timestamp();
