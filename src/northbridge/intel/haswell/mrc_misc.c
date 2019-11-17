@@ -1451,3 +1451,170 @@ int fcn_fffa7a1c(void *ramdata)
 		}
 	} while (true);
 }
+
+int fcn_fffc7720(void *ramdata)
+{
+	uint32_t uVar1;
+	uint32_t uVar2;
+	uint32_t uVar3;
+	uint32_t uVar4;
+	uint32_t uVar5;
+	int iVar6;
+	int iVar7;
+	uint32_t uVar8;
+	int iVar9;
+	uint32_t uVar10;
+	void *ptr0;
+
+	PRINT_FUNC;
+
+	*(uint32_t *)(ramdata + 0x1700) = 0;
+	for (int i = 0; i < 2; i++) {
+		ptr0 = (ramdata + i * 0x1347 + 0x297c);
+		*(uint32_t*)(ptr0 + 0xf1) = 0;
+		if (*(int *)(ramdata + i * 0x1347 + 0x297c) == 2) {
+			if (*(int *)(ptr0 + 0x1151) == 2) {
+				*(uint32_t*)(ptr0 + 0xf1) = *(uint32_t*)(ptr0 + 0x1222);
+			}
+			if (*(int *)(ptr0 + 0x124c) == 2) {
+				*(int *)(ptr0 + 0xf1) = *(int *)(ptr0 + 0xf1) + *(int *)(ptr0 + 0x131d);
+			}
+			uint32_t tmp = *(uint32_t*)(ramdata + 0x1751);
+			if (*(uint32_t*)(ptr0 + 0xf1) < tmp || *(uint32_t*)(ptr0 + 0xf1) == tmp) {
+				tmp = *(uint32_t*)(ptr0 + 0xf1);
+			}
+			*(uint32_t*)(ptr0 + 0xf1) = tmp;
+			*(int *)(ramdata + 0x1700) = *(int *)(ramdata + 0x1700) + tmp;
+		}
+	}
+	uVar2 = *(uint32_t*)(ramdata + 0x1700);
+	uVar8 = *(uint32_t*)(ramdata + 0x1053);
+	uVar1 = uVar2 - *(int *)(ramdata + 0x104f);
+	*(uint32_t*)(ramdata + 0x16db) = uVar1;
+	if (((*(char *)(ramdata + 0x16b3) != '\0') && (uVar2 < 0x1001)) &&
+			(uVar2 = 0x1000 - (uVar2 >> 1), uVar8 < uVar2)) {
+		uVar8 = uVar2;
+	}
+	uVar10 = *(uint32_t*)(ramdata + 0x1724);
+	uVar2 = (uVar10 - uVar8) + 0x1000 + *(int *)(ramdata + 0x1728);
+	uVar8 = uVar1;
+	if (uVar2 <= uVar1) {
+		uVar8 = uVar2;
+	}
+	*(uint32_t*)(ramdata + 0x16df) = uVar8;
+	iVar7 = uVar8 - uVar10;
+	*(int *)(ramdata + 0x16e3) = iVar7;
+	iVar9 = iVar7 - *(int *)(ramdata + 0x1728);
+	*(int *)(ramdata + 0x16e7) = iVar9;
+	uVar3 = (uint32_t)(*(char *)(ramdata + 0x102d) == '\x01') << 0xe;
+	uVar4 = 3;
+	uVar2 = pci_read_config32(PCI_DEV(0, 0, 0), 0x50);
+	if (*(uint32_t*)(ramdata + 0x1728) < 4) {
+		uVar4 = *(uint32_t*)(ramdata + 0x1728);
+	}
+	uVar4 = (uVar4 & 3) << 8;
+	if (uVar10 == 0x400) {
+		uVar2 = (uVar2 & 0xffffbc07) | uVar3 | uVar4 | 0x88;
+	} else {
+		uVar5 = 0x1f;
+		if (uVar10 < 0x400) {
+			uVar5 = (uVar10 >> 5) & 0x1f;
+		}
+		uVar2 = (uVar2 & 0xffffbc07) | uVar3 | uVar4 | uVar5 << 3;
+	}
+	*(uint32_t*)(ramdata + 0x16eb) = uVar2;
+	*(uint32_t*)(ramdata + 0x171c) = *(uint32_t*)(ramdata + 0x105f);
+	uVar2 = iVar9 - *(int *)(ramdata + 0x1057);
+	uVar10 = (-*(int *)(ramdata + 0x1057)) & uVar2;
+	iVar6 = uVar2 - uVar10;
+	*(uint32_t*)(ramdata + 0x16ef) = uVar10;
+	if (iVar6 != 0) {
+		*(int *)(ramdata + 0x16e7) = iVar9 - iVar6;
+		*(int *)(ramdata + 0x16e3) = iVar7 - iVar6;
+		*(int *)(ramdata + 0x16df) = uVar8 - iVar6;
+	}
+	if ((*(char *)(ramdata + 0x1030) == '\0') || (uVar1 <= *(uint32_t*)(ramdata + 0x16df))) {
+		*(uint8_t*)(ramdata + 0x16f3) = 0;
+		*(uint32_t*)(ramdata + 0x16fc) = uVar1;
+	} else {
+		*(uint8_t*)(ramdata + 0x16f3) = 1;
+		uVar2 = 0x1000;
+		if (0xfff < uVar1) {
+			uVar2 = uVar1;
+		}
+		if (0x1000 < uVar1) {
+			uVar1 = 0x1000;
+		}
+		*(uint32_t*)(ramdata + 0x16f4) = uVar2;
+		iVar7 = (uVar1 + uVar2) - *(uint32_t*)(ramdata + 0x16df);
+		*(int *)(ramdata + 0x16f8) = iVar7;
+		*(int *)(ramdata + 0x16fc) = iVar7;
+		if ((*(int *)(ramdata + 0x1005) != 0x306c0) || (*(int *)(ramdata + 0x1001) != 1)) {
+			*(int *)(ramdata + 0x16f8) = iVar7 + -1;
+		}
+	}
+	if (*(char *)(ramdata + 0x173c) != '\0') {
+		if (*(char *)(ramdata + 0x16b3) == '\0') {
+			iVar7 = *(int *)(ramdata + 0x16ef) - *(int *)(ramdata + 0x105f);
+		} else {
+			if (*(uint32_t*)(ramdata + 0x1700) < 0x1001) {
+				iVar7 = *(int *)(ramdata + 0x16fc);
+			}
+			else {
+				iVar7 = *(int *)(ramdata + 0x16db);
+			}
+		}
+		uVar2 = (uint32_t)(*(uint8_t*)(ramdata + 0x173e)) << 3;
+		*(uint32_t*)(ramdata + 0x1710) = uVar2;
+		uVar2 = (iVar7 + ~uVar2) & 0xfffffff0;
+		*(uint32_t*)(ramdata + 0x170c) = uVar2;
+		*(int *)(ramdata + 0x1718) = (uint32_t)(*(uint8_t*)(ramdata + 0x173d)) * 8;
+		*(int *)(ramdata + 0x1714) = uVar2 + (uint32_t)(*(uint8_t*)(ramdata + 0x173d)) * (-8) + -0x10;
+	}
+	uVar2 = *(uint32_t*)(ramdata + 0x1700);
+	*(uint32_t*)(ramdata + 0x1704) = *(uint32_t*)(ramdata + 0x16db);
+	iVar7 = *(int *)(ramdata + 0x103b); // pciexbar
+	*(uint32_t*)(ramdata + 0x1708) = *(uint32_t*)(ramdata + 0x104f);
+	void *gdxcbar = *(void**)(ramdata + 0x1047);
+	pci_write_config32(PCI_DEV(0, 0, 0), 0xa0, uVar2 << 0x14);
+	pci_write_config32(PCI_DEV(0, 0, 0), 0xa4, (uVar2 >> 0xc) & 0x7f);
+	pci_write_config32(PCI_DEV(0, 0, 0), 0xbc, ((uint32_t)(*(uint16_t*)(ramdata + 0x16df))) << 0x14);
+	uVar2 = *(uint32_t*)(ramdata + 0x16fc);
+	pci_write_config32(PCI_DEV(0, 0, 0), 0xa8, uVar2 << 0x14);
+	pci_write_config32(PCI_DEV(0, 0, 0), 0xac, (uVar2 >> 0xc) & 0x7f);
+	if (*(char *)(ramdata + 0x16f3) != '\0') {
+		uVar2 = *(uint32_t*)(ramdata + 0x16f4);
+		pci_write_config32(PCI_DEV(0, 0, 0), 0x90, uVar2 << 0x14);
+		pci_write_config32(PCI_DEV(0, 0, 0), 0x94, (uVar2 >> 0xc) & 0x7f);
+		uVar2 = *(uint32_t*)(ramdata + 0x16f8);
+		pci_write_config32(PCI_DEV(0, 0, 0), 0x98, uVar2 << 0x14);
+		pci_write_config32(PCI_DEV(0, 0, 0), 0x9c, (uVar2 >> 0xc) & 0x7f);
+	}
+	pci_write_config32(PCI_DEV(0, 0, 0), 0xb8, (uint32_t)(*(uint16_t*)(ramdata + 0x16ef)) << 0x14);
+	if (*(uint32_t*)(ramdata + 0x171c) != 0) {
+		pci_update_config32(PCI_DEV(0, 0, 0), 0x5c, 0xfffff00f,
+				((*(uint32_t*)(ramdata + 0x171c) & 0xff) << 4) | 4);
+	}
+	pci_write_config32(PCI_DEV(0, 0, 0), 0xb0, (uint32_t)(*(uint16_t*)(ramdata + 0x16e3)) << 0x14);
+	pci_write_config32(PCI_DEV(0, 0, 0), 0xb4, (uint32_t)(*(uint16_t*)(ramdata + 0x16e7)) << 0x14);
+	iVar6 = *(int *)(ramdata + 0x1708);
+	if (iVar6 != 0) {
+		pci_write_config32(PCI_DEV(0, 0, 0), 0x78, ((0x80000 - iVar6) << 20) | 0x800);
+		pci_write_config32(PCI_DEV(0, 0, 0), 0x7c, ((0x80000 - iVar6) >> 0xc) & 0x7f);
+		uVar2 = *(uint32_t*)(ramdata + 0x1704);
+		pci_write_config32(PCI_DEV(0, 0, 0), 0x70, uVar2 << 0x14);
+		pci_write_config32(PCI_DEV(0, 0, 0), 0x74, (uVar2 >> 0xc) & 0x7f);
+	}
+	pci_write_config32(PCI_DEV(0, 0, 0), 0x50, *(uint32_t*)(ramdata + 0x16eb));
+	*(int *)(gdxcbar + 0x10) = *(int *)(ramdata + 0x170c) << 0xe;
+	*(uint32_t*)(gdxcbar + 0x14) = (*(uint32_t*)(ramdata + 0x170c) & 0x40000) >> 0x12;
+	*(uint32_t*)(gdxcbar + 0x18) =
+		(((*(int *)(ramdata + 0x1710) + *(uint32_t*)(ramdata + 0x170c)) >> 3) << 0x10) |
+		(*(uint32_t*)(ramdata + 0x170c) >> 3);
+	*(int *)(gdxcbar + 0x20) = *(int *)(ramdata + 0x1714) << 0xe;
+	*(uint32_t*)(gdxcbar + 0x24) = ((*(uint32_t*)(ramdata + 0x1714) & 0x40000) >> 0x12) | 4;
+	*(uint32_t*)(gdxcbar + 0x28) =
+		((*(int *)(ramdata + 0x1718) + *(uint32_t*)(ramdata + 0x1714)) >> 3) << 0x10 |
+		(*(uint32_t*)(ramdata + 0x1714) >> 3);
+	return 0;
+}
