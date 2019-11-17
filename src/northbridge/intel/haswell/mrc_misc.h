@@ -65,3 +65,5 @@ void __attribute__((regparm(2))) MCHBAR_WRITE64(void *, uint32_t, uint64_t);
 int MRCABI
 fcn_fffb933f(void *ramdata,uint8_t param_2,uint8_t param_3,uint8_t param_4,uint32_t param_5,
 		void *param_6,uint8_t param_7);
+int MRCABI fcn_fffb8fda(void *ramdata, int idx, uint32_t param_3, uint8_t param_4,
+			    uint8_t param_5, uint32_t param_6, uint32_t param_7);

@@ -1912,3 +1912,41 @@ fcn_fffb933f(void *ramdata,uint8_t idx,uint8_t param_3,uint8_t param_4,uint32_t 
 		return 0;
 	}
 }
+
+int MRCABI fcn_fffb8fda(void *ramdata, int idx, uint32_t param_3, uint8_t param_4,
+			    uint8_t param_5, uint32_t param_6, uint32_t param_7)
+{
+	int iVar4;
+	uint32_t t1;
+	uint32_t t2;
+
+	int iVar1 = idx * 0x400 + 0x4214;
+	t1 = mrc_get_timestamp();
+	do {
+		uint32_t uVar2 = MCHBAR32(iVar1);
+		if ((uVar2 & 0x80000000) == 0) {
+			iVar4 = idx * 0x400 + 0x4010;
+			uint32_t reg32;
+			if (param_7 != 0) {
+				reg32 = MCHBAR32(iVar4) | 0x80000000;
+				MCHBAR32(iVar4) = reg32;
+			}
+			MCHBAR32(iVar1) =
+				(uVar2 & 0xfff40000) | (((uint32_t)param_5 << 8) | param_4) | 0x40000
+				| ((param_6 & 1) << 0x13) | ((param_3 & 3) << 0x10) | 0x80000000;
+			t1 = mrc_get_timestamp();
+			do {
+				if ((MCHBAR32(iVar1) & 0x80000000) == 0) {
+					if (param_7 != 0) {
+						MCHBAR32(iVar4) = reg32 & 0x7fffffff;
+					}
+					return 0;
+				}
+				t2 = mrc_get_timestamp();
+			} while (t2 < t1 + 10000);
+			return 0x11;
+		}
+		t2 = mrc_get_timestamp();
+	} while (t2 < t1 + 10000);
+	return 0x11;
+}

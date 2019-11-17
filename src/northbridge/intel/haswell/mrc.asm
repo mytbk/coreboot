@@ -226,6 +226,7 @@ extern wait_5084
 global fcn_fffab1b6
 extern fcn_fffb933f
 global MCHBAR_WRITE64
+extern fcn_fffb8fda
 ;;
 
 mrc_entry:
@@ -24495,107 +24496,6 @@ jmp near loc_fffb8ede  ; jmp 0xfffb8ede
 
 loc_fffb8fd1:  ; not directly referenced
 lea esp, [esp + 0x3c]
-pop ebx
-pop esi
-pop edi
-pop ebp
-ret
-
-fcn_fffb8fda:  ; not directly referenced
-push ebp
-mov ebp, esp
-push edi
-mov edi, eax
-push esi
-mov esi, edx
-push ebx
-shl esi, 0xa
-lea esp, [esp - 0x1c]
-mov dword [ebp - 0x24], ecx
-call mrc_get_timestamp
-add eax, 0x2710
-mov dword [ebp - 0x1c], eax
-lea eax, [esi + 0x4214]
-mov dword [ebp - 0x20], eax
-
-loc_fffb9004:  ; not directly referenced
-mov edx, dword [edi + 0x103f]
-mov eax, dword [ebp - 0x20]
-add eax, edx
-mov eax, dword [eax]
-mov ecx, eax
-shr ecx, 0x18
-test cl, cl
-jns loc_fffb90ad  ; jns 0xfffb90ad
-call mrc_get_timestamp
-cmp dword [ebp - 0x1c], eax
-ja short loc_fffb9004  ; ja 0xfffb9004
-
-loc_fffb9028:  ; not directly referenced
-mov eax, 0x11
-jmp near loc_fffb90c6  ; jmp 0xfffb90c6
-
-loc_fffb9032:  ; not directly referenced
-add edx, esi
-mov ebx, dword [edx]
-or ebx, 0x80000000
-mov dword [edx], ebx
-
-loc_fffb903e:  ; not directly referenced
-mov al, byte [ebp + 8]
-mov ecx, dword [ebp + 0x10]
-mov ah, byte [ebp + 0xc]
-mov edx, dword [ebp - 0x24]
-or eax, 0x40000
-and ecx, 1
-shl ecx, 0x13
-and eax, 0xfff4ffff
-and edx, 3
-or eax, ecx
-shl edx, 0x10
-or eax, edx
-mov edx, dword [ebp - 0x20]
-add edx, dword [edi + 0x103f]
-or eax, 0x80000000
-mov dword [edx], eax
-call mrc_get_timestamp
-add eax, 0x2710
-mov dword [ebp - 0x1c], eax
-
-loc_fffb9081:  ; not directly referenced
-mov edx, dword [edi + 0x103f]
-mov eax, dword [ebp - 0x20]
-add eax, edx
-mov eax, dword [eax]
-shr eax, 0x18
-test al, al
-jns short loc_fffb90be  ; jns 0xfffb90be
-call mrc_get_timestamp
-cmp dword [ebp - 0x1c], eax
-ja short loc_fffb9081  ; ja 0xfffb9081
-jmp short loc_fffb9028  ; jmp 0xfffb9028
-
-loc_fffb90a1:  ; not directly referenced
-add edx, esi
-and ebx, 0x7fffffff
-mov dword [edx], ebx
-jmp short loc_fffb90c4  ; jmp 0xfffb90c4
-
-loc_fffb90ad:  ; not directly referenced
-add esi, 0x4010
-cmp dword [ebp + 0x14], 0
-je short loc_fffb903e  ; je 0xfffb903e
-jmp near loc_fffb9032  ; jmp 0xfffb9032
-
-loc_fffb90be:  ; not directly referenced
-cmp dword [ebp + 0x14], 0
-jne short loc_fffb90a1  ; jne 0xfffb90a1
-
-loc_fffb90c4:  ; not directly referenced
-xor eax, eax
-
-loc_fffb90c6:  ; not directly referenced
-lea esp, [esp + 0x1c]
 pop ebx
 pop esi
 pop edi
