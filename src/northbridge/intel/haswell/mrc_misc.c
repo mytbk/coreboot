@@ -1618,3 +1618,17 @@ int fcn_fffc7720(void *ramdata)
 		(*(uint32_t*)(ramdata + 0x1714) >> 3);
 	return 0;
 }
+
+int MRCABI wait_5030(void *ramdata)
+{
+	uint32_t end_ts = mrc_get_timestamp() + 10000;
+	uint32_t ts;
+	MCHBAR32_OR(0x5030, 0x800000);
+	do {
+		uint32_t reg32 = MCHBAR32(0x5030);
+		if ((reg32 & 0x800000) == 0)
+			return 0;
+		ts = mrc_get_timestamp();
+	} while (ts < end_ts);
+	return 0x11;
+}

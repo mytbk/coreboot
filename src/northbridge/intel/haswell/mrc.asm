@@ -222,6 +222,7 @@ global fcn_fffb7866
 
 extern frag_fffa5810
 extern frag_fffa58f7
+extern wait_5030
 ;;
 
 mrc_entry:
@@ -7249,7 +7250,7 @@ jmp near loc_fffaa1a9  ; jmp 0xfffaa1a9
 
 loc_fffaa242:  ; not directly referenced
 mov eax, esi
-call fcn_fffb8e01  ; call 0xfffb8e01
+call wait_5030
 mov dword [ebp - 0x250], esi
 mov dword [ebp - 0x24c], 0
 
@@ -10208,7 +10209,7 @@ cmp ebx, 2
 jne loc_fffacc8f  ; jne 0xfffacc8f
 mov eax, dword [ebp + 8]
 mov edi, 1
-call fcn_fffb8e01  ; call 0xfffb8e01
+call wait_5030
 mov ebx, dword [ebp + 8]
 mov edx, 2
 mov eax, dword [ebx + 0x103f]
@@ -10216,7 +10217,7 @@ mov dword [eax + 0x4800], 5
 mov eax, ebx
 call fcn_fffb2d76  ; call 0xfffb2d76
 mov eax, ebx
-call fcn_fffb8e01  ; call 0xfffb8e01
+call wait_5030
 mov eax, ebx
 mov edx, 2
 call fcn_fffb2d76  ; call 0xfffb2d76
@@ -10307,7 +10308,7 @@ mov edx, dword [ebp + 8]
 cmp al, byte [edx + 0x1755]
 jb short loc_ffface30  ; jb 0xffface30
 mov eax, edx
-call fcn_fffb8e01  ; call 0xfffb8e01
+call wait_5030
 mov ecx, dword [ebp + 8]
 mov eax, dword [esi + 0x141]
 mov edx, dword [ecx + 0x103f]
@@ -12092,14 +12093,14 @@ cmp dword [ebp - 0x13c], 2
 jne loc_fffae296  ; jne 0xfffae296
 mov eax, esi
 lea ebx, [ebp - 0xa8]
-call fcn_fffb8e01  ; call 0xfffb8e01
+call wait_5030
 mov eax, dword [esi + 0x103f]
 mov edx, 2
 mov dword [eax + 0x4800], 1
 mov eax, esi
 call fcn_fffb2d76  ; call 0xfffb2d76
 mov eax, esi
-call fcn_fffb8e01  ; call 0xfffb8e01
+call wait_5030
 mov edx, 2
 mov eax, esi
 call fcn_fffb2d76  ; call 0xfffb2d76
@@ -12273,7 +12274,7 @@ cmp dword [ebp - 0x13c], 2
 jne loc_fffae567  ; jne 0xfffae567
 mov eax, esi
 inc edi
-call fcn_fffb8e01  ; call 0xfffb8e01
+call wait_5030
 cmp edi, 0x20
 jne loc_fffae261  ; jne 0xfffae261
 imul ebx, dword [ebp - 0x158], 9
@@ -12415,7 +12416,7 @@ push 0
 call fcn_fffc83fc  ; call 0xfffc83fc
 add esp, 0x20
 mov eax, esi
-call fcn_fffb8e01  ; call 0xfffb8e01
+call wait_5030
 jmp short loc_fffae806  ; jmp 0xfffae806
 
 loc_fffae801:  ; not directly referenced
@@ -14059,7 +14060,7 @@ loc_fffb0af1:  ; not directly referenced
 cmp byte [ebp - 0x155], 0xb
 jne short loc_fffb0b0d  ; jne 0xfffb0b0d
 mov eax, esi
-call fcn_fffb8e01  ; call 0xfffb8e01
+call wait_5030
 jmp short loc_fffb0b0d  ; jmp 0xfffb0b0d
 
 loc_fffb0b03:  ; not directly referenced
@@ -16127,7 +16128,7 @@ add dword [ebp - 0x58], 0x400
 cmp esi, 2
 jne loc_fffb2371  ; jne 0xfffb2371
 mov eax, ebx
-call fcn_fffb8e01  ; call 0xfffb8e01
+call wait_5030
 cmp byte [ebp - 0x50], 0
 mov eax, 1
 sete cl
@@ -19197,7 +19198,7 @@ add eax, 0x100
 cmp dword [ebp - 0x1bc], 2
 jne loc_fffb48eb  ; jne 0xfffb48eb
 mov eax, edi
-call fcn_fffb8e01  ; call 0xfffb8e01
+call wait_5030
 lea esp, [ebp - 0xc]
 pop ebx
 pop esi
@@ -24556,40 +24557,6 @@ pop edi
 pop ebp
 ret
 
-fcn_fffb8e01:  ; not directly referenced
-push ebp
-mov ebp, esp
-push esi
-push ebx
-mov ebx, eax
-call mrc_get_timestamp
-lea esi, [eax + 0x2710]
-mov eax, dword [ebx + 0x103f]
-mov edx, dword [eax + 0x5030]
-or edx, 0x800000
-mov dword [eax + 0x5030], edx
-
-loc_fffb8e2b:  ; not directly referenced
-mov eax, dword [ebx + 0x103f]
-mov eax, dword [eax + 0x5030]
-shr eax, 0x10
-test al, al
-jns short loc_fffb8e4e  ; jns 0xfffb8e4e
-call mrc_get_timestamp
-cmp esi, eax
-ja short loc_fffb8e2b  ; ja 0xfffb8e2b
-mov eax, 0x11
-jmp short loc_fffb8e50  ; jmp 0xfffb8e50
-
-loc_fffb8e4e:  ; not directly referenced
-xor eax, eax
-
-loc_fffb8e50:  ; not directly referenced
-pop ebx
-pop esi
-pop ebp
-ret
-
 fcn_fffb8e54:  ; not directly referenced
 push ebp
 mov ebp, esp
@@ -26692,7 +26659,7 @@ call fcn_fffb2d76  ; call 0xfffb2d76
 loc_fffba88a:  ; not directly referenced
 mov eax, ebx
 lea edi, [ebp - 0x1c8]
-call fcn_fffb8e01  ; call 0xfffb8e01
+call wait_5030
 mov edx, dword [ebp - 0x2bc]
 mov eax, ebx
 call fcn_fffb2d76  ; call 0xfffb2d76
@@ -27305,7 +27272,7 @@ cmp dword [ebp - 0x2bc], 0
 mov byte [ebp - 0x28c], dl
 jne loc_fffbb34a  ; jne 0xfffbb34a
 mov eax, ebx
-call fcn_fffb8e01  ; call 0xfffb8e01
+call wait_5030
 mov cl, byte [ebp - 0x28c]
 test byte [ebx + 0x3acb], cl
 je short loc_fffbb2f6  ; je 0xfffbb2f6
@@ -27650,7 +27617,7 @@ call fcn_fffb2062  ; call 0xfffb2062
 mov eax, dword [ebx + 0x103f]
 mov dword [eax + 0x3670], 0
 mov eax, ebx
-call fcn_fffb8e01  ; call 0xfffb8e01
+call wait_5030
 add esp, 0x10
 jmp short loc_fffbb811  ; jmp 0xfffbb811
 
@@ -30599,7 +30566,7 @@ push ebx
 lea esp, [esp - 0x6c]
 mov ebx, dword [ebp + 8]
 mov eax, ebx
-call fcn_fffb8e01  ; call 0xfffb8e01
+call wait_5030
 test eax, eax
 jne loc_fffbdf5f  ; jne 0xfffbdf5f
 mov eax, ebx
