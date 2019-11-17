@@ -1661,3 +1661,23 @@ int fcn_fffa7e78(void *ramdata)
 	fcn_fffab1b6(ramdata);
 	return 0;
 }
+
+extern uint16_t ref_fffcb80c[];
+
+int fcn_fffa948c(void *ramdata)
+{
+	PRINT_FUNC;
+
+	void *ptr = ramdata + 0x14;
+	for (int i = 0; i < 0x5d; i++) {
+		uint32_t start = ref_fffcb80c[i * 2];
+		uint32_t end = ref_fffcb80c[i * 2 + 1];
+
+		while (start <= end) {
+			MCHBAR32(start) = *(uint32_t*)(ptr);
+			ptr += 4;
+			start += 4;
+		}
+	}
+	return 0;
+}

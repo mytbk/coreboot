@@ -224,6 +224,7 @@ extern frag_fffa58f7
 extern wait_5030
 extern wait_5084
 global fcn_fffab1b6
+global ref_fffcb80c
 ;;
 
 mrc_entry:
@@ -6273,48 +6274,6 @@ jmp near loc_fffa937d  ; jmp 0xfffa937d
 
 loc_fffa9484:
 lea esp, [ebp - 0xc]
-pop ebx
-pop esi
-pop edi
-pop ebp
-ret
-
-fcn_fffa948c:  ; not directly referenced
-push ebp
-xor edx, edx
-mov ebp, esp
-push edi
-push esi
-push ebx
-push ecx
-mov eax, dword [ebp + 8]
-add eax, 0x14
-
-loc_fffa949b:  ; not directly referenced
-lea ecx, [edx*4 + ref_fffcb80c]  ; lea ecx, [edx*4 - 0x347f4]
-mov dword [ebp - 0x10], ecx
-movzx ecx, word [edx*4 + ref_fffcb80c]  ; movzx ecx, word [edx*4 - 0x347f4]
-sub ecx, eax
-jmp short loc_fffa94c1  ; jmp 0xfffa94c1
-
-loc_fffa94b1:  ; not directly referenced
-mov edi, dword [ebp + 8]
-mov esi, dword [eax]
-add eax, 4
-add ebx, dword [edi + 0x103f]
-mov dword [ebx], esi
-
-loc_fffa94c1:  ; not directly referenced
-mov edi, dword [ebp - 0x10]
-lea ebx, [eax + ecx]
-movzx esi, word [edi + 2]
-cmp ebx, esi
-jbe short loc_fffa94b1  ; jbe 0xfffa94b1
-inc edx
-cmp edx, 0x5d
-jne short loc_fffa949b  ; jne 0xfffa949b
-pop edx
-xor eax, eax
 pop ebx
 pop esi
 pop edi
