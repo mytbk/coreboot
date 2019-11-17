@@ -1645,3 +1645,19 @@ int MRCABI wait_5084(void *ramdata)
 	} while (ts < end_ts);
 	return 0x11;
 }
+
+void MRCABI fcn_fffab1b6(void*);
+int fcn_fffa7e78(void *ramdata)
+{
+	PRINT_FUNC;
+
+	MCHBAR32(0x5f08) = 0x14;
+	if (*(int *)(ramdata + 0x297c) == 2) {
+		MCHBAR32(0x48a8) = 0x3000;
+	}
+	if (*(int *)(ramdata + 0x3cc3) == 2) {
+		MCHBAR32(0x48b0) = 0x3000;
+	}
+	fcn_fffab1b6(ramdata);
+	return 0;
+}

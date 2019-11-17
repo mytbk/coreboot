@@ -70,7 +70,6 @@ extern locate_hob
 extern fcn_fffa1d20
 global fcn_fffa56ac
 global fcn_fffa7e71
-global fcn_fffa7e78
 global fcn_fffa7ecd
 global fcn_fffa8fb6
 global fcn_fffa9196
@@ -224,6 +223,7 @@ extern frag_fffa5810
 extern frag_fffa58f7
 extern wait_5030
 extern wait_5084
+global fcn_fffab1b6
 ;;
 
 mrc_entry:
@@ -4611,30 +4611,6 @@ push ebp
 xor eax, eax
 mov ebp, esp
 pop ebp
-ret
-
-fcn_fffa7e78:  ; not directly referenced
-push ebp
-mov ebp, esp
-lea esp, [esp - 8]
-mov eax, dword [ebp + 8]
-mov edx, dword [eax + 0x103f]
-mov dword [edx + 0x5f08], 0x14
-cmp dword [eax + 0x297c], 2
-jne short loc_fffa7eab  ; jne 0xfffa7eab
-mov edx, dword [eax + 0x103f]
-mov dword [edx + 0x48a8], 0x3000
-
-loc_fffa7eab:  ; not directly referenced
-cmp dword [eax + 0x3cc3], 2
-jne short loc_fffa7ec4  ; jne 0xfffa7ec4
-mov edx, dword [eax + 0x103f]
-mov dword [edx + 0x48b0], 0x3000
-
-loc_fffa7ec4:  ; not directly referenced
-call fcn_fffab1b6  ; call 0xfffab1b6
-xor eax, eax
-leave
 ret
 
 fcn_fffa7ecd:  ; not directly referenced
