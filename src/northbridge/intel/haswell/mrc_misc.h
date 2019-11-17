@@ -61,3 +61,7 @@ int MRCABI wait_5084(void *ramdata);
 int fcn_fffa7e78(void *ramdata);
 int fcn_fffa948c(void *ramdata);
 int fcn_fffab280(void *ramdata);
+void __attribute__((regparm(2))) MCHBAR_WRITE64(void *, uint32_t, uint64_t);
+int MRCABI
+fcn_fffb933f(void *ramdata,uint8_t param_2,uint8_t param_3,uint8_t param_4,uint32_t param_5,
+		void *param_6,uint8_t param_7);

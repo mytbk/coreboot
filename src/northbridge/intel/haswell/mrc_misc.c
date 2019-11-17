@@ -1838,3 +1838,77 @@ int fcn_fffab280(void *ramdata)
 
 	return 0;
 }
+
+int MRCABI
+fcn_fffb933f(void *ramdata,uint8_t idx,uint8_t param_3,uint8_t param_4,uint32_t param_5,
+		void *param_6,uint8_t param_7)
+
+{
+	int iVar1;
+	uint32_t uVar4;
+	int iVar7;
+	uint32_t uVar9;
+	int cnt;
+	void *ptr0;
+
+	cnt = 0;
+	ptr0 = (ramdata + idx * 0x1347 + 0x297c);
+	MCHBAR8(0x4c31) = 0;
+	uint8_t tmp8 = *(char *)(ptr0 + 0x120f) == '\x01';
+	if (*(char *)(ptr0 + 0x130a) == '\x01') {
+		tmp8 = tmp8 | 2;
+	}
+	iVar7 = idx * 0x400;
+	MCHBAR8(0x41bc + iVar7) = 0;
+	for (int i = 0; i < 4; i++) {
+		uVar9 = (1 << i);
+		if ((param_3 & *(uint8_t*)(ramdata + idx * 0x1347 + 0x3acb) & (uint8_t)uVar9) != 0) {
+			uint32_t uVar8 = i >> 1;
+			uint16_t uVar2 = *(uint16_t*)(param_6 + uVar8 * 2);
+			uVar4 = ((param_5 & 7) << 0x18) | (uint32_t)uVar2;
+			if (((i & 1) != 0) && (((uint32_t)tmp8 & (uVar8 + 1)) != 0)) {
+				uVar4 = (((param_5 & 2) >> 1) | (param_5 & 4) | ((param_5 & 1) * 2)) * 0x1000000 +
+					((uint32_t)((uVar2 & 0x150) >> 1) | ((uint32_t)uVar2 & 0xfe07) | (((uint32_t)uVar2 & 0xa8) * 2));
+			}
+#define CONCAT44(hi,lo) ((uint64_t)((((uint64_t)(hi)) << 32) | lo))
+			MCHBAR_WRITE64(ramdata,iVar7 + 0x41c0,
+					CONCAT44((((uint32_t)param_4 & 7) << 8) | 0xf000000 | (~uVar9 & 0xf),uVar4));
+			cnt = cnt + 1;
+		}
+	}
+
+	if (cnt == 0) {
+		return 1;
+	} else {
+		if (param_7 != '\0') {
+			uVar9 = param_7 & 7;
+		} else {
+			uVar9 = 3;
+		}
+		MCHBAR32(iVar7 + 0x419c) = uVar9 | (((cnt - 1) & 7) << 0x10);
+		iVar7 = idx * 8 + 0x48a8;
+		uVar9 = MCHBAR32(iVar7);
+		MCHBAR32(iVar7) = (uVar9 & 0xffffc7ff) | 0x2000;
+		iVar1 = idx * 4 + 0x48b8;
+		MCHBAR8(iVar1) = 5;
+
+		uint8_t bVar3;
+		do {
+			uint32_t reg32 = MCHBAR32(0x4804);
+			if (idx == '\0') {
+				if ((reg32 & 1) != 0) {
+					return 1;
+				}
+				bVar3 = ((reg32 >> 0x10) & 1) ^ 1;
+			} else {
+				if ((reg32 & 2) != 0)
+					return 1;
+				bVar3 = ((reg32 >> 0x11) ^ 1) & 1;
+			}
+		} while (bVar3 != 0);
+
+		MCHBAR8(iVar1) = 4;
+		MCHBAR32(iVar7) = uVar9;
+		return 0;
+	}
+}
