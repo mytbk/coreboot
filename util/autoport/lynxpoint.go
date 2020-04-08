@@ -304,11 +304,21 @@ void mainboard_romstage_entry(void)
 
 	pdo1 := PCIMap[PCIAddr{Bus: 0, Dev: 0x1d, Func: 0}].ConfigDump[0x64]
 	ocmap1 := PCIMap[PCIAddr{Bus: 0, Dev: 0x1d, Func: 0}].ConfigDump[0x74:0x78]
-	pdo2 := PCIMap[PCIAddr{Bus: 0, Dev: 0x1a, Func: 0}].ConfigDump[0x64]
-	ocmap2 := PCIMap[PCIAddr{Bus: 0, Dev: 0x1a, Func: 0}].ConfigDump[0x74:0x78]
+
+	var pdo2 uint8
+	var ocmap2 []uint8
+	var nPorts int
+	if b.variant != "Lynx Point LP" {
+		pdo2 = PCIMap[PCIAddr{Bus: 0, Dev: 0x1a, Func: 0}].ConfigDump[0x64]
+		ocmap2 = PCIMap[PCIAddr{Bus: 0, Dev: 0x1a, Func: 0}].ConfigDump[0x74:0x78]
+		nPorts = 14
+	} else {
+		nPorts = 8
+	}
+
 	xusb2pr := GetLE16(PCIMap[PCIAddr{Bus: 0, Dev: 0x14, Func: 0}].ConfigDump[0xd0:0xd4])
 
-	for port := uint(0); port < 14; port++ {
+	for port := 0; port < nPorts; port++ {
 		var port_oc int = -1
 		var port_pos string
 		var port_disable uint8
