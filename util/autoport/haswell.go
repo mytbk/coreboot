@@ -10,7 +10,9 @@ func (i haswellmc) Scan(ctx Context, addr PCIDevData) {
 	/* FIXME:XX Move this somewhere else.  */
 	MainboardIncludes = append(MainboardIncludes, "drivers/intel/gma/int15.h")
 	MainboardEnable += (`	/* FIXME: fix those values*/
-	install_intel_vga_int15_handler(GMA_INT15_ACTIVE_LFP_INT_LVDS, GMA_INT15_PANEL_FIT_DEFAULT, GMA_INT15_BOOT_DISPLAY_DEFAULT, 0);
+	install_intel_vga_int15_handler(GMA_INT15_ACTIVE_LFP_EDP,
+					GMA_INT15_PANEL_FIT_DEFAULT,
+					GMA_INT15_BOOT_DISPLAY_DEFAULT, 0);
 `)
 
 	DevTree = DevTreeNode{
@@ -32,7 +34,7 @@ func (i haswellmc) Scan(ctx Context, addr PCIDevData) {
 			"gpu_ddi_e_connected":                 FormatBool(((inteltool.IGD[0x64000] >> 4) & 1) == 0),
 			/* FIXME:XX hardcoded.  */
 			"gfx.ndid": "3",
-			"gfx.did":  "{ 0x80000100, 0x80000240, 0x80000410, 0x80000410, 0x00000005 }",
+			"gfx.did":  "{ 0x80000100, 0x80000240, 0x80000410 }",
 		},
 		Children: []DevTreeNode{
 			{
