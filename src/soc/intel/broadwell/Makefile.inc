@@ -1,6 +1,7 @@
 ifeq ($(CONFIG_SOC_INTEL_BROADWELL),y)
 
 subdirs-y += pch
+subdirs-y += refcode
 
 bootblock-y += bootblock.c
 
@@ -19,7 +20,7 @@ ramstage-y += minihd.c
 ramstage-y += northbridge.c
 ramstage-y += pei_data.c
 romstage-y += pei_data.c
-ramstage-$(CONFIG_HAVE_REFCODE_BLOB) += refcode.c
+ramstage-y += refcode.c
 
 CPPFLAGS_common += -Isrc/soc/intel/broadwell/include
 
