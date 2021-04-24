@@ -1,0 +1,2 @@
+config BOARD_HP_820_G2
+	bool "EliteBook 820 G2"
