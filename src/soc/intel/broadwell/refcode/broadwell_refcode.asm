@@ -6,6 +6,7 @@ bits 32
 global refcode_entry
 extern print_gbe
 global PchIsGbeRegionValid
+extern refcode_outb
 
 refcode_entry:
 pushad
@@ -22674,7 +22675,7 @@ movzx esi, dl
 pop edx
 push esi
 push 0x70
-call fcn_00018eea  ; call 0x18eea
+call refcode_outb  ; call 0x18eea
 mov dword [esp], 0x71
 call fcn_00018ee1  ; call 0x18ee1
 pop ecx
@@ -22683,12 +22684,12 @@ and eax, 0x8f
 or eax, 0x60
 push eax
 push 0x71
-call fcn_00018eea  ; call 0x18eea
+call refcode_outb  ; call 0x18eea
 pop ecx
 pop eax
 push ebx
 push 0x70
-call fcn_00018eea  ; call 0x18eea
+call refcode_outb  ; call 0x18eea
 pop eax
 pop edx
 push 0x80
@@ -22698,7 +22699,7 @@ pop ecx
 pop eax
 push esi
 push 0x70
-call fcn_00018eea  ; call 0x18eea
+call refcode_outb  ; call 0x18eea
 mov dword [esp], 0x71
 call fcn_00018ee1  ; call 0x18ee1
 pop edx
@@ -22707,12 +22708,12 @@ and eax, 0x8f
 or eax, 0x20
 push eax
 push 0x71
-call fcn_00018eea  ; call 0x18eea
+call refcode_outb  ; call 0x18eea
 pop esi
 pop eax
 push ebx
 push 0x70
-call fcn_00018eea  ; call 0x18eea
+call refcode_outb  ; call 0x18eea
 pop eax
 pop edx
 push 0x7f
@@ -34784,12 +34785,12 @@ push 0x80
 movzx eax, bx
 movzx ebx, bh
 push eax
-call fcn_00018eea  ; call 0x18eea
+call refcode_outb  ; call 0x18eea
 pop eax
 pop edx
 push 0x90
 push ebx
-call fcn_00018eea  ; call 0x18eea
+call refcode_outb  ; call 0x18eea
 add esp, 0x10
 mov ebx, dword [ebp - 4]
 leave
@@ -36770,7 +36771,7 @@ movzx eax, al
 sar bl, 7
 push eax
 and ebx, 2
-call fcn_00018eea  ; call 0x18eea
+call refcode_outb  ; call 0x18eea
 add ebx, 0x75
 add esp, 0x10
 movzx ebx, bl
@@ -36797,7 +36798,7 @@ push ecx
 push 0xa
 push 0x70
 mov dword [ebp - 0x1c], edx
-call fcn_00018eea  ; call 0x18eea
+call refcode_outb  ; call 0x18eea
 mov dword [esp], 0x71
 call fcn_00018ee1  ; call 0x18ee1
 add esp, 0x10
@@ -36817,46 +36818,46 @@ push eax
 push eax
 push 0xb
 push 0x70
-call fcn_00018eea  ; call 0x18eea
+call refcode_outb  ; call 0x18eea
 pop eax
 pop edx
 push 0x82
 push 0x71
-call fcn_00018eea  ; call 0x18eea
+call refcode_outb  ; call 0x18eea
 pop ecx
 pop eax
 push 0xa
 push 0x70
-call fcn_00018eea  ; call 0x18eea
+call refcode_outb  ; call 0x18eea
 pop eax
 pop edx
 push 0x26
 push 0x71
-call fcn_00018eea  ; call 0x18eea
+call refcode_outb  ; call 0x18eea
 pop ecx
 pop eax
 push 0xc
 push 0x70
-call fcn_00018eea  ; call 0x18eea
+call refcode_outb  ; call 0x18eea
 mov dword [esp], 0x71
 call fcn_00018ee1  ; call 0x18ee1
 pop eax
 pop edx
 push 0xd
 push 0x70
-call fcn_00018eea  ; call 0x18eea
+call refcode_outb  ; call 0x18eea
 mov dword [esp], 0x71
 call fcn_00018ee1  ; call 0x18ee1
 pop ecx
 pop eax
 push 0xb
 push 0x70
-call fcn_00018eea  ; call 0x18eea
+call refcode_outb  ; call 0x18eea
 pop eax
 pop edx
 push 2
 push 0x71
-call fcn_00018eea  ; call 0x18eea
+call refcode_outb  ; call 0x18eea
 add esp, 0x10
 
 loc_0001691b:
@@ -36864,7 +36865,7 @@ push eax
 push eax
 push 0
 push 0x70
-call fcn_00018eea  ; call 0x18eea
+call refcode_outb  ; call 0x18eea
 mov dword [esp], 0x71
 call fcn_00018ee1  ; call 0x18ee1
 mov byte [edi], al
@@ -36872,7 +36873,7 @@ pop edx
 pop ecx
 push 2
 push 0x70
-call fcn_00018eea  ; call 0x18eea
+call refcode_outb  ; call 0x18eea
 mov dword [esp], 0x71
 call fcn_00018ee1  ; call 0x18ee1
 mov byte [esi], al
@@ -36880,7 +36881,7 @@ pop eax
 pop edx
 push 4
 push 0x70
-call fcn_00018eea  ; call 0x18eea
+call refcode_outb  ; call 0x18eea
 mov dword [esp], 0x71
 call fcn_00018ee1  ; call 0x18ee1
 mov byte [ebx], al
@@ -36888,7 +36889,7 @@ pop ecx
 pop eax
 push 7
 push 0x70
-call fcn_00018eea  ; call 0x18eea
+call refcode_outb  ; call 0x18eea
 mov dword [esp], 0x71
 call fcn_00018ee1  ; call 0x18ee1
 mov edx, dword [ebp + 0x14]
@@ -36897,7 +36898,7 @@ pop eax
 pop edx
 push 8
 push 0x70
-call fcn_00018eea  ; call 0x18eea
+call refcode_outb  ; call 0x18eea
 mov dword [esp], 0x71
 call fcn_00018ee1  ; call 0x18ee1
 mov edx, dword [ebp + 0x18]
@@ -36906,7 +36907,7 @@ pop ecx
 pop eax
 push 9
 push 0x70
-call fcn_00018eea  ; call 0x18eea
+call refcode_outb  ; call 0x18eea
 mov dword [esp], 0x71
 call fcn_00018ee1  ; call 0x18ee1
 mov edx, dword [ebp + 0x1c]
@@ -39672,7 +39673,7 @@ lea esp, [ebp - 8]
 pop ebx
 pop esi
 pop ebp
-jmp near fcn_00018eea  ; jmp 0x18eea
+jmp near refcode_outb  ; jmp 0x18eea
 
 fcn_00017fac:
 push ebp
@@ -39693,7 +39694,7 @@ lea esp, [ebp - 8]
 pop ebx
 pop esi
 pop ebp
-jmp near fcn_00018eea  ; jmp 0x18eea
+jmp near refcode_outb  ; jmp 0x18eea
 
 fcn_00017fd9:
 push ebp
@@ -39718,7 +39719,7 @@ pop ebx
 pop esi
 pop edi
 pop ebp
-jmp near fcn_00018eea  ; jmp 0x18eea
+jmp near refcode_outb  ; jmp 0x18eea
 
 fcn_0001800d:
 push ebp
@@ -39773,7 +39774,7 @@ pop ebx
 pop esi
 pop edi
 pop ebp
-jmp near fcn_00018eea  ; jmp 0x18eea
+jmp near refcode_outb  ; jmp 0x18eea
 
 fcn_00018087:
 push ebp
@@ -39807,7 +39808,7 @@ pop ebx
 pop esi
 pop edi
 pop ebp
-jmp near fcn_00018eea  ; jmp 0x18eea
+jmp near refcode_outb  ; jmp 0x18eea
 
 fcn_000180d1:
 push ebp
@@ -39841,7 +39842,7 @@ pop ebx
 pop esi
 pop edi
 pop ebp
-jmp near fcn_00018eea  ; jmp 0x18eea
+jmp near refcode_outb  ; jmp 0x18eea
 
 fcn_0001811b:
 push ebp
@@ -39881,7 +39882,7 @@ pop ebx
 pop esi
 pop edi
 pop ebp
-jmp near fcn_00018eea  ; jmp 0x18eea
+jmp near refcode_outb  ; jmp 0x18eea
 
 fcn_00018176:
 push ebp
@@ -41481,14 +41482,6 @@ in al, dx
 pop ebp
 ret
 
-fcn_00018eea:
-push ebp
-mov ebp, esp
-mov eax, dword [ebp + 0xc]
-mov edx, dword [ebp + 8]
-out dx, al
-pop ebp
-ret
 
 fcn_00018ef6:
 push ebp
@@ -44331,7 +44324,7 @@ sub esp, 0x10
 movzx eax, byte [ebp + 8]
 push eax
 push 0x80
-call fcn_00018eea  ; call 0x18eea
+call refcode_outb  ; call 0x18eea
 mov eax, dword [ebp + 8]
 leave
 ret
@@ -44343,7 +44336,7 @@ sub esp, 0x10
 movzx eax, byte [ebp + 8]
 push eax
 push 0x80
-call fcn_00018eea  ; call 0x18eea
+call refcode_outb  ; call 0x18eea
 mov eax, dword [ebp + 8]
 leave
 ret
@@ -44468,7 +44461,7 @@ mov dword [ebp + 0xc], eax
 mov eax, dword [ebp + 0x10]
 mov dword [ebp + 8], eax
 pop ebp
-jmp near fcn_00018eea  ; jmp 0x18eea
+jmp near refcode_outb  ; jmp 0x18eea
 
 fcn_0001a94e:
 push ebp
@@ -45033,7 +45026,7 @@ push eax
 movzx eax, byte [ebx]
 push eax
 push esi
-call fcn_00018eea  ; call 0x18eea
+call refcode_outb  ; call 0x18eea
 jmp short loc_0001ae64  ; jmp 0x1ae64
 
 loc_0001ae16:
@@ -45600,7 +45593,7 @@ mov dword [ebp + 8], eax
 pop ebx
 pop esi
 pop ebp
-jmp near fcn_00018eea  ; jmp 0x18eea
+jmp near refcode_outb  ; jmp 0x18eea
 
 fcn_0001b363:
 push ebp
@@ -49786,7 +49779,7 @@ mov byte [ebx + 0xcc], 0xaa
 mov dword [esi], fcn_00018ee1  ; mov dword [esi], 0x18ee1
 mov dword [esi + 4], fcn_00018ef6  ; mov dword [esi + 4], 0x18ef6
 mov dword [esi + 8], fcn_00018f64  ; mov dword [esi + 8], 0x18f64
-mov dword [esi + 0xc], fcn_00018eea  ; mov dword [esi + 0xc], 0x18eea
+mov dword [esi + 0xc], refcode_outb  ; mov dword [esi + 0xc], 0x18eea
 mov dword [esi + 0x10], fcn_00018f27  ; mov dword [esi + 0x10], 0x18f27
 mov dword [esi + 0x14], fcn_00018f97  ; mov dword [esi + 0x14], 0x18f97
 mov dword [esi + 0x18], fcn_00017d8b  ; mov dword [esi + 0x18], 0x17d8b
@@ -53093,7 +53086,7 @@ mov esi, 4
 push eax
 push 0
 push 0xcf9
-call fcn_00018eea  ; call 0x18eea
+call refcode_outb  ; call 0x18eea
 add esp, 0x10
 jmp near loc_0002034f  ; jmp 0x2034f
 
@@ -53103,7 +53096,7 @@ mov esi, 6
 push eax
 push 2
 push 0xcf9
-call fcn_00018eea  ; call 0x18eea
+call refcode_outb  ; call 0x18eea
 add esp, 0x10
 jmp near loc_0002034f  ; jmp 0x2034f
 
@@ -53298,7 +53291,7 @@ mov eax, esi
 movzx esi, al
 push esi
 push 0xcf9
-call fcn_00018eea  ; call 0x18eea
+call refcode_outb  ; call 0x18eea
 call fcn_00017239  ; call 0x17239
 add esp, 0x10
 mov eax, ebx
