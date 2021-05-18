@@ -4,6 +4,8 @@
 bits 32
 
 global refcode_entry
+extern print_gbe
+global PchIsGbeRegionValid
 
 refcode_entry:
 pushad
@@ -21075,6 +21077,9 @@ pop ebp
 ret
 
 fcn_0000cf01:
+push dword [esp+4]
+call print_gbe
+add esp,4
 push ebp
 mov ebp, esp
 push edi
@@ -21089,7 +21094,7 @@ call fcn_00017d8b  ; call 0x17d8b
 mov esi, eax
 pop eax
 push dword [ebx + 4]
-call fcn_0001be90  ; call 0x1be90
+call PchIsGbeRegionValid  ; call 0x1be90
 movzx edx, byte [ebx + 0x37e]
 add esp, 0x10
 mov edi, eax
@@ -46811,7 +46816,7 @@ mov ebx, dword [ebp - 4]
 leave
 jmp near fcn_00017e4e  ; jmp 0x17e4e
 
-fcn_0001be90:
+PchIsGbeRegionValid:
 push ebp
 mov ebp, esp
 push ebx
