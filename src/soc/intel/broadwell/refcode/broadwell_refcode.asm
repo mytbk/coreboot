@@ -5,6 +5,7 @@ bits 32
 
 global refcode_entry
 extern print_gbe
+extern print_cf9_reset
 global PchIsGbeRegionValid
 extern refcode_outb
 
@@ -52925,7 +52926,7 @@ sub esp, 8
 mov ebx, dword [ebp + 8]
 mov dword [ebx], 0x53524549
 mov dword [ebx + 4], 0
-mov dword [ebx + 8], fcn_000200f7  ; mov dword [ebx + 8], 0x200f7
+mov dword [ebx + 8], cf9_reset  ; mov dword [ebx + 8], 0x200f7
 push 0
 push 0x1f
 push 0
@@ -53035,7 +53036,8 @@ pop esi
 pop ebp
 ret
 
-fcn_000200f7:
+cf9_reset:
+call print_cf9_reset
 push ebp
 mov ebp, esp
 push edi
