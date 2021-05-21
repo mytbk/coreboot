@@ -43,5 +43,5 @@ void mainboard_fill_pei_data(struct pei_data *pei_data)
 	pei_data_usb3_port(pei_data, 1, 1, USB_OC_PIN_SKIP, 0);
 	/* P3: right side (Microchip hub) */
 	pei_data_usb3_port(pei_data, 2, 1, USB_OC_PIN_SKIP, 0);
-	pei_data_usb3_port(pei_data, 3, 1, USB_OC_PIN_SKIP, 1);
+	pei_data_usb3_port(pei_data, 3, 1, USB_OC_PIN_SKIP, 0);
 }
