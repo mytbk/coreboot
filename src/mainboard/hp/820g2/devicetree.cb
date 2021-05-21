@@ -25,10 +25,13 @@ chip soc/intel/broadwell
 		device pci 03.0 on end # Mini-HD audio
 
 		chip soc/intel/broadwell/pch # Wildcat Point PCH
-			register "alt_gp_smi_en" = "0"
+			register "alt_gp_smi_en" = "0x180"
 			register "gen1_dec" = "0x007c0201"
 			register "gen2_dec" = "0x000c0101"
 			register "gen4_dec" = "0x000402e9"
+			register "gpe0_en_1" = "0x40"
+			register "gpe0_en_2" = "0x600"
+			register "gpe0_en_4" = "0x46"
 			register "pcie_port_coalesce" = "1"
 			register "pcie_port_force_aspm" = "0"
 			register "sata_devslp_disable" = "0"
